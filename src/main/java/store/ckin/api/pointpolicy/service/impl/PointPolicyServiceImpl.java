@@ -9,6 +9,7 @@ import store.ckin.api.pointpolicy.dto.request.CreatePointPolicyRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.exception.PointPolicyAlreadyExistsException;
+import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
 import store.ckin.api.pointpolicy.repository.PointPolicyRepository;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
 
@@ -48,5 +49,14 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .stream()
                 .map(PointPolicyResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deletePointPolicy(Long id) {
+        if (pointPolicyRepository.existsById(id)) {
+            pointPolicyRepository.deleteById(id);
+        } else {
+            throw new PointPolicyNotFoundException(id);
+        }
     }
 }

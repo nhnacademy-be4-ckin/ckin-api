@@ -5,7 +5,9 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,5 +51,17 @@ public class PointPolicyController {
     @GetMapping
     public ResponseEntity<List<PointPolicyResponseDto>> getPointPolicies() {
         return ResponseEntity.ok(pointPolicyService.getPointPolicies());
+    }
+
+    /**
+     * 포인트 정책을 삭제하는 메서드입니다.
+     *
+     * @param id 삭제할 포인트 정책 ID
+     * @return 204 (No Content)
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletePointPolicy(@PathVariable("id") Long id) {
+        pointPolicyService.deletePointPolicy(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -26,4 +26,11 @@ public interface PointPolicyService {
      * @return 포인트 정책 리스트
      */
     List<PointPolicyResponseDto> getPointPolicies();
+
+    /**
+     * 포인트 정책를 삭제하는 메서드입니다.
+     *
+     * @param id 삭제할 포인트 정책 ID
+     */
+    void deletePointPolicy(Long id);
 }
