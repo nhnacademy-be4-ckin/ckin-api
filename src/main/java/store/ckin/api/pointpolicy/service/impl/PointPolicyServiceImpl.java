@@ -1,9 +1,12 @@
 package store.ckin.api.pointpolicy.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.pointpolicy.dto.request.CreatePointPolicyRequestDto;
+import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.exception.PointPolicyAlreadyExistsException;
 import store.ckin.api.pointpolicy.repository.PointPolicyRepository;
@@ -37,5 +40,13 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .build();
 
         pointPolicyRepository.save(pointPolicy);
+    }
+
+    @Override
+    public List<PointPolicyResponseDto> getPointPolicies() {
+        return pointPolicyRepository.findAll()
+                .stream()
+                .map(PointPolicyResponseDto::toDto)
+                .collect(Collectors.toList());
     }
 }

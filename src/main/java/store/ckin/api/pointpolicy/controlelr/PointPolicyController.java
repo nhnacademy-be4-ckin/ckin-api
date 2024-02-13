@@ -1,14 +1,17 @@
 package store.ckin.api.pointpolicy.controlelr;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.pointpolicy.dto.request.CreatePointPolicyRequestDto;
+import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
 
 /**
@@ -36,5 +39,15 @@ public class PointPolicyController {
 
         pointPolicyService.createPointPolicy(createPointPolicy);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 포인트 정책 리스트를 조회하는 메서드입니다.
+     *
+     * @return 200 (Ok), 포인트 정책 리스트
+     */
+    @GetMapping
+    public ResponseEntity<List<PointPolicyResponseDto>> getPointPolicies() {
+        return ResponseEntity.ok(pointPolicyService.getPointPolicies());
     }
 }
