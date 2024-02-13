@@ -28,12 +28,12 @@ public class PointPolicyController {
     /**
      * 포인트 정책을 생성하는 메서드입니다.
      *
-     * @param createPointPolicy     포인트 정책 생성 요청 DTO
+     * @param createPointPolicy 포인트 정책 생성 요청 DTO
      * @return 201 (Created)
      */
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> createPointPolicy(@Valid @RequestBody CreatePointPolicyRequestDto createPointPolicy) {
-
+        
         pointPolicyService.createPointPolicy(createPointPolicy);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

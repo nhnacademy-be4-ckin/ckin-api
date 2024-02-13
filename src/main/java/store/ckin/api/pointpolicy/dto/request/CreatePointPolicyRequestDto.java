@@ -6,7 +6,6 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * 포인트 정책 생성 요청 DTO.
@@ -15,7 +14,6 @@ import lombok.ToString;
  * @version 2024. 02. 12.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class CreatePointPolicyRequestDto {
