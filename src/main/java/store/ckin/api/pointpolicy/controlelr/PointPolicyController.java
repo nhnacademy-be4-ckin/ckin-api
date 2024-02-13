@@ -19,7 +19,7 @@ import store.ckin.api.pointpolicy.service.PointPolicyService;
  */
 
 @RestController
-@RequestMapping("/api/point-policy")
+@RequestMapping("/api/point-policies")
 @RequiredArgsConstructor
 public class PointPolicyController {
 
@@ -33,7 +33,7 @@ public class PointPolicyController {
      */
     @PostMapping
     public ResponseEntity<Void> createPointPolicy(@Valid @RequestBody CreatePointPolicyRequestDto createPointPolicy) {
-        
+
         pointPolicyService.createPointPolicy(createPointPolicy);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
