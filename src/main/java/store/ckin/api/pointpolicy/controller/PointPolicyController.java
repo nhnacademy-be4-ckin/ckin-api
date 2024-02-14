@@ -1,4 +1,4 @@
-package store.ckin.api.pointpolicy.controlelr;
+package store.ckin.api.pointpolicy.controller;
 
 import java.util.List;
 import javax.validation.Valid;
