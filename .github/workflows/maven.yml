@@ -60,3 +60,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}       # ssh 포트 = 22
         script_stop: true
         script: "./startup.sh"
+# SonarQube 실행
+    - name: execute SonarQube
+      run: mvn sonar:sonar -Dsonar.projectKey=ckin-coupon -Dsonar.host.url= ${{ secrets.SONARQUBE_URL }} -Dsonar.login= ${{ secrets.SONARQUBE_LOGIN }}
