@@ -33,4 +33,12 @@ public interface PointPolicyService {
      * @param id 삭제할 포인트 정책 ID
      */
     void deletePointPolicy(Long id);
+
+    /**
+     * 포인트 정책 개별 조회를 하는 메서드입니다.
+     *
+     * @param id 조회할 포인트 정책 ID
+     * @return 조회된 포인트 정책 응답 DTO
+     */
+    PointPolicyResponseDto getPointPolicy(Long id);
 }

@@ -46,11 +46,22 @@ public class PointPolicyController {
     /**
      * 포인트 정책 리스트를 조회하는 메서드입니다.
      *
-     * @return 200 (Ok), 포인트 정책 리스트
+     * @return 200 (Ok), 포인트 정책 응답 DTO 리스트
      */
     @GetMapping
     public ResponseEntity<List<PointPolicyResponseDto>> getPointPolicies() {
         return ResponseEntity.ok(pointPolicyService.getPointPolicies());
+    }
+
+    /**
+     * 포인트 정책 개별 조회를 하는 메서드입니다.
+     *
+     * @param id 조회할 포인트 정책 ID
+     * @return 조회된 포인트 정책 응답 DTO
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<PointPolicyResponseDto> getPointPolicy(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(pointPolicyService.getPointPolicy(id));
     }
 
     /**

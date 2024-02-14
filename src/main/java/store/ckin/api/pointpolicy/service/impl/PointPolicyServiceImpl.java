@@ -1,6 +1,7 @@
 package store.ckin.api.pointpolicy.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,12 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
     private final PointPolicyRepository pointPolicyRepository;
 
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request 포인트 정책 생성 요청 DTO
+     */
     @Transactional
     @Override
     public void createPointPolicy(CreatePointPolicyRequestDto request) {
@@ -43,6 +50,11 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         pointPolicyRepository.save(pointPolicy);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return 모든 포인트 정책 응답 DTO 리스트
+     */
     @Override
     public List<PointPolicyResponseDto> getPointPolicies() {
         return pointPolicyRepository.findAll()
@@ -51,6 +63,11 @@ public class PointPolicyServiceImpl implements PointPolicyService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 삭제할 포인트 정책 ID
+     */
     @Override
     public void deletePointPolicy(Long id) {
         if (pointPolicyRepository.existsById(id)) {
@@ -58,5 +75,22 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         } else {
             throw new PointPolicyNotFoundException(id);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 조회할 포인트 정책 ID
+     * @return 조회된 포인트 정책 응답 DTO
+     */
+    @Override
+    public PointPolicyResponseDto getPointPolicy(Long id) {
+
+        Optional<PointPolicy> optionalPointPolicy = pointPolicyRepository.findById(id);
+        if (optionalPointPolicy.isPresent()) {
+            return PointPolicyResponseDto.toDto(optionalPointPolicy.get());
+        }
+
+        throw new PointPolicyNotFoundException(id);
     }
 }
