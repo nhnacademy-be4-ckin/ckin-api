@@ -61,5 +61,5 @@ jobs:
         script_stop: true
         script: "./startup.sh"
 # SonarQube 실행
-    - name: execute SonarQube
-      run: mvn sonar:sonar -Dsonar.projectKey=ckin-api -Dsonar.host.url= ${{ secrets.SONARQUBE_URL }} -Dsonar.login= ${{ secrets.SONARQUBE_LOGIN }}
+    - name: Execute SonarQube
+      run: mvn sonar:sonar -Dsonar.projectKey=ckin-api -Dsonar.host.url=${{ secrets.SONARQUBE_URL }} -Dsonar.login=${{ secrets.SONARQUBE_LOGIN }}
