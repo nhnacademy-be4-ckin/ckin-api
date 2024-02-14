@@ -16,7 +16,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreatePointPolicyRequestDto {
+public class PointPolicyCreateRequestDto {
 
     @NotNull(message = "포인트 정책 ID를 입력해주세요.")
     private Long pointPolicyId;
