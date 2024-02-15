@@ -102,10 +102,10 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Transactional
     @Override
     public void deletePointPolicy(Long id) {
-        if (pointPolicyRepository.existsById(id)) {
-            pointPolicyRepository.deleteById(id);
-        } else {
+        if (!pointPolicyRepository.existsById(id)) {
             throw new PointPolicyNotFoundException(id);
         }
+
+        pointPolicyRepository.deleteById(id);
     }
 }
