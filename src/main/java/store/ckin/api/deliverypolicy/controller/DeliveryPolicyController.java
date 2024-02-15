@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,17 @@ public class DeliveryPolicyController {
     @GetMapping
     public ResponseEntity<List<DeliveryPolicyResponseDto>> getDeliveryPolicies() {
         return ResponseEntity.ok(deliveryPolicyService.getDeliveryPolicies());
+    }
+
+    /**
+     * 배송비 정책을 조회하는 메서드입니다.
+     *
+     * @param id 조회할 배송비 정책 ID
+     * @return 200(OK), 배송비 정책 응답 DTO
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<DeliveryPolicyResponseDto> getDeliveryPolicy(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(deliveryPolicyService.getDeliveryPolicy(id));
     }
 
     /**

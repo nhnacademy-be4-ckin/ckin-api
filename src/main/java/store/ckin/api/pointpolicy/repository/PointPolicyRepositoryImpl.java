@@ -19,7 +19,7 @@ public class PointPolicyRepositoryImpl extends QuerydslRepositorySupport impleme
     /**
      * {@inheritDoc}
      *
-     * @param id 포인트 정책 ID
+     * @param id   포인트 정책 ID
      * @param name 포인트 정책 이릠
      * @return 포인트 정책 존재 여부
      */

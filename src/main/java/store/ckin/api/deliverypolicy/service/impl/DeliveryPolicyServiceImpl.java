@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
+import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotFoundException;
 import store.ckin.api.deliverypolicy.repository.DeliveryPolicyRepository;
 import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
 
@@ -34,6 +35,19 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
                 .stream()
                 .map(DeliveryPolicyResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 조회할 배송비 정책 ID
+     * @return 조회된 배송비 정책 응답 DTO
+     */
+    @Override
+    public DeliveryPolicyResponseDto getDeliveryPolicy(Long id) {
+        return deliveryPolicyRepository.findById(id)
+                .map(DeliveryPolicyResponseDto::toDto)
+                .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
     }
 
     /**
