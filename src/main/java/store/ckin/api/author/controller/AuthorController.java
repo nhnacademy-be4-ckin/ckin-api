@@ -4,9 +4,10 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.author.dto.register.AuthorRegisterDto;
+import store.ckin.api.author.dto.request.AuthorCreateDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.service.AuthorService;
 
@@ -17,6 +18,7 @@ import store.ckin.api.author.service.AuthorService;
  * @version 2024. 02. 13.
  */
 @RestController
+@RequestMapping("/api/authors")
 public class AuthorController {
     private final AuthorService authorService;
 
@@ -24,20 +26,20 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @GetMapping("/authors")
+    @GetMapping
     public List<AuthorResponseDto> getAllAuthors() {
         return authorService.findAllAuthors();
     }
 
-    @GetMapping("/authors/search")
+    @GetMapping("/search")
     public List<AuthorResponseDto> getAuthorsByName(@RequestParam String name) {
         return authorService.findAuthorsByName(name);
     }
 
 
-    @PostMapping("/authors")
-    public AuthorResponseDto registerAuthor(@RequestBody AuthorRegisterDto authorRegisterDto) {
-        return authorService.registerAuthor(authorRegisterDto);
+    @PostMapping
+    public AuthorResponseDto createAuthor(@RequestBody AuthorCreateDto authorCreateDto) {
+        return authorService.createAuthor(authorCreateDto);
     }
 
 }

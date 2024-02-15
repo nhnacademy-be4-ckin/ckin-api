@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import store.ckin.api.author.dto.register.AuthorRegisterDto;
+import store.ckin.api.author.dto.request.AuthorCreateDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.repository.AuthorRepository;
@@ -37,9 +37,9 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorResponseDto registerAuthor(AuthorRegisterDto authorRegisterDto) {
+    public AuthorResponseDto createAuthor(AuthorCreateDto authorCreateDto) {
         Author author = Author.builder()
-                .authorName(authorRegisterDto.getAuthorName())
+                .authorName(authorCreateDto.getAuthorName())
                 .build();
         author = authorRepository.save(author);
 

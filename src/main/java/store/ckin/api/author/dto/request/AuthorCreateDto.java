@@ -1,4 +1,4 @@
-package store.ckin.api.author.dto.register;
+package store.ckin.api.author.dto.request;
 
 import lombok.Getter;
 
@@ -9,6 +9,6 @@ import lombok.Getter;
  * @version 2024. 02. 13.
  */
 @Getter
-public class AuthorRegisterDto {
+public class AuthorCreateDto {
     private String authorName;
 }
