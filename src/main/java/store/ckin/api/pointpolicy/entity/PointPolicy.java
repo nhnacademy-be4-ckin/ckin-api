@@ -27,7 +27,7 @@ public class PointPolicy {
     @Column(name = "pointpolicy_id")
     private Long pointPolicyId;
 
-    @Column(name = "pointpolicy_name")
+    @Column(name = "pointpolicy_name", unique = true)
     private String pointPolicyName;
 
     @Column(name = "pointpolicy_reserve")

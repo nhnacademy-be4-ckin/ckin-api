@@ -65,7 +65,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public void createPointPolicy(PointPolicyCreateRequestDto request) {
 
-        if (pointPolicyRepository.existsById(request.getPointPolicyId())) {
+        if (pointPolicyRepository.existsPointPolicy(request.getPointPolicyId(), request.getPointPolicyName())) {
             throw new PointPolicyAlreadyExistsException(request.getPointPolicyId(), request.getPointPolicyName());
         }
 
