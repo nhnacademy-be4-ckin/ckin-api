@@ -11,7 +11,7 @@ import store.ckin.api.deliverypolicy.repository.DeliveryPolicyRepository;
 import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
 
 /**
- * {class name}.
+ * 배송비 정책을 관리하는 서비스 구현 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 15.
@@ -23,7 +23,11 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
 
     private final DeliveryPolicyRepository deliveryPolicyRepository;
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @return 배송비 정책 응답 DTO 리스트
+     */
     @Override
     public List<DeliveryPolicyResponseDto> getDeliveryPolicies() {
         return deliveryPolicyRepository.findAll()
@@ -32,6 +36,11 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param createDeliveryPolicy 생성할 배송비 정책 요청 DTO
+     */
     @Override
     public void createDeliveryPolicy(DeliveryPolicyCreateRequestDto createDeliveryPolicy) {
 

@@ -15,7 +15,7 @@ import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
 
 /**
- * {class name}.
+ * 배송비 정책 Controller.
  *
  * @author 정승조
  * @version 2024. 02. 15.
@@ -27,11 +27,22 @@ public class DeliveryPolicyController {
 
     private final DeliveryPolicyService deliveryPolicyService;
 
+    /**
+     * 배송비 정책 리스트를 조회하는 메서드입니다.
+     *
+     * @return 200(OK), 배송비 정책 응답 DTO 리스트
+     */
     @GetMapping
     public ResponseEntity<List<DeliveryPolicyResponseDto>> getDeliveryPolicies() {
         return ResponseEntity.ok(deliveryPolicyService.getDeliveryPolicies());
     }
 
+    /**
+     * 배송비 정책을 생성하는 메서드입니다.
+     *
+     * @param createDeliveryPolicy 생성할 배송비 정책 DTO
+     * @return 201 (CREATED)
+     */
     @PostMapping
     public ResponseEntity<Void> createDeliveryPolicy(
             @Valid @RequestBody DeliveryPolicyCreateRequestDto createDeliveryPolicy) {

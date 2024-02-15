@@ -12,8 +12,17 @@ import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
  */
 public interface DeliveryPolicyService {
 
-
+    /**
+     * 배송비 정책을 생성하는 메서드입니다.
+     *
+     * @param createDeliveryPolicy 생성할 배송비 정책 요청 DTO
+     */
     void createDeliveryPolicy(DeliveryPolicyCreateRequestDto createDeliveryPolicy);
 
+    /**
+     * 모든 배송비 정책을 조회하는 메서드입니다.
+     *
+     * @return 배송비 정책 요청 DTO 리스트
+     */
     List<DeliveryPolicyResponseDto> getDeliveryPolicies();
 }
