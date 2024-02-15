@@ -47,11 +47,9 @@ public class PointPolicy {
         this.pointPolicyReserve = pointPolicyReserve;
     }
 
-    public PointPolicy update(PointPolicyUpdateRequestDto updatePointPolicy) {
-        return PointPolicy.builder()
-                .pointPolicyId(updatePointPolicy.getPointPolicyId())
-                .pointPolicyName(updatePointPolicy.getPointPolicyName())
-                .pointPolicyReserve(updatePointPolicy.getPointPolicyReserve())
-                .build();
+    public void update(PointPolicyUpdateRequestDto updatePointPolicy) {
+        this.pointPolicyId = updatePointPolicy.getPointPolicyId();
+        this.pointPolicyName = updatePointPolicy.getPointPolicyName();
+        this.pointPolicyReserve = updatePointPolicy.getPointPolicyReserve();
     }
 }

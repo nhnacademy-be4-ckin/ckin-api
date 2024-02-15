@@ -88,10 +88,9 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public void updatePointPolicy(Long id, PointPolicyUpdateRequestDto updatePointPolicy) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(id)
-                .map(policy -> policy.update(updatePointPolicy))
                 .orElseThrow(() -> new PointPolicyNotFoundException(id));
 
-        pointPolicyRepository.save(pointPolicy);
+        pointPolicy.update(updatePointPolicy);
     }
 
     /**
