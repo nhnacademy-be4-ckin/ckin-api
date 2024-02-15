@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
+import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotFoundException;
@@ -30,6 +32,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
      * @return 배송비 정책 응답 DTO 리스트
      */
     @Override
+    @Transactional(readOnly = true)
     public List<DeliveryPolicyResponseDto> getDeliveryPolicies() {
         return deliveryPolicyRepository.findAll()
                 .stream()
@@ -44,10 +47,20 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
      * @return 조회된 배송비 정책 응답 DTO
      */
     @Override
+    @Transactional(readOnly = true)
     public DeliveryPolicyResponseDto getDeliveryPolicy(Long id) {
         return deliveryPolicyRepository.findById(id)
                 .map(DeliveryPolicyResponseDto::toDto)
                 .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
+    }
+
+    @Override
+    @Transactional
+    public void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
+        DeliveryPolicy deliveryPolicy = deliveryPolicyRepository.findById(id)
+                .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
+
+        deliveryPolicy.update(updateDeliveryPolicy);
     }
 
     /**
@@ -56,6 +69,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
      * @param createDeliveryPolicy 생성할 배송비 정책 요청 DTO
      */
     @Override
+    @Transactional
     public void createDeliveryPolicy(DeliveryPolicyCreateRequestDto createDeliveryPolicy) {
 
         DeliveryPolicy deliveryPolicy = DeliveryPolicy.builder()
@@ -66,5 +80,4 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
 
         deliveryPolicyRepository.save(deliveryPolicy);
     }
-
 }

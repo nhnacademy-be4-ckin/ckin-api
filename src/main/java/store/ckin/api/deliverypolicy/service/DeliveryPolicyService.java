@@ -2,6 +2,7 @@ package store.ckin.api.deliverypolicy.service;
 
 import java.util.List;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
+import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 
 /**
@@ -33,4 +34,6 @@ public interface DeliveryPolicyService {
      * @return 조회된 배송비 정책 응답 DTO
      */
     DeliveryPolicyResponseDto getDeliveryPolicy(Long id);
+
+    void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy);
 }
