@@ -10,6 +10,6 @@ import store.ckin.api.pointpolicy.entity.PointPolicy;
  * @version 2024. 02. 11.
  */
 
-public interface PointPolicyRepository extends JpaRepository<PointPolicy, Long> {
+public interface PointPolicyRepository extends JpaRepository<PointPolicy, Long>, PointPolicyRepositoryCustom {
 
 }
