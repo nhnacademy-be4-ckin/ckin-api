@@ -2,6 +2,7 @@ package store.ckin.api.pointpolicy.repository;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -52,9 +53,9 @@ class PointPolicyRepositoryTest {
         PointPolicy actual = pointPolicyRepository.save(pointPolicy);
 
         assertAll(
-                () -> assertEquals(100L, actual.getPointPolicyId()),
-                () -> assertEquals("새로운 정책", actual.getPointPolicyName()),
-                () -> assertEquals(1234, actual.getPointPolicyReserve())
+                () -> assertEquals(pointPolicy.getPointPolicyId(), actual.getPointPolicyId()),
+                () -> assertEquals(pointPolicy.getPointPolicyName(), actual.getPointPolicyName()),
+                () -> assertEquals(pointPolicy.getPointPolicyReserve(), actual.getPointPolicyReserve())
         );
     }
 
@@ -82,6 +83,14 @@ class PointPolicyRepositoryTest {
 
         assertEquals(1, pointPolicies.size());
     }
+
+    @Test
+    @DisplayName("포인트 정책 삭제")
+    void testDeletePointPolicy() {
+        pointPolicyRepository.deleteById(1L);
+        assertFalse(pointPolicyRepository.existsById(1L));
+    }
+
 
     @Test
     @DisplayName("포인트 정책 유무 확인 - Querydsl")
