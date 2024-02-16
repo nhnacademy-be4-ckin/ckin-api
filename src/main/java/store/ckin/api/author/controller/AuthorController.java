@@ -4,14 +4,17 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
+import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.service.AuthorService;
 
@@ -75,5 +78,20 @@ public class AuthorController {
         AuthorResponseDto authorResponseDto = authorService.findAuthorById(authorId);
         return ResponseEntity.ok(authorResponseDto);
     }
+
+    @PutMapping("/{authorId}")
+    public ResponseEntity<AuthorResponseDto> updateAuthor(@PathVariable Long authorId,
+                                                          @RequestBody AuthorModifyRequestDto authorModifyRequestDto) {
+        AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, authorModifyRequestDto);
+        return ResponseEntity.ok(updatedAuthor);
+    }
+
+    @DeleteMapping("/{authorId}")
+    public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorId) {
+        authorService.deleteAuthor(authorId);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "Author")
+@AllArgsConstructor
+@Builder(toBuilder = true) //일부 값만 변경하는 update로직 때문에 추가
 public class Author {
 
     @Id
@@ -30,15 +33,4 @@ public class Author {
     @Column(name = "author_name")
     private String authorName;
 
-    /**
-     * Instantiates a new Author.
-     *
-     * @param authorId   the author id
-     * @param authorName the author name
-     */
-    @Builder
-    public Author(Long authorId, String authorName) {
-        this.authorId = authorId;
-        this.authorName = authorName;
-    }
 }

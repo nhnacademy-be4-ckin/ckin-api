@@ -2,6 +2,7 @@ package store.ckin.api.author.service;
 
 import java.util.List;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
+import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 /**
  * AuthorService.
@@ -17,5 +18,9 @@ public interface AuthorService {
     AuthorResponseDto createAuthor(AuthorCreateRequestDto authorCreateRequestDto);
 
     AuthorResponseDto findAuthorById(Long authorId);
+
+    AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto);
+
+    void deleteAuthor(Long authorId);
 
 }

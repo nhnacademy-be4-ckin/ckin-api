@@ -1,8 +1,8 @@
 package store.ckin.api.author.dto.response;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import store.ckin.api.author.entity.Author;
 
 /**
  * AuthorResponseDto 클래스.
@@ -18,8 +18,9 @@ public class AuthorResponseDto {
 
     private String authorName;
 
-    public AuthorResponseDto(Author author) {
-        this.authorId = author.getAuthorId();
-        this.authorName = author.getAuthorName();
+    @Builder
+    public AuthorResponseDto(Long authorId, String authorName) {
+        this.authorId = authorId;
+        this.authorName = authorName;
     }
 }

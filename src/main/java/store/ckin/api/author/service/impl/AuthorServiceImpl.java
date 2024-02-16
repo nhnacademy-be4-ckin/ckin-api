@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
+import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.exception.AuthorNotFoundException;
@@ -28,9 +29,13 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorResponseDto> findAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         return authors.stream()
-                .map(author -> new AuthorResponseDto(author))
+                .map(author -> AuthorResponseDto.builder()
+                        .authorId(author.getAuthorId())
+                        .authorName(author.getAuthorName())
+                        .build())
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<AuthorResponseDto> findAuthorsByName(String name) {
@@ -44,14 +49,50 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
         author = authorRepository.save(author);
 
-        return new AuthorResponseDto(author);
+        return AuthorResponseDto.builder()
+                .authorId(author.getAuthorId())
+                .authorName(author.getAuthorName())
+                .build();
     }
+
 
     @Override
     public AuthorResponseDto findAuthorById(Long authorId) {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException("해당 ID의 작가를 찾을 수 없습니다."));
-        return new AuthorResponseDto(author);
+        return AuthorResponseDto.builder()
+                .authorId(author.getAuthorId())
+                .authorName(author.getAuthorName())
+                .build();
     }
+
+
+
+    @Override
+    public AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto) {
+        Author existingAuthor = authorRepository.findById(authorId)
+                .orElseThrow(() -> new AuthorNotFoundException("해당 ID의 작가를 찾을 수 없습니다."));
+
+        Author updatedAuthor = existingAuthor.toBuilder()
+                .authorName(authorModifyRequestDto.getAuthorName())
+                .build();
+        updatedAuthor = authorRepository.save(updatedAuthor);
+
+        return AuthorResponseDto.builder()
+                .authorId(updatedAuthor.getAuthorId())
+                .authorName(updatedAuthor.getAuthorName())
+                .build();
+    }
+
+
+
+    @Override
+    public void deleteAuthor(Long authorId) {
+        authorRepository.findById(authorId)
+                .orElseThrow(() -> new AuthorNotFoundException("해당 ID의 작가를 찾을 수 없습니다."));
+
+        authorRepository.deleteById(authorId);
+    }
+
 }
 
