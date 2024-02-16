@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +21,15 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Getter
-@NoArgsConstructor
 @Table
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true) //일부 값만 변경하는 update로직 때문에 추가
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long categoryId;
 
     @ManyToOne
@@ -36,15 +40,10 @@ public class Category {
     private String categoryName;
 
     //없어도 될 거 같음
-//    @Column(name = "category_priority")
-//    private Integer categoryPriority;
+    @Column(name = "category_priority")
+    private Integer categoryPriority;
 
 
-    @Builder
-    public Category(Long categoryId, Category parentCategory, String categoryName) {
-        this.categoryId = categoryId;
-        this.parentCategory = parentCategory;
-        this.categoryName = categoryName;
-    }
+
 }
 

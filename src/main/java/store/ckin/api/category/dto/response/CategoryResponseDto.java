@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * {class name}.
+ * CategoryResponseDto.
  *
  * @author 나국로
  * @version 2024. 02. 15.
