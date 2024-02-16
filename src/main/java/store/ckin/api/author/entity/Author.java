@@ -23,13 +23,19 @@ import lombok.NoArgsConstructor;
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "author_id")
     private Long authorId;
 
     @Column(name = "author_name")
     private String authorName;
 
+    /**
+     * Instantiates a new Author.
+     *
+     * @param authorId   the author id
+     * @param authorName the author name
+     */
     @Builder
     public Author(Long authorId, String authorName) {
         this.authorId = authorId;

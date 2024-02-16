@@ -10,7 +10,7 @@ import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.author.repository.AuthorRepositoryCustom;
 
 /**
- * {class name}.
+ * AuthorRepositoryImpl.
  *
  * @author 나국로
  * @version 2024. 02. 15.
@@ -18,6 +18,9 @@ import store.ckin.api.author.repository.AuthorRepositoryCustom;
 @Repository
 public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements AuthorRepositoryCustom {
 
+    /**
+     * Instantiates a new Author repository.
+     */
     public AuthorRepositoryImpl() {
         super(Author.class);
     }
@@ -26,11 +29,13 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
     public List<AuthorResponseDto> findAuthorsByName(String name) {
         QAuthor qAuthor = QAuthor.author;
         return from(qAuthor)
-                .where(qAuthor.authorName.eq(name))
-                .select(Projections.constructor(AuthorResponseDto.class,
+                .where(qAuthor.authorName.contains(name))
+                .select(Projections.fields(AuthorResponseDto.class,
                         qAuthor.authorId,
                         qAuthor.authorName))
                 .fetch();
     }
+
+
 
 }

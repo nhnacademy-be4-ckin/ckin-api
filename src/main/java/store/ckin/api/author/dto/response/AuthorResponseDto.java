@@ -1,6 +1,7 @@
 package store.ckin.api.author.dto.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import store.ckin.api.author.entity.Author;
 
 /**
@@ -10,6 +11,7 @@ import store.ckin.api.author.entity.Author;
  * @version 2024. 02. 13.
  */
 @Data
+@NoArgsConstructor
 public class AuthorResponseDto {
 
     private Long authorId;

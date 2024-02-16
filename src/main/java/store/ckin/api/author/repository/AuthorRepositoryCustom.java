@@ -5,12 +5,18 @@ import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 
 /**
- * {class name}.
+ * AuthorRepositoryCustom.
  *
  * @author 나국로
  * @version 2024. 02. 15.
  */
 @NoRepositoryBean
 public interface AuthorRepositoryCustom {
+    /**
+     * Find authors by name.
+     *
+     * @param name the name
+     * @return the list
+     */
     List<AuthorResponseDto> findAuthorsByName(String name);
 }
