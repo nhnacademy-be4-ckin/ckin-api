@@ -54,6 +54,12 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
                 .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id                    수정할 배송비 정책 ID
+     * @param updateDeliveryPolicy  수정할 배송비 정책 DTO
+     */
     @Override
     @Transactional
     public void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
