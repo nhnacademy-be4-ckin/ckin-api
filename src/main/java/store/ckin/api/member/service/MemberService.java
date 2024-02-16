@@ -14,5 +14,5 @@ public interface MemberService {
      *
      * @param memberCreateRequestDto Member 생성 요청 DTO
      */
-    boolean createMember(MemberCreateRequestDto memberCreateRequestDto);
+    void createMember(MemberCreateRequestDto memberCreateRequestDto);
 }

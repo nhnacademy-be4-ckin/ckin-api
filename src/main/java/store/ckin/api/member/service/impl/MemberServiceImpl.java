@@ -1,10 +1,11 @@
 package store.ckin.api.member.service.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 
@@ -24,9 +25,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public boolean createMember(MemberCreateRequestDto memberCreateRequestDto) {
+    public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
         if (!memberRepository.existsByEmail(memberCreateRequestDto.getEmail())) {
-            return false;
+            throw new MemberAlreadyExistsException();
         }
 
         Member member = Member.builder()
@@ -35,12 +36,11 @@ public class MemberServiceImpl implements MemberService {
                 .name(memberCreateRequestDto.getName())
                 .contact(memberCreateRequestDto.getContact())
                 .birth(memberCreateRequestDto.getBirth())
-                .latestLoginAt(LocalDate.now())
+                .latestLoginAt(LocalDateTime.now())
+                .role(Member.Role.MEMBER)
                 .point(5000)
                 .build();
 
         memberRepository.save(member);
-
-        return true;
     }
 }

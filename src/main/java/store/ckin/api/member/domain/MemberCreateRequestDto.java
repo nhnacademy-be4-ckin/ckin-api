@@ -1,6 +1,6 @@
 package store.ckin.api.member.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,5 +34,5 @@ public class MemberCreateRequestDto {
     private String contact;
 
     @NotNull
-    private LocalDate birth;
+    private LocalDateTime birth;
 }

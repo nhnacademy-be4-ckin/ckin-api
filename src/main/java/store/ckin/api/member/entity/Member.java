@@ -1,6 +1,6 @@
 package store.ckin.api.member.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,7 +64,7 @@ public class Member {
 
     @ManyToOne
     @JoinColumn(name = "grade_id")
-    private Grade gradeId;
+    private Grade grade;
 
     @Column(name = "member_email", unique = true)
     private String email;
@@ -79,13 +79,13 @@ public class Member {
     private String contact;
 
     @Column(name = "member_birth")
-    private LocalDate birth;
+    private LocalDateTime birth;
 
     @Column(name = "member_state")
     private State state;
 
     @Column(name = "member_latest_login_at")
-    private LocalDate latestLoginAt;
+    private LocalDateTime latestLoginAt;
 
     @Column(name = "member_role")
     private Role role;
