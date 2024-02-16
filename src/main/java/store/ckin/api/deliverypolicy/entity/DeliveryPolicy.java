@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 
 /**
@@ -20,7 +19,6 @@ import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
  * @version 2024. 02. 15.
  */
 
-@Slf4j
 @Getter
 @Entity
 @Table(name = "DeliveryPolicy")
@@ -65,14 +63,8 @@ public class DeliveryPolicy {
      * @param updateDeliveryPolicy 수정된 배송비 정책 DTO
      */
     public void update(DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
-
-        log.info("origin state = {}", deliveryPolicyState);
-        log.info("update state = {}", updateDeliveryPolicy.getDeliveryPolicyState());
-
         this.deliveryPolicyFee = updateDeliveryPolicy.getDeliveryPolicyFee();
         this.deliveryPolicyCondition = updateDeliveryPolicy.getDeliveryPolicyCondition();
         this.deliveryPolicyState = updateDeliveryPolicy.getDeliveryPolicyState();
-
-        log.info("after = {}", this.deliveryPolicyState);
     }
 }

@@ -1,7 +1,7 @@
 package store.ckin.api.deliverypolicy.exception;
 
 /**
- * {class name}.
+ * 배송비 정책 Not Found 예외 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 15.

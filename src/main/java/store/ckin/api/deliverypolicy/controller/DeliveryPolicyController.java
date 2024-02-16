@@ -3,7 +3,6 @@ package store.ckin.api.deliverypolicy.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,6 @@ import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
  * @version 2024. 02. 15.
  */
 
-@Slf4j
 @RestController
 @RequestMapping("/api/delivery-policies")
 @RequiredArgsConstructor
@@ -72,7 +70,7 @@ public class DeliveryPolicyController {
     public ResponseEntity<Void> updateDeliveryPolicy(@PathVariable("id") Long id,
                                                      @Valid @RequestBody
                                                      DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
-        log.info("id = {}, updateDeliveryPolicy = {}", id, updateDeliveryPolicy);
+
         deliveryPolicyService.updateDeliveryPolicy(id, updateDeliveryPolicy);
 
         return ResponseEntity.ok().build();

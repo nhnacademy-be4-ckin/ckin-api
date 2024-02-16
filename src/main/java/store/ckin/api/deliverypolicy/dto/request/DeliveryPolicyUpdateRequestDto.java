@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * 배송비 정책 수정 요청 DTO.
@@ -13,7 +12,6 @@ import lombok.ToString;
  * @version 2024. 02. 15.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class DeliveryPolicyUpdateRequestDto {
