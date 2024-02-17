@@ -36,5 +36,4 @@ public class Tag {
     public void updateTagName(String tagName) {
         this.tagName = tagName;
     }
-    // todo 도서 테이블과 연관성 추가
 }
