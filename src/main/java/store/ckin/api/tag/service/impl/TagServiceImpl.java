@@ -10,6 +10,7 @@ import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
 import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.entity.Tag;
+import store.ckin.api.tag.exception.TagNameAlreadyExistException;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
 import store.ckin.api.tag.service.TagService;
@@ -32,11 +33,14 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public void createTag(TagCreateRequestDto tagCreateRequestDto) {
-        Tag tag = Tag.builder()
-                        .tagName(tagCreateRequestDto.getTagName())
-                                .build();
-
-        tagRepository.save(tag);
+        if(tagRepository.existsByTagName(tagCreateRequestDto.getTagName())) {
+            throw new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+        } else {
+            Tag tag = Tag.builder()
+                    .tagName(tagCreateRequestDto.getTagName())
+                    .build();
+            tagRepository.save(tag);
+        }
     }
 
     @Transactional
