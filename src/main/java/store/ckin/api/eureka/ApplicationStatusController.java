@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.eureka.actuator.ApplicationStatus;
 
+
 /**
- * @Author : marco@nhnacademy.com
- * @Date : 27/06/2023
+ * 어플리케이션 상태를 변경하는 컨트롤러입니다.
+ *
+ * @author 정승조
+ * @version 2024. 02. 17.
  */
 
 @RestController

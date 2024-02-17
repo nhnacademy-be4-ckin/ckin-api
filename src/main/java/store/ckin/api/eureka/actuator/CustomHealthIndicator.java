@@ -6,7 +6,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 /**
- * {class name}.
+ * Health Indicator 커스텀 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 17.
