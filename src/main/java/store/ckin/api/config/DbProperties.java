@@ -1,11 +1,12 @@
 package store.ckin.api.config;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * DB Properties 클래스입니다.
+ * DBCP2 설정을 위한 프로퍼티 클래스.
  *
  * @author 정승조
  * @version 2024. 02. 16.

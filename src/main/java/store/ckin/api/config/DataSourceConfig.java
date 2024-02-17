@@ -1,6 +1,5 @@
 package store.ckin.api.config;
 
-import java.time.Duration;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -8,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * DBCP2 설정 클래스입니다.
+ * DBCP2 설정을 위한 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 16.
@@ -37,8 +36,7 @@ public class DataSourceConfig {
         basicDataSource.setTestOnBorrow(true);
         basicDataSource.setValidationQuery("SELECT 1");
 
-        basicDataSource.setMaxWait(Duration.ofSeconds(dbProperties.getMaxWait()));
-
+        basicDataSource.setMaxWaitMillis(dbProperties.getMaxWait());
         return basicDataSource;
     }
 
