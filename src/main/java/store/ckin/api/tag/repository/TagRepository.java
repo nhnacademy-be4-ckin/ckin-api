@@ -16,4 +16,6 @@ import store.ckin.api.tag.entity.Tag;
 public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("select new store.ckin.api.tag.dto.response.TagResponseDto(t.tagId, t.tagName) from Tag t")
     List<TagResponseDto> findAllTags();
+
+    boolean existsByTagName(String tagName);
 }
