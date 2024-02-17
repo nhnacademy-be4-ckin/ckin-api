@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * {class name}.
+ * DBCP2 설정 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 16.

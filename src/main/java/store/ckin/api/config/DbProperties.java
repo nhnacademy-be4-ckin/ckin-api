@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * {class name}.
+ * DB Properties 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 02. 16.
