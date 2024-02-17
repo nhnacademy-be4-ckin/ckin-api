@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,6 +46,7 @@ class TagServiceImplTest {
     @Test
     @DisplayName("태그 리스트 조회 - 성공")
     void readTagListTest() throws Exception{
+        // given
         Field[] fields = TagResponseDto.class.getDeclaredFields();
         for(Field field: fields) {
             field.setAccessible(true);
@@ -58,12 +60,13 @@ class TagServiceImplTest {
             testCases.add(tagResponseDto);
         }
 
+        // when
         when(tagRepository.findAllTags())
                 .thenReturn(testCases);
-
         List<TagResponseDto> actual = tagService.readTagList();
-        assertEquals(3, actual.size());
 
+        // then
+        assertEquals(3, actual.size());
         assertEquals(1L, actual.get(0).getTagId());
         assertEquals(2L, actual.get(1).getTagId());
         assertEquals(3L, actual.get(2).getTagId());
@@ -72,22 +75,26 @@ class TagServiceImplTest {
     @Test
     @DisplayName("태그 생성 - 실패(이미 존재하는 태그)")
     void createTagTest_Fail() throws Exception{
-        when(tagRepository.existsByTagName(anyString()))
-                .thenReturn(true);
+        // given
+        given(tagRepository.existsByTagName(anyString()))
+                .willReturn(true);
 
         Field tagCreateRequestName = TagCreateRequestDto.class.getDeclaredField("tagName");
         TagCreateRequestDto createRequestDto = new TagCreateRequestDto();
         tagCreateRequestName.setAccessible(true);
         tagCreateRequestName.set(createRequestDto, "중복 태그");
 
+
+        // when
         assertThrows(TagNameAlreadyExistException.class, () -> tagService.createTag(createRequestDto));
     }
 
     @Test
     @DisplayName("태그 생성 - 성공")
     void createTagTest_Success() throws Exception {
-        when(tagRepository.existsByTagName(anyString()))
-                .thenReturn(false);
+        // given
+        given(tagRepository.existsByTagName(anyString()))
+                .willReturn(false);
 
         Field[] fields = TagCreateRequestDto.class.getDeclaredFields();
         for(Field field: fields) {
@@ -96,15 +103,19 @@ class TagServiceImplTest {
         TagCreateRequestDto createRequestDto = new TagCreateRequestDto();
         fields[0].set(createRequestDto, "태그1");
 
+        // when
         tagService.createTag(createRequestDto);
+
+        // then
         verify(tagRepository, times(1)).save(any());
     }
 
     @Test
     @DisplayName("태그 수정 - 실패(존재하지 않는 태그)")
     void updateTagTest_Fail() throws Exception{
-        when(tagRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
+        // given
+        given(tagRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
 
         Field[] fields = TagUpdateRequestDto.class.getDeclaredFields();
         for(Field field: fields) {
@@ -113,18 +124,20 @@ class TagServiceImplTest {
         TagUpdateRequestDto updateRequestDto = new TagUpdateRequestDto();
         fields[0].set(updateRequestDto, 1L);
 
+        // when
         assertThrows(TagNotFoundException.class, () -> tagService.updateTag(updateRequestDto));
     }
 
     @Test
     @DisplayName("태그 수정 - 성공")
     void updateTagTest_Success() throws Exception {
+        // given
         Tag tag = Tag.builder()
-                        .tagId(1L)
-                                .tagName("태그1")
-                                        .build();
-        when(tagRepository.findById(anyLong()))
-                .thenReturn(Optional.of(tag));
+                .tagId(1L)
+                .tagName("태그1")
+                .build();
+        given(tagRepository.findById(anyLong()))
+                .willReturn(Optional.of(tag));
 
         Field[] fields = TagUpdateRequestDto.class.getDeclaredFields();
         for(Field field: fields) {
@@ -134,7 +147,10 @@ class TagServiceImplTest {
         fields[0].set(updateRequestDto, 1L);
         fields[1].set(updateRequestDto, "태그1수정");
 
+        // when
         tagService.updateTag(updateRequestDto);
+
+        // then
         assertEquals(updateRequestDto.getTagId(), tag.getTagId());
         assertEquals(updateRequestDto.getTagName(), tag.getTagName());
     }
@@ -142,30 +158,35 @@ class TagServiceImplTest {
     @Test
     @DisplayName("태그 삭제 - 실패(존재하지 않는 태그)")
     void deleteTag_Fail() throws Exception{
-        when(tagRepository.existsById(anyLong()))
-                .thenReturn(false);
+        // given
+        given(tagRepository.existsById(anyLong()))
+                .willReturn(false);
 
         TagDeleteRequestDto deleteRequestDto = new TagDeleteRequestDto();
         Field tagDeleteRequestId = TagDeleteRequestDto.class.getDeclaredField("tagId");
         tagDeleteRequestId.setAccessible(true);
         tagDeleteRequestId.set(deleteRequestDto, 1L);
 
+        // when
         assertThrows(TagNotFoundException.class, () -> tagService.deleteTag(deleteRequestDto));
     }
 
     @Test
     @DisplayName("태그 삭제 - 성공")
     void deleteTag_Success() throws Exception {
-        when(tagRepository.existsById(anyLong()))
-                .thenReturn(true);
+        // given
+        given(tagRepository.existsById(anyLong()))
+                .willReturn(true);
 
         TagDeleteRequestDto deleteRequestDto = new TagDeleteRequestDto();
         Field tagDeleteRequestId = TagDeleteRequestDto.class.getDeclaredField("tagId");
         tagDeleteRequestId.setAccessible(true);
         tagDeleteRequestId.set(deleteRequestDto, 1L);
 
+        // when
         tagService.deleteTag(deleteRequestDto);
 
+        // then
         verify(tagRepository, times(1)).deleteById(1L);
     }
 }
