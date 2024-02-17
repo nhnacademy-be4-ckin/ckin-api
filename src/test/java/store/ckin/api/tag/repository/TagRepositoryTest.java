@@ -27,6 +27,7 @@ class TagRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // given
         Tag testTag1 = Tag.builder()
                 .tagName("테스트 태그1")
                 .build();
@@ -41,13 +42,17 @@ class TagRepositoryTest {
     @Test
     @DisplayName("태그 전체 조회")
     void findAllTagsTest() {
+        // when
         List<TagResponseDto> actual = tagRepository.findAllTags();
+
+        // then
         assertEquals(2, actual.size());
     }
 
     @Test
     @DisplayName("태그 이름 존재 여부 테스트")
     void existByTagNameTest() {
+        // then
         assertTrue(tagRepository.existsByTagName("테스트 태그1"));
         assertTrue(tagRepository.existsByTagName("테스트 태그2"));
         assertFalse(tagRepository.existsByTagName("존재하지 않는 태그"));
