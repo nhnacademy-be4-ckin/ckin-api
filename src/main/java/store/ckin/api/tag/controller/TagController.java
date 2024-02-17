@@ -7,16 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import store.ckin.api.error.ErrorResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
 import store.ckin.api.tag.dto.response.TagResponseDto;
+import store.ckin.api.tag.exception.TagNameAlreadyExistException;
+import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.TagService;
 
 /**
@@ -73,5 +77,25 @@ public class TagController {
     public ResponseEntity<Void> deleteTag(@Valid @RequestBody TagDeleteRequestDto tagDeleteRequestDto) {
         tagService.deleteTag(tagDeleteRequestDto);
         return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(TagNameAlreadyExistException.class)
+    public ResponseEntity<?> handleTagAlreadyExistException(TagNameAlreadyExistException e) {
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .code("TagName Already Exist")
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<?> handleTagAlreadyExistException(TagNotFoundException e) {
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .code("Tag Not Found")
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }
