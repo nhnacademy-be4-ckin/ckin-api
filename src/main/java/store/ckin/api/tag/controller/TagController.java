@@ -45,11 +45,10 @@ public class TagController {
     /**
      * 태그를 저장하는 컨트롤러 메서드
      * @param tagCreateRequestDto 태그 생성 요청 Dto
-     * @param bindingResult Validation 관리
      * @return
      */
     @PostMapping
-    public ResponseEntity<Void> saveTag(@Valid @RequestBody TagCreateRequestDto tagCreateRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Void> saveTag(@Valid @RequestBody TagCreateRequestDto tagCreateRequestDto) {
         tagService.createTag(tagCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -57,11 +56,10 @@ public class TagController {
     /**
      *
      * @param tagUpdateRequestDto
-     * @param bindingResult
      * @return
      */
     @PutMapping
-    public ResponseEntity<Void> updateTag(@Valid @RequestBody TagUpdateRequestDto tagUpdateRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Void> updateTag(@Valid @RequestBody TagUpdateRequestDto tagUpdateRequestDto) {
         tagService.updateTag(tagUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -69,11 +67,10 @@ public class TagController {
     /**
      *
      * @param tagDeleteRequestDto
-     * @param bindingResult
      * @return
      */
     @DeleteMapping
-    public ResponseEntity<Void> deleteTag(@Valid @RequestBody TagDeleteRequestDto tagDeleteRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<Void> deleteTag(@Valid @RequestBody TagDeleteRequestDto tagDeleteRequestDto) {
         tagService.deleteTag(tagDeleteRequestDto);
         return ResponseEntity.ok().build();
     }
