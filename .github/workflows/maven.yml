@@ -60,6 +60,20 @@ jobs:
         port: ${{ secrets.SSH_PORT }}       # ssh 포트 = 22
         script_stop: true
         script: "./startup.sh"
+
+# 쉘 스크립트 실행
+    - name: execute shell script
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_IP2 }}         # 인스턴스 플로팅 ip
+        username: ${{ secrets.SSH_ID2 }}     # user Id
+        key: ${{ secrets.SSH_KEY }}         # user 개인키
+        port: ${{ secrets.SSH_PORT }}       # ssh 포트 = 22
+        script_stop: true
+        script: "./startup.sh"
+
 # SonarQube 실행
     - name: Execute SonarQube
       run: mvn sonar:sonar -Dsonar.projectKey=ckin-api -Dsonar.host.url=${{ secrets.SONARQUBE_URL }} -Dsonar.login=${{ secrets.SONARQUBE_LOGIN }}
+
+
