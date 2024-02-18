@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EurekaController {
 
-    @Value("${server.port}")
-    private String port;
+    @Value("${ckin.profile}")
+    private String profile;
 
     @GetMapping("/api/eureka")
-    public ResponseEntity<String> getPort() {
+    public ResponseEntity<String> getProfile() {
 
-        return ResponseEntity.ok(port);
+        return ResponseEntity.ok(profile);
     }
 
 }
