@@ -10,7 +10,7 @@
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  */
 
-package store.ckin.api.eureka;
+package store.ckin.api.eureka.controller;
 
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
@@ -34,6 +34,7 @@ import store.ckin.api.eureka.actuator.ApplicationStatus;
 public class ApplicationStatusController {
 
     private final ApplicationInfoManager applicationInfoManager;
+
     private final ApplicationStatus applicationStatus;
 
     public ApplicationStatusController(ApplicationInfoManager applicationInfoManager, ApplicationStatus applicationStatus) {
