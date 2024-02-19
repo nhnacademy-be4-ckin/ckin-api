@@ -7,7 +7,7 @@ import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.entity.Tag;
 
 /**
- * description:
+ * 태그 레포지토리 인터페이스
  *
  * @author : 김준현
  * @version : 2024. 02. 14

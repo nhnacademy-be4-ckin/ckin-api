@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * description
+ * Exception 발생 시 정보를 담아 JSON 형태로 응답하기 위한 클래스
  *
  * @author 김준현
  * @version 2024. 02. 17

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * description
+ * 조건에 맞는 태그 정보를 응답하기 위한 Dto 객체
  *
  * @author 김준현
  * @version 2024. 02. 16

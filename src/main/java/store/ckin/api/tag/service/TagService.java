@@ -7,7 +7,7 @@ import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
 import store.ckin.api.tag.dto.response.TagResponseDto;
 
 /**
- * description:
+ * 태그 서비스 인터페이스
  *
  * @author : 김준현
  * @version : 2024. 02. 14
