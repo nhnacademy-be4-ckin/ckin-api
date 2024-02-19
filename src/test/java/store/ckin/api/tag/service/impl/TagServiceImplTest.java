@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
@@ -47,16 +48,9 @@ class TagServiceImplTest {
     @DisplayName("태그 리스트 조회 - 성공")
     void readTagListTest() throws Exception{
         // given
-        Field[] fields = TagResponseDto.class.getDeclaredFields();
-        for(Field field: fields) {
-            field.setAccessible(true);
-        }
         List<TagResponseDto> testCases = new ArrayList<>();
         for(int i=1; i<=3; i++) {
-            TagResponseDto tagResponseDto = new TagResponseDto();
-            fields[0].set(tagResponseDto, (long) i);
-            fields[1].set(tagResponseDto, "태그" + i);
-
+            TagResponseDto tagResponseDto = new TagResponseDto((long) i, "태그" + i);
             testCases.add(tagResponseDto);
         }
 
@@ -79,10 +73,8 @@ class TagServiceImplTest {
         given(tagRepository.existsByTagName(anyString()))
                 .willReturn(true);
 
-        Field tagCreateRequestName = TagCreateRequestDto.class.getDeclaredField("tagName");
         TagCreateRequestDto createRequestDto = new TagCreateRequestDto();
-        tagCreateRequestName.setAccessible(true);
-        tagCreateRequestName.set(createRequestDto, "중복 태그");
+        ReflectionTestUtils.setField(createRequestDto, "tagName", "중복");
 
 
         // when
@@ -96,12 +88,8 @@ class TagServiceImplTest {
         given(tagRepository.existsByTagName(anyString()))
                 .willReturn(false);
 
-        Field[] fields = TagCreateRequestDto.class.getDeclaredFields();
-        for(Field field: fields) {
-            field.setAccessible(true);
-        }
         TagCreateRequestDto createRequestDto = new TagCreateRequestDto();
-        fields[0].set(createRequestDto, "태그1");
+        ReflectionTestUtils.setField(createRequestDto, "tagName", "태그1");
 
         // when
         tagService.createTag(createRequestDto);
@@ -117,12 +105,8 @@ class TagServiceImplTest {
         given(tagRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        Field[] fields = TagUpdateRequestDto.class.getDeclaredFields();
-        for(Field field: fields) {
-            field.setAccessible(true);
-        }
         TagUpdateRequestDto updateRequestDto = new TagUpdateRequestDto();
-        fields[0].set(updateRequestDto, 1L);
+        ReflectionTestUtils.setField(updateRequestDto, "tagId", 1L);
 
         // when
         assertThrows(TagNotFoundException.class, () -> tagService.updateTag(updateRequestDto));
@@ -139,13 +123,9 @@ class TagServiceImplTest {
         given(tagRepository.findById(anyLong()))
                 .willReturn(Optional.of(tag));
 
-        Field[] fields = TagUpdateRequestDto.class.getDeclaredFields();
-        for(Field field: fields) {
-            field.setAccessible(true);
-        }
         TagUpdateRequestDto updateRequestDto = new TagUpdateRequestDto();
-        fields[0].set(updateRequestDto, 1L);
-        fields[1].set(updateRequestDto, "태그1수정");
+        ReflectionTestUtils.setField(updateRequestDto, "tagId", 1L);
+        ReflectionTestUtils.setField(updateRequestDto, "tagName", "수정-태그1");
 
         // when
         tagService.updateTag(updateRequestDto);
@@ -163,9 +143,7 @@ class TagServiceImplTest {
                 .willReturn(false);
 
         TagDeleteRequestDto deleteRequestDto = new TagDeleteRequestDto();
-        Field tagDeleteRequestId = TagDeleteRequestDto.class.getDeclaredField("tagId");
-        tagDeleteRequestId.setAccessible(true);
-        tagDeleteRequestId.set(deleteRequestDto, 1L);
+        ReflectionTestUtils.setField(deleteRequestDto, "tagId", 1L);
 
         // when
         assertThrows(TagNotFoundException.class, () -> tagService.deleteTag(deleteRequestDto));
@@ -179,9 +157,7 @@ class TagServiceImplTest {
                 .willReturn(true);
 
         TagDeleteRequestDto deleteRequestDto = new TagDeleteRequestDto();
-        Field tagDeleteRequestId = TagDeleteRequestDto.class.getDeclaredField("tagId");
-        tagDeleteRequestId.setAccessible(true);
-        tagDeleteRequestId.set(deleteRequestDto, 1L);
+        ReflectionTestUtils.setField(deleteRequestDto, "tagId", 1L);
 
         // when
         tagService.deleteTag(deleteRequestDto);
