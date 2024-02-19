@@ -1,6 +1,8 @@
 package store.ckin.api.author.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
 import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
@@ -11,7 +13,7 @@ import store.ckin.api.author.dto.response.AuthorResponseDto;
  * @version 2024. 02. 13.
  */
 public interface AuthorService {
-    List<AuthorResponseDto> findAllAuthors();
+    Page<AuthorResponseDto> findAllAuthors(Pageable pageable);
 
     List<AuthorResponseDto> findAuthorsByName(String name);
 

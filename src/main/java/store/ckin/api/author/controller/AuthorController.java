@@ -3,6 +3,8 @@ package store.ckin.api.author.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,10 +40,11 @@ public class AuthorController {
      * @return the all authors
      */
     @GetMapping
-    public ResponseEntity<List<AuthorResponseDto>> getAllAuthors() {
-        List<AuthorResponseDto> authors = authorService.findAllAuthors();
+    public ResponseEntity<Page<AuthorResponseDto>> getAllAuthors(Pageable pageable) {
+        Page<AuthorResponseDto> authors = authorService.findAllAuthors(pageable);
         return ResponseEntity.ok(authors);
     }
+
 
     /**
      * Gets authors by name.

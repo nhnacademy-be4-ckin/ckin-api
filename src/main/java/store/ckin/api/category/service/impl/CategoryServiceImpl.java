@@ -25,18 +25,19 @@ import store.ckin.api.category.service.CategoryService;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private static final int DEFAULT_CATEGORY_PRIORITY = 1;
+
 
     @Override
     @Transactional
     public CategoryResponseDto createCategory(CategoryCreateRequestDto categoryCreateRequestDto) {
         Category parentCategory = null;
-        int categoryPriority = 1; // 기본 우선순위
+        int categoryPriority = DEFAULT_CATEGORY_PRIORITY;
 
         if (categoryCreateRequestDto.getParentCategoryId() != null) {
             parentCategory = categoryRepository.findByCategoryId(categoryCreateRequestDto.getParentCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException("부모 카테고리가 존재하지 않습니다."));
+                    .orElseThrow(() -> new CategoryNotFoundException(categoryCreateRequestDto.getParentCategoryId()));
 
-            // 부모 카테고리의 우선순위에 1을 더함
             categoryPriority = parentCategory.getCategoryPriority() + 1;
         }
 
@@ -73,9 +74,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponseDto updateCategory(Long categoryId, CategoryUpdateRequestDto categoryUpdateDto) {
         Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리가 존재하지 않습니다."));
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
-        // 카테고리 이름 업데이트
         Category updatedCategory = existingCategory.toBuilder()
                 .categoryName(categoryUpdateDto.getCategoryName())
                 .build();
@@ -89,6 +89,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException(categoryId);
+        }
         categoryRepository.deleteById(categoryId);
     }
 

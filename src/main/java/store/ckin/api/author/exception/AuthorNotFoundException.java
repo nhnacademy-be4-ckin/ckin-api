@@ -16,8 +16,8 @@ public class AuthorNotFoundException extends RuntimeException {
      *
      * @param message the message
      */
-    public AuthorNotFoundException(String message) {
-        super(message);
+    public AuthorNotFoundException(Long authorId) {
+        super(String.format("Author not found: %s", authorId));
     }
 
 }
