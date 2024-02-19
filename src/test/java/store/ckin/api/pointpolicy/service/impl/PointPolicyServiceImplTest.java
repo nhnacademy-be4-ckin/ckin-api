@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyCreateRequestDto;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
@@ -110,8 +111,11 @@ class PointPolicyServiceImplTest {
     void testCreatePointPolicy_Success() {
 
         // given
-        PointPolicyCreateRequestDto createPointPolicy
-                = new PointPolicyCreateRequestDto(1L, "회원가입", 5000);
+        PointPolicyCreateRequestDto createPointPolicy = new PointPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyId", 1L);
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyName", "회원가입");
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyReserve", 5000);
+
 
         given(pointPolicyRepository.existsPointPolicy(anyLong(), anyString())).willReturn(false);
 
@@ -127,8 +131,10 @@ class PointPolicyServiceImplTest {
     void testCreatePointPolicy_Fail_AlreadyExists() {
 
         // given
-        PointPolicyCreateRequestDto createPointPolicy
-                = new PointPolicyCreateRequestDto(1L, "회원가입", 5000);
+        PointPolicyCreateRequestDto createPointPolicy = new PointPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyId", 1L);
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyName", "회원가입");
+        ReflectionTestUtils.setField(createPointPolicy, "pointPolicyReserve", 5000);
 
         given(pointPolicyRepository.existsPointPolicy(anyLong(), anyString())).willReturn(true);
 
@@ -150,7 +156,10 @@ class PointPolicyServiceImplTest {
                 .willReturn(Optional.of(pointPolicy));
 
         // when
-        pointPolicyService.updatePointPolicy(1L, new PointPolicyUpdateRequestDto(1L, "리뷰작성", 200));
+        pointPolicyService.updatePointPolicy(1L, new PointPolicyUpdateRequestDto());
+        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", 1L);
+        ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "리뷰작성");
+        ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 200);
 
         // then
         assertEquals("리뷰작성", pointPolicy.getPointPolicyName());
@@ -162,10 +171,12 @@ class PointPolicyServiceImplTest {
     void testUpdatePointPolicy_Fail_NotFound() {
 
         // given
-        PointPolicyUpdateRequestDto updateRequestDto = new PointPolicyUpdateRequestDto(1L, "리뷰작성", 200);
+        PointPolicyUpdateRequestDto updateRequestDto = new PointPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyId", 1L);
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyName", "리뷰작성");
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyReserve", 200);
 
-        given(pointPolicyRepository.findById(anyLong()))
-                .willReturn(Optional.empty());
+        given(pointPolicyRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
 
