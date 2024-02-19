@@ -5,8 +5,10 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import store.ckin.api.member.domain.LoginInfoRequestDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.member.exception.LoginFailedException;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
@@ -46,5 +48,12 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         memberRepository.save(member);
+    }
+
+    @Override
+    public void doLogin(LoginInfoRequestDto loginInfoRequestDto) {
+        if (!memberRepository.existsByEmailAndPassword(loginInfoRequestDto.getEmail(), loginInfoRequestDto.getPassword())) {
+            throw new LoginFailedException();
+        }
     }
 }
