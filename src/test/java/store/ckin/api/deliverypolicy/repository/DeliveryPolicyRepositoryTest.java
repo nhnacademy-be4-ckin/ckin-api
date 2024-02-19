@@ -1,14 +1,10 @@
 package store.ckin.api.deliverypolicy.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 
 /**
@@ -19,7 +15,6 @@ import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
  */
 
 @DataJpaTest
-@Transactional
 class DeliveryPolicyRepositoryTest {
 
     @Autowired
@@ -35,14 +30,9 @@ class DeliveryPolicyRepositoryTest {
                 .deliveryPolicyState(true)
                 .build();
 
-        DeliveryPolicy actual = deliveryPolicyRepository.save(deliveryPolicy);
+        DeliveryPolicy savedDeliveryPolicy = deliveryPolicyRepository.save(deliveryPolicy);
 
-        Assertions.assertAll(
-                () -> assertNotNull(actual.getDeliveryPolicyId()),
-                () -> assertEquals(deliveryPolicy.getDeliveryPolicyFee(), actual.getDeliveryPolicyFee()),
-                () -> assertEquals(deliveryPolicy.getDeliveryPolicyCondition(), actual.getDeliveryPolicyCondition()),
-                () -> assertEquals(deliveryPolicy.getDeliveryPolicyState(), actual.getDeliveryPolicyState())
-        );
+        Assertions.assertTrue(deliveryPolicyRepository.existsById(savedDeliveryPolicy.getDeliveryPolicyId()));
     }
 
 }

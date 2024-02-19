@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
@@ -116,7 +117,11 @@ class DeliveryPolicyServiceImplTest {
         given(deliveryPolicyRepository.findById(anyLong()))
                 .willReturn(Optional.of(deliveryPolicy));
 
-        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto(300, 500, false);
+        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyFee", 300);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyCondition", 500);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", true);
+
 
         deliveryPolicyService.updateDeliveryPolicy(1L, updateDto);
 
@@ -132,7 +137,10 @@ class DeliveryPolicyServiceImplTest {
         given(deliveryPolicyRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto(300, 500, false);
+        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyFee", 300);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyCondition", 500);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", false);
 
         assertThrows(DeliveryPolicyNotFoundException.class,
                 () -> deliveryPolicyService.updateDeliveryPolicy(1L, updateDto));
@@ -142,8 +150,10 @@ class DeliveryPolicyServiceImplTest {
     @DisplayName("배송비 정책 생성")
     void testCreateDeliveryPolicy() {
 
-        DeliveryPolicyCreateRequestDto deliveryPolicy
-                = new DeliveryPolicyCreateRequestDto(5000, 10000, true);
+        DeliveryPolicyCreateRequestDto deliveryPolicy = new DeliveryPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyFee", 5000);
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyCondition", 10000);
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyState", true);
 
         deliveryPolicyService.createDeliveryPolicy(deliveryPolicy);
 

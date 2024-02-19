@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
@@ -45,8 +46,8 @@ class DeliveryPolicyControllerTest {
     DeliveryPolicyService deliveryPolicyService;
 
     @Test
-    @DisplayName("배송비 정책 개별 조회")
-    void testGetDeliveryPolicy() throws Exception {
+    @DisplayName("배송비 정책 개별 조회 - 성공")
+    void testGetDeliveryPolicy_Success() throws Exception {
 
         DeliveryPolicyResponseDto deliveryPolicy
                 = new DeliveryPolicyResponseDto(1L, 5000, 10000, true);
@@ -95,11 +96,13 @@ class DeliveryPolicyControllerTest {
     }
 
     @Test
-    @DisplayName("배송비 정책 생성")
-    void testCreateDeliveryPolicy() throws Exception {
+    @DisplayName("배송비 정책 생성 - 성공")
+    void testCreateDeliveryPolicy_Success() throws Exception {
 
-        DeliveryPolicyCreateRequestDto createDto =
-                new DeliveryPolicyCreateRequestDto(5000, 10000, true);
+        DeliveryPolicyCreateRequestDto createDto = new DeliveryPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyFee", 5000);
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyCondition", 10000);
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyState", true);
 
         String json = new ObjectMapper().writeValueAsString(createDto);
 
@@ -113,11 +116,34 @@ class DeliveryPolicyControllerTest {
     }
 
     @Test
-    @DisplayName("배송비 정책 수정")
-    void testUpdateDeliveryPolicy() throws Exception {
+    @DisplayName("배송비 정책 생성 - 실패(Validation)")
+    void testCreateDeliveryPolicy_Fail() throws Exception {
 
-        DeliveryPolicyUpdateRequestDto updateDto =
-                new DeliveryPolicyUpdateRequestDto(1000, 5000, true);
+        DeliveryPolicyCreateRequestDto createDto = new DeliveryPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyFee", -5000);
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyCondition", -10);
+        ReflectionTestUtils.setField(createDto, "deliveryPolicyState", null);
+
+        String json = new ObjectMapper().writeValueAsString(createDto);
+
+        mockMvc.perform(post("/api/delivery-policies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(deliveryPolicyService, times(0)).createDeliveryPolicy(any());
+    }
+
+    @Test
+    @DisplayName("배송비 정책 수정 - 성공")
+    void testUpdateDeliveryPolicy_Success() throws Exception {
+
+        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyFee", 1000);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyCondition", 5000);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", true);
+
 
         String json = new ObjectMapper().writeValueAsString(updateDto);
 
@@ -128,6 +154,27 @@ class DeliveryPolicyControllerTest {
                 .andDo(print());
 
         verify(deliveryPolicyService, times(1))
+                .updateDeliveryPolicy(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("배송비 정책 수정 - 실패(Validation)")
+    void testUpdateDeliveryPolicy_Fail() throws Exception {
+
+        DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyFee", -1000);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyCondition", -5000);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", null);
+
+        String json = new ObjectMapper().writeValueAsString(updateDto);
+
+        mockMvc.perform(put("/api/delivery-policies/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(deliveryPolicyService, times(0))
                 .updateDeliveryPolicy(anyLong(), any());
     }
 }
