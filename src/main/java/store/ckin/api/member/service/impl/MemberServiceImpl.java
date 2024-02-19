@@ -2,7 +2,6 @@ package store.ckin.api.member.service.impl;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.domain.LoginInfoRequestDto;
@@ -24,9 +23,6 @@ import store.ckin.api.member.service.MemberService;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder;
-
-
     @Transactional
     @Override
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
@@ -34,11 +30,9 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberAlreadyExistsException();
         }
 
-        String encodedPassword = passwordEncoder.encode(memberCreateRequestDto.getPassword());
-
         Member member = Member.builder()
                 .email(memberCreateRequestDto.getEmail())
-                .password(encodedPassword)
+                .password(memberCreateRequestDto.getPassword())
                 .name(memberCreateRequestDto.getName())
                 .contact(memberCreateRequestDto.getContact())
                 .birth(memberCreateRequestDto.getBirth())
