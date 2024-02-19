@@ -9,8 +9,6 @@ import store.ckin.api.member.entity.Member;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     boolean existsByEmail(String email);
-
-    boolean existsByEmailAndPassword(String email, String password);
 }

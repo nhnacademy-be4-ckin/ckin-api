@@ -1,6 +1,7 @@
 package store.ckin.api.member.service;
 
 import store.ckin.api.member.domain.LoginRequestDto;
+import store.ckin.api.member.domain.LoginResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 
 /**
@@ -18,9 +19,10 @@ public interface MemberService {
     void createMember(MemberCreateRequestDto memberCreateRequestDto);
 
     /**
-     * 로그인 정보를 확인하는 메서드 입니다.
+     * 로그인하는 Member 의 정보를 조회하는 메서드 입니다.
      *
      * @param loginRequestDto 로그인 정보 요청 DTO
+     * @return LoginResponseDto 로그인 응답 DTO
      */
-    void doLogin(LoginRequestDto loginRequestDto);
+    LoginResponseDto getLoginMemberInfo(LoginRequestDto loginRequestDto);
 }
