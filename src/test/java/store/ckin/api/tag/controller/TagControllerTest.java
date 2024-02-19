@@ -25,7 +25,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,20 +48,14 @@ import store.ckin.api.tag.service.impl.TagServiceImpl;
  * @author 김준현
  * @version 2024. 02. 17
  */
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest
 class TagControllerTest {
+    @Autowired
     private MockMvc mockMvc;
-    @InjectMocks
-    private TagController tagController;
-    @Mock
+    @MockBean
     private TagServiceImpl tagService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(tagController).build();
-    }
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("태그 목록 가져오기 - 성공")
