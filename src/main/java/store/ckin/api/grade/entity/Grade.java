@@ -20,7 +20,6 @@ import lombok.Setter;
  */
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
