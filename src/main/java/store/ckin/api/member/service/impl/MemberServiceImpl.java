@@ -1,10 +1,10 @@
 package store.ckin.api.member.service.impl;
 
 import java.time.LocalDateTime;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.domain.LoginInfoRequestDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
@@ -50,9 +50,12 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void doLogin(LoginInfoRequestDto loginInfoRequestDto) {
-        if (!memberRepository.existsByEmailAndPassword(loginInfoRequestDto.getEmail(), loginInfoRequestDto.getPassword())) {
+        if (!memberRepository.existsByEmailAndPassword(
+                loginInfoRequestDto.getEmail(),
+                loginInfoRequestDto.getPassword())) {
             throw new LoginFailedException();
         }
     }
