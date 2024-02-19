@@ -80,7 +80,7 @@ public class TagController {
     }
 
     @ExceptionHandler(TagNameAlreadyExistException.class)
-    public ResponseEntity<?> handleTagAlreadyExistException(TagNameAlreadyExistException e) {
+    public ResponseEntity<ErrorResponse> handleTagAlreadyExistException(TagNameAlreadyExistException e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("TagName Already Exist")
                 .message(e.getMessage())
@@ -90,7 +90,7 @@ public class TagController {
     }
 
     @ExceptionHandler(TagNotFoundException.class)
-    public ResponseEntity<?> handleTagAlreadyExistException(TagNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleTagNotFoundException(TagNotFoundException e) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("Tag Not Found")
                 .message(e.getMessage())
