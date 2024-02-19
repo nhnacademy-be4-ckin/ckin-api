@@ -3,6 +3,7 @@ package store.ckin.api.category.dto.response;
 import javax.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * CategoryResponseDto.
@@ -10,7 +11,7 @@ import lombok.Data;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-@Data
+@Getter
 public class CategoryResponseDto {
 
     private Long categoryId;

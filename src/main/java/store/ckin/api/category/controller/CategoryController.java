@@ -1,6 +1,7 @@
 package store.ckin.api.category.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class CategoryController {
      * @return the response entity
      */
     @PostMapping
-    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequestDto categoryCreateRequestDto) {
+    public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequestDto categoryCreateRequestDto) {
         categoryService.createCategory(categoryCreateRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -78,7 +79,7 @@ public class CategoryController {
      */
     @PutMapping("/{categoryId}")
     public ResponseEntity<Void> updateCategory(@PathVariable Long categoryId,
-                                               @RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
+                                               @Valid @RequestBody CategoryUpdateRequestDto categoryUpdateRequestDto) {
         categoryService.updateCategory(categoryId, categoryUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
