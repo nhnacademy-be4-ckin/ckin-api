@@ -19,7 +19,7 @@ import store.ckin.api.author.repository.impl.AuthorRepositoryImpl;
  * @version 2024. 02. 16.
  */
 @DataJpaTest
-@Import(AuthorRepositoryImpl.class) // QueryDSL 구현체를 명시적으로 가져옵니다.
+@Import(AuthorRepositoryImpl.class)
 public class AuthorRepositoryTest {
 
     @Autowired
