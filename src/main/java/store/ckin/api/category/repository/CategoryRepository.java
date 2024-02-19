@@ -12,7 +12,6 @@ import store.ckin.api.category.entity.Category;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-@Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByCategoryId(Long parentCategoryId);

@@ -10,7 +10,6 @@ import store.ckin.api.author.entity.Author;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-@Repository
 public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorRepositoryCustom {
 
 }
