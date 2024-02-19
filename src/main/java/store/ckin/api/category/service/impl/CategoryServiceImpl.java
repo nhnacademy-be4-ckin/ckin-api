@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
@@ -20,11 +21,13 @@ import store.ckin.api.category.service.CategoryService;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public CategoryResponseDto createCategory(CategoryCreateRequestDto categoryCreateRequestDto) {
         Category parentCategory = null;
         int categoryPriority = 1; // 기본 우선순위
@@ -67,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryResponseDto updateCategory(Long categoryId, CategoryUpdateRequestDto categoryUpdateDto) {
         Category existingCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리가 존재하지 않습니다."));
@@ -83,6 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
+    @Transactional
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
