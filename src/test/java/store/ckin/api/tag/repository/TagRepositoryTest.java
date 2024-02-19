@@ -20,7 +20,6 @@ import store.ckin.api.tag.entity.Tag;
  */
 
 @DataJpaTest
-@Transactional
 class TagRepositoryTest {
     @Autowired
     private TagRepository tagRepository;
