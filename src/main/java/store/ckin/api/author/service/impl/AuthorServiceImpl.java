@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
 import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
@@ -20,6 +21,7 @@ import store.ckin.api.author.service.AuthorService;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -43,6 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public AuthorResponseDto createAuthor(AuthorCreateRequestDto authorCreateRequestDto) {
         Author author = Author.builder()
                 .authorName(authorCreateRequestDto.getAuthorName())
@@ -69,6 +72,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
+    @Transactional
     public AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto) {
         Author existingAuthor = authorRepository.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException("해당 ID의 작가를 찾을 수 없습니다."));
@@ -87,6 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
+    @Transactional
     public void deleteAuthor(Long authorId) {
         authorRepository.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException("해당 ID의 작가를 찾을 수 없습니다."));
