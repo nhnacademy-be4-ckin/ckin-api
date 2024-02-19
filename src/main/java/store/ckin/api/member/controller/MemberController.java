@@ -46,7 +46,7 @@ public class MemberController {
      * @param loginInfoRequestDto 로그인 정보 요청 DTO
      * @return 200 (OK) : 로그인 정보 확인
      */
-    @PostMapping("/api/members/login")
+    @PostMapping("/api/auth/login")
     public ResponseEntity<Void> doLogin(@Valid @RequestBody LoginInfoRequestDto loginInfoRequestDto) {
         memberService.doLogin(loginInfoRequestDto);
 
