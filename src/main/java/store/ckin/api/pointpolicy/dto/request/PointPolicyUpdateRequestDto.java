@@ -4,7 +4,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -15,7 +14,6 @@ import lombok.Getter;
  */
 
 @Getter
-@AllArgsConstructor
 public class PointPolicyUpdateRequestDto {
 
     @NotNull(message = "포인트 정책 ID를 입력해주세요.")
