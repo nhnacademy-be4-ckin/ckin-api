@@ -67,4 +67,13 @@ public class DeliveryPolicy {
         this.deliveryPolicyCondition = updateDeliveryPolicy.getDeliveryPolicyCondition();
         this.deliveryPolicyState = updateDeliveryPolicy.getDeliveryPolicyState();
     }
+
+    /**
+     * 배송비 정책 사용 여부를 수정하는 메서드입니다.
+     *
+     * @param state 수정할 배송비 정책 사용 여부
+     */
+    public void updateState(boolean state) {
+        this.deliveryPolicyState = state;
+    }
 }

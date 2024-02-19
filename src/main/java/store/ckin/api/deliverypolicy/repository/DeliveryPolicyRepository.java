@@ -9,5 +9,7 @@ import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
  * @author 정승조
  * @version 2024. 02. 15.
  */
-public interface DeliveryPolicyRepository extends JpaRepository<DeliveryPolicy, Long> {
+public interface DeliveryPolicyRepository extends JpaRepository<DeliveryPolicy, Long>,
+        DeliveryPolicyRepositoryCustom {
+
 }

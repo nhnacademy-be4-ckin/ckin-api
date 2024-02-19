@@ -57,8 +57,8 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     /**
      * {@inheritDoc}
      *
-     * @param id                    수정할 배송비 정책 ID
-     * @param updateDeliveryPolicy  수정할 배송비 정책 DTO
+     * @param id                   수정할 배송비 정책 ID
+     * @param updateDeliveryPolicy 수정할 배송비 정책 DTO
      */
     @Override
     @Transactional
@@ -77,6 +77,11 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     @Override
     @Transactional
     public void createDeliveryPolicy(DeliveryPolicyCreateRequestDto createDeliveryPolicy) {
+
+        if (Boolean.TRUE.equals(createDeliveryPolicy.getDeliveryPolicyState())) {
+            deliveryPolicyRepository.findByState(true)
+                    .ifPresent(deliveryPolicy -> deliveryPolicy.updateState(false));
+        }
 
         DeliveryPolicy deliveryPolicy = DeliveryPolicy.builder()
                 .deliveryPolicyFee(createDeliveryPolicy.getDeliveryPolicyFee())
