@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.ckin.api.member.domain.LoginInfoRequestDto;
+import store.ckin.api.member.domain.LoginRequestDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.LoginFailedException;
@@ -46,10 +46,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional(readOnly = true)
     @Override
-    public void doLogin(LoginInfoRequestDto loginInfoRequestDto) {
+    public void doLogin(LoginRequestDto loginRequestDto) {
         if (!memberRepository.existsByEmailAndPassword(
-                loginInfoRequestDto.getEmail(),
-                loginInfoRequestDto.getPassword())) {
+                loginRequestDto.getEmail(),
+                loginRequestDto.getPassword())) {
             throw new LoginFailedException();
         }
     }

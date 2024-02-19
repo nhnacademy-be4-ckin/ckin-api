@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.member.domain.LoginInfoRequestDto;
+import store.ckin.api.member.domain.LoginRequestDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.exception.LoginFailedException;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
@@ -43,12 +43,12 @@ public class MemberController {
     /**
      * 로그인을 처리하는 API Method 입니다.
      *
-     * @param loginInfoRequestDto 로그인 정보 요청 DTO
+     * @param loginRequestDto 로그인 정보 요청 DTO
      * @return 200 (OK) : 로그인 정보 확인
      */
     @PostMapping("/api/auth/login")
-    public ResponseEntity<Void> doLogin(@Valid @RequestBody LoginInfoRequestDto loginInfoRequestDto) {
-        memberService.doLogin(loginInfoRequestDto);
+    public ResponseEntity<Void> doLogin(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        memberService.doLogin(loginRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
