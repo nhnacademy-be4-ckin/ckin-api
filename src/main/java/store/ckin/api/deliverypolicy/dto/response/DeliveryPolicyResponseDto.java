@@ -1,8 +1,9 @@
 package store.ckin.api.deliverypolicy.dto.response;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 
 /**
@@ -12,9 +13,8 @@ import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
  * @version 2024. 02. 15.
  */
 
-@Builder
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryPolicyResponseDto {
 
     private Long deliveryPolicyId;
@@ -24,6 +24,16 @@ public class DeliveryPolicyResponseDto {
     private Integer deliveryPolicyCondition;
 
     private Boolean deliveryPolicyState;
+
+    @Builder
+    public DeliveryPolicyResponseDto(Long deliveryPolicyId, Integer deliveryPolicyFee, Integer deliveryPolicyCondition,
+                                     Boolean deliveryPolicyState) {
+        this.deliveryPolicyId = deliveryPolicyId;
+        this.deliveryPolicyFee = deliveryPolicyFee;
+        this.deliveryPolicyCondition = deliveryPolicyCondition;
+        this.deliveryPolicyState = deliveryPolicyState;
+    }
+
 
     public static DeliveryPolicyResponseDto toDto(DeliveryPolicy deliveryPolicy) {
         return DeliveryPolicyResponseDto.builder()
