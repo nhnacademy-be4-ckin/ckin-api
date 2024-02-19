@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -147,8 +148,8 @@ class DeliveryPolicyServiceImplTest {
     }
 
     @Test
-    @DisplayName("배송비 정책 생성")
-    void testCreateDeliveryPolicy() {
+    @DisplayName("배송비 정책 생성 - 배송비 정책 사용 여부가 true인 경우")
+    void testCreateDeliveryPolicy_TruePolicy() {
 
         DeliveryPolicyCreateRequestDto deliveryPolicy = new DeliveryPolicyCreateRequestDto();
         ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyFee", 5000);
@@ -157,6 +158,22 @@ class DeliveryPolicyServiceImplTest {
 
         deliveryPolicyService.createDeliveryPolicy(deliveryPolicy);
 
+        verify(deliveryPolicyRepository, times(1)).findByState(anyBoolean());
+        verify(deliveryPolicyRepository, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("배송비 정책 생성 - 배송비 정책 사용 여부가 false인 경우")
+    void testCreateDeliveryPolicy_FalsePolicy() {
+
+        DeliveryPolicyCreateRequestDto deliveryPolicy = new DeliveryPolicyCreateRequestDto();
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyFee", 5000);
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyCondition", 10000);
+        ReflectionTestUtils.setField(deliveryPolicy, "deliveryPolicyState", false);
+
+        deliveryPolicyService.createDeliveryPolicy(deliveryPolicy);
+
+        verify(deliveryPolicyRepository, times(0)).findByState(anyBoolean());
         verify(deliveryPolicyRepository, times(1)).save(any());
     }
 

@@ -1,6 +1,7 @@
 package store.ckin.api.deliverypolicy.repository;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,21 @@ class DeliveryPolicyRepositoryTest {
 
         DeliveryPolicy savedDeliveryPolicy = deliveryPolicyRepository.save(deliveryPolicy);
 
-        Assertions.assertTrue(deliveryPolicyRepository.existsById(savedDeliveryPolicy.getDeliveryPolicyId()));
+        assertTrue(deliveryPolicyRepository.existsById(savedDeliveryPolicy.getDeliveryPolicyId()));
     }
 
+    @Test
+    @DisplayName("배송비 정책 사용 여부 테스트")
+    void testFindByState() {
+
+        DeliveryPolicy deliveryPolicy = DeliveryPolicy.builder()
+                .deliveryPolicyFee(5000)
+                .deliveryPolicyCondition(10000)
+                .deliveryPolicyState(true)
+                .build();
+
+        deliveryPolicyRepository.save(deliveryPolicy);
+
+        assertTrue(deliveryPolicyRepository.findByState(true).isPresent());
+    }
 }
