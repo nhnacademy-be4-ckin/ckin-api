@@ -13,7 +13,7 @@ import store.ckin.api.tag.entity.Tag;
  * @version : 2024. 02. 14
  */
 
-public interface TagRepository extends JpaRepository<Tag, Long> {
+public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom{
     @Query("select new store.ckin.api.tag.dto.response.TagResponseDto(t.tagId, t.tagName) from Tag t")
     List<TagResponseDto> findAllTags();
 
