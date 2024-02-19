@@ -1,6 +1,7 @@
 package store.ckin.api.author.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +63,7 @@ public class AuthorController {
      * @return the response entity
      */
     @PostMapping
-    public ResponseEntity<AuthorResponseDto> createAuthor(@RequestBody AuthorCreateRequestDto authorCreateRequestDto) {
+    public ResponseEntity<AuthorResponseDto> createAuthor(@Valid @RequestBody AuthorCreateRequestDto authorCreateRequestDto) {
         AuthorResponseDto createdAuthor = authorService.createAuthor(authorCreateRequestDto);
         return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
     }
@@ -81,7 +82,7 @@ public class AuthorController {
 
     @PutMapping("/{authorId}")
     public ResponseEntity<AuthorResponseDto> updateAuthor(@PathVariable Long authorId,
-                                                          @RequestBody AuthorModifyRequestDto authorModifyRequestDto) {
+                                                          @Valid @RequestBody AuthorModifyRequestDto authorModifyRequestDto) {
         AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, authorModifyRequestDto);
         return ResponseEntity.ok(updatedAuthor);
     }

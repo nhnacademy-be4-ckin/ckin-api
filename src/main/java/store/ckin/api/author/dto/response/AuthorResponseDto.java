@@ -2,6 +2,7 @@ package store.ckin.api.author.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
  * @author 나국로
  * @version 2024. 02. 13.
  */
-@Data
+@Getter
 @NoArgsConstructor
 public class AuthorResponseDto {
 

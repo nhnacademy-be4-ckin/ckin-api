@@ -15,7 +15,6 @@ import store.ckin.api.author.repository.AuthorRepositoryCustom;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-@Repository
 public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements AuthorRepositoryCustom {
 
     /**
