@@ -1,5 +1,6 @@
 package store.ckin.api.tag.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Getter;
  * @version 2024. 02. 16
  */
 @Getter
+@AllArgsConstructor
 public class TagResponseDto {
     private Long tagId;
     private String tagName;

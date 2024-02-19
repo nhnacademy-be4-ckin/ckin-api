@@ -1,6 +1,8 @@
 package store.ckin.api.tag.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -8,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +31,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import store.ckin.api.error.ErrorResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
 import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.exception.TagNameAlreadyExistException;
+import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.impl.TagServiceImpl;
 
 /**
@@ -96,10 +101,18 @@ class TagControllerTest {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "태그1");
-        willThrow()
+        TagNameAlreadyExistException expectedException = new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+        willThrow(expectedException).given(tagService).createTag(any());
 
         // when
-
+        mockMvc.perform(post("/api/tags")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
+                .andExpectAll(
+                        jsonPath("code", equalTo("TagName Already Exist")),
+                        jsonPath("message", equalTo(expectedException.getMessage())),
+                        status().isBadRequest()
+                );
     }
 
     @Test
@@ -147,7 +160,7 @@ class TagControllerTest {
     }
     @Test
     @DisplayName("태그 삭제 - 실패(Validation Error)")
-    void deleteTagTest_Failed() throws Exception{
+    void deleteTagTest_Failed_Validation() throws Exception{
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", null);
@@ -157,6 +170,25 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("태그 삭제 - 실패(존재하지 않는 태그)")
+    void deleteTagTest_Failed_TagNotFoundException() throws Exception{
+        // given
+        TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
+        ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", 1L);
+        TagNotFoundException expectedException = new TagNotFoundException(tagDeleteRequestDto.getTagId());
+        willThrow(expectedException).given(tagService).deleteTag(any());
+
+        // when
+        mockMvc.perform(delete("/api/tags")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
+                .andExpectAll(
+                        jsonPath("code", equalTo("Tag Not Found")),
+                        jsonPath("message", equalTo(expectedException.getMessage())),
+                        status().isNotFound());
     }
 
     @Test
