@@ -19,7 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
@@ -48,22 +54,30 @@ class TagServiceImplTest {
     @DisplayName("태그 리스트 조회 - 성공")
     void readTagListTest() throws Exception{
         // given
-        List<TagResponseDto> testCases = new ArrayList<>();
-        for(int i=1; i<=3; i++) {
-            TagResponseDto tagResponseDto = new TagResponseDto((long) i, "태그" + i);
-            testCases.add(tagResponseDto);
+        List<Tag> allElements = new ArrayList<>();
+        for(int i=1; i<=9; i++) {
+            Tag tag = new Tag((long) i, "태그" + i);
+            allElements.add(tag);
         }
+        PageInfo expectedPageInfo = PageInfo.builder()
+                .page(1)
+                .size(5)
+                .totalPages(2)
+                .totalElements(9)
+                .build();
+        Page<Tag> pagedElements = new PageImpl<>(allElements.subList(5, 9), PageRequest.of(1, 5), allElements.size());
+        given(tagRepository.findAllByOrderByTagId(PageRequest.of(1, 5)))
+                .willReturn(pagedElements);
 
         // when
-        when(tagRepository.findAllTags())
-                .thenReturn(testCases);
-        List<TagResponseDto> actual = tagService.readTagList();
+        PagedResponse<List<TagResponseDto>> actual = tagService.readTagList(PageRequest.of(1, 5));
 
         // then
-        assertEquals(3, actual.size());
-        assertEquals(1L, actual.get(0).getTagId());
-        assertEquals(2L, actual.get(1).getTagId());
-        assertEquals(3L, actual.get(2).getTagId());
+        assertEquals(4, actual.getData().size());
+        assertEquals(allElements.get(5).getTagId(), actual.getData().get(0).getTagId());
+        assertEquals(expectedPageInfo.getPage(), actual.getPageInfo().getPage());
+        assertEquals(expectedPageInfo.getTotalPages(), actual.getPageInfo().getTotalPages());
+        assertEquals(expectedPageInfo.getTotalElements(), actual.getPageInfo().getTotalElements());
     }
 
     @Test

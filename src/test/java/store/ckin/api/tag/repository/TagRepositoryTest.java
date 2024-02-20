@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.entity.Tag;
@@ -42,7 +43,7 @@ class TagRepositoryTest {
     @DisplayName("태그 전체 조회")
     void findAllTagsTest() {
         // when
-        List<TagResponseDto> actual = tagRepository.findAllTags();
+        List<Tag> actual = tagRepository.findAllByOrderByTagId(PageRequest.of(0, 5)).getContent();
 
         // then
         assertEquals(2, actual.size());

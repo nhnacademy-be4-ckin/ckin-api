@@ -1,7 +1,6 @@
 package store.ckin.api.tag.controller;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -14,26 +13,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.lang.reflect.Field;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import store.ckin.api.error.ErrorResponse;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
@@ -61,15 +53,25 @@ class TagControllerTest {
     @DisplayName("태그 목록 가져오기 - 성공")
     void getAllTagListTest() throws Exception{
         // given
-        List<TagResponseDto> expected = List.of(
+        List<TagResponseDto> allElements = List.of(
                 new TagResponseDto(1L, "태그1"),
                 new TagResponseDto(2L, "태그2")
         );
+        PageInfo pageInfo = PageInfo.builder()
+                .page(0)
+                .size(5)
+                .totalPages(1)
+                .totalElements(2)
+                .build();
 
-        given(tagService.readTagList()).willReturn(expected);
+        PagedResponse<List<TagResponseDto>> expected = new PagedResponse<>(allElements, pageInfo);
+        given(tagService.readTagList(PageRequest.of(0, 5))).willReturn(expected);
 
         // when
-        mockMvc.perform(get("/api/tags"))
+        mockMvc.perform(get("/api/tags")
+                        .queryParam("page", "0")
+                        .queryParam("size", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
