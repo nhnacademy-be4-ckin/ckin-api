@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import store.ckin.api.tag.dto.response.TagResponseDto;
 
 /**
- * description
+ * Querydsl 사용을 위한 RepositoryImpl
  *
  * @author 김준현
  * @version 2024. 02. 19
