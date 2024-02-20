@@ -12,7 +12,7 @@ import store.ckin.api.member.entity.Member;
  */
 @Getter
 @NoArgsConstructor
-public class LoginResponseDto {
+public class MemberInfoResponseDto {
     String email;
 
     String password;

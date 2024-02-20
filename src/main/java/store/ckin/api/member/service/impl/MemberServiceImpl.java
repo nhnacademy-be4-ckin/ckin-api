@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.ckin.api.member.domain.LoginRequestDto;
-import store.ckin.api.member.domain.LoginResponseDto;
+import store.ckin.api.member.domain.MemberInfoRequestDto;
+import store.ckin.api.member.domain.MemberInfoResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
@@ -47,11 +47,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional(readOnly = true)
     @Override
-    public LoginResponseDto getLoginMemberInfo(LoginRequestDto loginRequestDto) {
-        if (!memberRepository.existsByEmail(loginRequestDto.getEmail())) {
+    public MemberInfoResponseDto getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto) {
+        if (!memberRepository.existsByEmail(memberInfoRequestDto.getEmail())) {
             throw new MemberNotFoundException();
         }
 
-        return memberRepository.getLoginInfo(loginRequestDto.getEmail());
+        return memberRepository.getLoginInfo(memberInfoRequestDto.getEmail());
     }
 }

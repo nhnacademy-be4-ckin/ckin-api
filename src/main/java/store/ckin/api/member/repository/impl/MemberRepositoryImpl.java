@@ -2,7 +2,7 @@ package store.ckin.api.member.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import store.ckin.api.member.domain.LoginResponseDto;
+import store.ckin.api.member.domain.MemberInfoResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
@@ -20,11 +20,11 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public LoginResponseDto getLoginInfo(String email) {
+    public MemberInfoResponseDto getLoginInfo(String email) {
         QMember member = QMember.member;
 
         return from(member)
-                .select(Projections.constructor(LoginResponseDto.class,
+                .select(Projections.constructor(MemberInfoResponseDto.class,
                         member.email,
                         member.password,
                         member.role))

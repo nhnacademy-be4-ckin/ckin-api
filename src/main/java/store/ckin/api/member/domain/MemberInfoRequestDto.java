@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
-public class LoginRequestDto {
+public class MemberInfoRequestDto {
     @Email
     @NotBlank
     private String email;
