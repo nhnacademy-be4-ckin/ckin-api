@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.ckin.api.packaging.dto.request.PackagingUpdateRequestDto;
 
 /**
  * 포장 정책 엔티티입니다.
@@ -49,4 +50,9 @@ public class Packaging {
         this.packagingPrice = packagingPrice;
     }
 
+    public void update(PackagingUpdateRequestDto requestDto) {
+        this.packagingId = requestDto.getPackagingId();
+        this.packagingType = requestDto.getPackagingType();
+        this.packagingPrice = requestDto.getPackagingPrice();
+    }
 }

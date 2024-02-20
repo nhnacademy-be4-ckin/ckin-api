@@ -2,6 +2,7 @@ package store.ckin.api.packaging.service;
 
 import java.util.List;
 import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
+import store.ckin.api.packaging.dto.request.PackagingUpdateRequestDto;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 
 /**
@@ -40,4 +41,11 @@ public interface PackagingService {
      * @param id 삭제할 포장 정책 ID
      */
     void deletePackagingPolicy(Long id);
+
+    /**
+     * 포장 정책 수정 메서드입니다.
+     *
+     * @param requestDto 포장 정책 수정 요청 DTO
+     */
+    void updatePackagingPolicy(PackagingUpdateRequestDto requestDto);
 }

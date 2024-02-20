@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
+import store.ckin.api.packaging.dto.request.PackagingUpdateRequestDto;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.entity.Packaging;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
@@ -25,6 +26,22 @@ import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
 public class PackagingServiceImpl implements PackagingService {
 
     private final PackagingRepository packagingRepository;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param requestDto 포장 정책 생성 요청 DTO
+     */
+    @Transactional
+    @Override
+    public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
+        Packaging packaging = Packaging.builder()
+                .packagingType(requestDto.getPackagingType())
+                .packagingPrice(requestDto.getPackagingPrice())
+                .build();
+
+        packagingRepository.save(packaging);
+    }
 
     /**
      * {@inheritDoc}
@@ -57,17 +74,15 @@ public class PackagingServiceImpl implements PackagingService {
     /**
      * {@inheritDoc}
      *
-     * @param requestDto 포장 정책 생성 요청 DTO
+     * @param requestDto 포장 정책 수정 요청 DTO
      */
     @Transactional
     @Override
-    public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
-        Packaging packaging = Packaging.builder()
-                .packagingType(requestDto.getPackagingType())
-                .packagingPrice(requestDto.getPackagingPrice())
-                .build();
+    public void updatePackagingPolicy(PackagingUpdateRequestDto requestDto) {
+        Packaging packaging = packagingRepository.findById(requestDto.getPackagingId())
+                .orElseThrow(() -> new PackagingNotFoundException(requestDto.getPackagingId()));
 
-        packagingRepository.save(packaging);
+        packaging.update(requestDto);
     }
 
     /**
