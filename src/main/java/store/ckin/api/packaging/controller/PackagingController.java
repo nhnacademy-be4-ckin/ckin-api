@@ -36,7 +36,7 @@ public class PackagingController {
     /**
      * 포장지 정책을 생성하는 메서드입니다.
      *
-     * @param requestDto
+     * @param requestDto 포장지 정책 생성 요청 DTO
      * @return 201 (Created)
      */
     @PostMapping
@@ -58,7 +58,7 @@ public class PackagingController {
     /**
      * 포장지 정책을 조회하는 메서드입니다.
      *
-     * @param id
+     * @param id 조회할 포장지 정책 ID
      * @return 200 (OK)
      */
     @GetMapping("/{id}")
