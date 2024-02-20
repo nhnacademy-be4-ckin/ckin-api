@@ -34,9 +34,9 @@ public class PackagingController {
     private final PackagingService packagingService;
 
     /**
-     * 포장지 정책을 생성하는 메서드입니다.
+     * 포장 정책을 생성하는 메서드입니다.
      *
-     * @param requestDto 포장지 정책 생성 요청 DTO
+     * @param requestDto 포장 정책 생성 요청 DTO
      * @return 201 (Created)
      */
     @PostMapping
@@ -46,7 +46,7 @@ public class PackagingController {
     }
 
     /**
-     * 포장지 정책 리스트를 조회하는 메서드입니다.
+     * 포장 정책 리스트를 조회하는 메서드입니다.
      *
      * @return 200 (OK)
      */
@@ -56,9 +56,9 @@ public class PackagingController {
     }
 
     /**
-     * 포장지 정책을 조회하는 메서드입니다.
+     * 포장 정책을 조회하는 메서드입니다.
      *
-     * @param id 조회할 포장지 정책 ID
+     * @param id 조회할 포장 정책 ID
      * @return 200 (OK)
      */
     @GetMapping("/{id}")
@@ -67,6 +67,12 @@ public class PackagingController {
     }
 
 
+    /**
+     * 포장 정책을 수정하는 메서드입니다.
+     *
+     * @param requestDto 포장 정책 수정 요청 DTO
+     * @return 200 (OK)
+     */
     @PutMapping
     public ResponseEntity<Void> updatePackagingPolicy(@Valid @RequestBody PackagingUpdateRequestDto requestDto) {
         packagingService.updatePackagingPolicy(requestDto);
@@ -74,9 +80,9 @@ public class PackagingController {
     }
 
     /**
-     * 포장지 정책을 삭제하는 메서드입니다.
+     * 포장 정책을 삭제하는 메서드입니다.
      *
-     * @param id 삭제할 포장지 정책 ID
+     * @param id 삭제할 포장 정책 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{id}")
