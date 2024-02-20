@@ -13,6 +13,14 @@ import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 public interface PackagingService {
 
     /**
+     * 포장 정책 조회 메서드입니다.
+     *
+     * @param id 조회할 포장 정책 ID
+     * @return 포장 정책 응답 DTO
+     */
+    PackagingResponseDto getPackagingPolicy(Long id);
+
+    /**
      * 포장 정책 생성 메서드입니다.
      *
      * @param requestDto 포장 정책 생성 요청 DTO

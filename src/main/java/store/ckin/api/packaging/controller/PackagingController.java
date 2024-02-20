@@ -53,6 +53,11 @@ public class PackagingController {
         return ResponseEntity.ok(packagingService.getPackagingPolicies());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PackagingResponseDto> getPackagingPolicy(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(packagingService.getPackagingPolicy(id));
+    }
+
     /**
      * 포장지 정책을 삭제하는 메서드입니다.
      *
@@ -64,4 +69,6 @@ public class PackagingController {
         packagingService.deletePackagingPolicy(id);
         return ResponseEntity.ok().build();
     }
+
+
 }

@@ -11,6 +11,7 @@ import store.ckin.api.packaging.entity.Packaging;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 import store.ckin.api.packaging.service.PackagingService;
+import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
 
 /**
  * 포장 정책 서비스 구현 클래스입니다.
@@ -28,17 +29,16 @@ public class PackagingServiceImpl implements PackagingService {
     /**
      * {@inheritDoc}
      *
-     * @param requestDto 포장 정책 생성 요청 DTO
+     * @param id 조회할 포장 정책 ID
+     * @return
      */
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
-        Packaging packaging = Packaging.builder()
-                .packagingType(requestDto.getPackagingType())
-                .packagingPrice(requestDto.getPackagingPrice())
-                .build();
+    public PackagingResponseDto getPackagingPolicy(Long id) {
 
-        packagingRepository.save(packaging);
+        return packagingRepository.findById(id)
+                .map(PackagingResponseDto::toDto)
+                .orElseThrow(() -> new PointPolicyNotFoundException(id));
     }
 
     /**
@@ -52,6 +52,22 @@ public class PackagingServiceImpl implements PackagingService {
         return packagingRepository.findAll()
                 .stream().map(PackagingResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param requestDto 포장 정책 생성 요청 DTO
+     */
+    @Transactional
+    @Override
+    public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
+        Packaging packaging = Packaging.builder()
+                .packagingType(requestDto.getPackagingType())
+                .packagingPrice(requestDto.getPackagingPrice())
+                .build();
+
+        packagingRepository.save(packaging);
     }
 
     /**
