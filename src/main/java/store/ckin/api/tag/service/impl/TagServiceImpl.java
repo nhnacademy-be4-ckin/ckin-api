@@ -2,6 +2,7 @@ package store.ckin.api.tag.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional(readOnly = true)
     public List<TagResponseDto> readTagList() {
-        return tagRepository.findAllTags();
+        return tagRepository.findAll().stream().map(TagResponseDto::toDto).collect(Collectors.toList());
     }
 
     @Transactional
