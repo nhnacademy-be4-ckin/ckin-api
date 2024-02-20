@@ -1,4 +1,4 @@
-package store.ckin.api.error;
+package store.ckin.api.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
