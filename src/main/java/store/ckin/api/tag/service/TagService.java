@@ -1,6 +1,8 @@
 package store.ckin.api.tag.service;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
@@ -17,7 +19,7 @@ public interface TagService {
      * 저장된 모든 태그 목록을 읽어오는 메서드
      * @return 저장된 모든 태그 목록
      */
-    List<TagResponseDto> readTagList();
+    PagedResponse<List<TagResponseDto>> readTagList(Pageable pageable);
 
     /**
      * 단일 태그를 저장하는 메서드

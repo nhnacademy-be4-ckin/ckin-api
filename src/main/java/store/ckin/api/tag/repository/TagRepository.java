@@ -1,6 +1,8 @@
 package store.ckin.api.tag.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import store.ckin.api.tag.dto.response.TagResponseDto;
@@ -14,7 +16,7 @@ import store.ckin.api.tag.entity.Tag;
  */
 
 public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom{
-    List<Tag> findAll();
+    Page<Tag> findAllByOrderByTagId(Pageable pageable);
 
     boolean existsByTagName(String tagName);
 }

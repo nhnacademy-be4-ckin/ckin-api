@@ -4,8 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
@@ -28,8 +33,19 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
     @Transactional(readOnly = true)
-    public List<TagResponseDto> readTagList() {
-        return tagRepository.findAll().stream().map(TagResponseDto::toDto).collect(Collectors.toList());
+    public PagedResponse<List<TagResponseDto>> readTagList(Pageable pageable) {
+        Page<Tag> tagPage = tagRepository.findAllByOrderByTagId(pageable);
+        PageInfo pageInfo = PageInfo.builder()
+                .page(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .totalElements((int) tagPage.getTotalElements())
+                .totalPages(tagPage.getTotalPages())
+                .build();
+
+        List<TagResponseDto> currentPageTagsResponse = tagPage.getContent().stream().map(TagResponseDto::toDto).collect(
+                Collectors.toList());
+
+        return new PagedResponse<>(currentPageTagsResponse, pageInfo);
     }
 
     @Transactional
