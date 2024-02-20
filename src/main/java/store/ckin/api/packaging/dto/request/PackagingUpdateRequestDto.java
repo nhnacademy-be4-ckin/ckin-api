@@ -4,7 +4,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -15,7 +14,6 @@ import lombok.Getter;
  */
 
 @Getter
-@AllArgsConstructor
 public class PackagingUpdateRequestDto {
 
     @NotNull(message = "포장 정책가 없습니다.")

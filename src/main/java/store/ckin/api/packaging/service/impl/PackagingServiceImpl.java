@@ -67,7 +67,8 @@ public class PackagingServiceImpl implements PackagingService {
     @Override
     public List<PackagingResponseDto> getPackagingPolicies() {
         return packagingRepository.findAll()
-                .stream().map(PackagingResponseDto::toDto)
+                .stream()
+                .map(PackagingResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 

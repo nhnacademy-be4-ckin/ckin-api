@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * 포장 정책 생성 요청 DTO.
@@ -14,7 +13,6 @@ import lombok.ToString;
  * @version 2024. 02. 20.
  */
 
-@ToString
 @Getter
 public class PackagingCreateRequestDto {
 
