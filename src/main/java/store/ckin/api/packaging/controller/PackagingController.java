@@ -19,7 +19,7 @@ import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.service.PackagingService;
 
 /**
- * 포장지 정책 컨트롤러입니다.
+ * 포장 정책 컨트롤러입니다.
  *
  * @author 정승조
  * @version 2024. 02. 20.

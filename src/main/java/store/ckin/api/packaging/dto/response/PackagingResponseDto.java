@@ -24,7 +24,7 @@ public class PackagingResponseDto {
     private Integer packagingPrice;
 
     /**
-     * 포장지 정책 생성을 위한 빌더입니다.
+     * 포장 정책 생성을 위한 빌더입니다.
      *
      * @param packagingId    포장 정책 ID
      * @param packagingType  포장지 종류
