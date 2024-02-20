@@ -3,10 +3,11 @@ package store.ckin.api.packaging.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,6 @@ import store.ckin.api.packaging.service.PackagingService;
  */
 
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/packaging")
@@ -39,15 +39,29 @@ public class PackagingController {
      */
     @PostMapping
     public ResponseEntity<Void> createPackagingPolicy(@Valid @RequestBody PackagingCreateRequestDto requestDto) {
-
-        log.info("requestDto = {}", requestDto);
-
         packagingService.createPackagingPolicy(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    /**
+     * 포장지 정책 리스트를 조회하는 메서드입니다.
+     *
+     * @return 200 (OK)
+     */
     @GetMapping
     public ResponseEntity<List<PackagingResponseDto>> getPackagingPolicies() {
         return ResponseEntity.ok(packagingService.getPackagingPolicies());
+    }
+
+    /**
+     * 포장지 정책을 삭제하는 메서드입니다.
+     *
+     * @param id 삭제할 포장지 정책 ID
+     * @return 200 (OK)
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePackagingPolicy(@PathVariable("id") Long id) {
+        packagingService.deletePackagingPolicy(id);
+        return ResponseEntity.ok().build();
     }
 }

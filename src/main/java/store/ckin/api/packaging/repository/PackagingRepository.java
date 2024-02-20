@@ -9,5 +9,5 @@ import store.ckin.api.packaging.entity.Packaging;
  * @author 정승조
  * @version 2024. 02. 20.
  */
-public interface PackagingRepository extends JpaRepository<Packaging, Integer> {
+public interface PackagingRepository extends JpaRepository<Packaging, Long> {
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.entity.Packaging;
+import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 import store.ckin.api.packaging.service.PackagingService;
 
@@ -45,10 +46,26 @@ public class PackagingServiceImpl implements PackagingService {
      *
      * @return 포장 정책 응답 DTO 리스트
      */
+    @Transactional(readOnly = true)
     @Override
     public List<PackagingResponseDto> getPackagingPolicies() {
         return packagingRepository.findAll()
                 .stream().map(PackagingResponseDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 삭제할 포장 정책 ID
+     */
+    @Transactional
+    @Override
+    public void deletePackagingPolicy(Long id) {
+        if (!packagingRepository.existsById(id)) {
+            throw new PackagingNotFoundException(id);
+        }
+
+        packagingRepository.deleteById(id);
     }
 }
