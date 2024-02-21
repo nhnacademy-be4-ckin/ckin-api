@@ -44,7 +44,7 @@ public class PackagingRepositoryImpl extends QuerydslRepositorySupport implement
     }
 
     @Override
-    public List<PackagingResponseDto> getPackgingList() {
+    public List<PackagingResponseDto> getAllPackaging() {
 
         QPackaging packaging = QPackaging.packaging;
         return from(packaging)

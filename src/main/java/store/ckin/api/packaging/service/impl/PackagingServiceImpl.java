@@ -68,7 +68,7 @@ public class PackagingServiceImpl implements PackagingService {
     @Transactional(readOnly = true)
     @Override
     public List<PackagingResponseDto> getPackagingPolicies() {
-        return packagingRepository.getPackgingList();
+        return packagingRepository.getAllPackaging();
     }
 
     /**

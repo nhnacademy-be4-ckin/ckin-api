@@ -18,5 +18,5 @@ public interface PackagingRepositoryCustom {
 
     Optional<PackagingResponseDto> getPackagingById(Long packagingId);
 
-    List<PackagingResponseDto> getPackgingList();
+    List<PackagingResponseDto> getAllPackaging();
 }
