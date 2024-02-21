@@ -77,13 +77,13 @@ class PackagingServiceImplTest {
     @DisplayName("포장 정책 개별 조회 - 성공")
     void testGetPackagingPolicy_Success() {
 
-        Packaging packaging = Packaging.builder()
+        PackagingResponseDto packaging = PackagingResponseDto.builder()
                 .packagingId(1L)
                 .packagingType("생일선물")
                 .packagingPrice(5000)
                 .build();
 
-        given(packagingRepository.findById(anyLong()))
+        given(packagingRepository.getPackagingById(anyLong()))
                 .willReturn(Optional.of(packaging));
 
         PackagingResponseDto packagingPolicy = packagingService.getPackagingPolicy(1L);
@@ -94,29 +94,31 @@ class PackagingServiceImplTest {
                 () -> assertEquals(packaging.getPackagingPrice(), packagingPolicy.getPackagingPrice())
         );
 
-        verify(packagingRepository, times(1)).findById(anyLong());
+        verify(packagingRepository, times(1)).getPackagingById(anyLong());
     }
 
     @Test
     @DisplayName("포장 정책 개별 조회 - 실패 (Not Found)")
     void testGetPackagingPolicy_Not_Found() {
 
-        given(packagingRepository.findById(anyLong()))
-                .willThrow(PackagingNotFoundException.class);
+        given(packagingRepository.getPackagingById(anyLong()))
+                .willReturn(Optional.empty());
 
         assertThrows(PackagingNotFoundException.class, () -> packagingService.getPackagingPolicy(1L));
+
+        verify(packagingRepository, times(1)).getPackagingById(anyLong());
     }
 
     @Test
     @DisplayName("포장 정책 모두 조회")
     void testGetPackagingPolicies() {
 
-        List<Packaging> packagingList = List.of(
-                new Packaging(1L, "꽃 생일선물 포장", 5000),
-                new Packaging(2L, "가죽 생일선물 포장", 10000)
+        List<PackagingResponseDto> packagingList = List.of(
+                new PackagingResponseDto(1L, "꽃 생일선물 포장", 5000),
+                new PackagingResponseDto(2L, "가죽 생일선물 포장", 10000)
         );
 
-        given(packagingRepository.findAll())
+        given(packagingRepository.getAllPackaging())
                 .willReturn(packagingList);
 
 
@@ -124,18 +126,14 @@ class PackagingServiceImplTest {
 
         assertAll(
                 () -> assertEquals(packagingList.get(0).getPackagingId(), packagingPolicies.get(0).getPackagingId()),
-                () -> assertEquals(packagingList.get(0).getPackagingType(),
-                        packagingPolicies.get(0).getPackagingType()),
-                () -> assertEquals(packagingList.get(0).getPackagingPrice(),
-                        packagingPolicies.get(0).getPackagingPrice()),
+                () -> assertEquals(packagingList.get(0).getPackagingType(), packagingPolicies.get(0).getPackagingType()),
+                () -> assertEquals(packagingList.get(0).getPackagingPrice(), packagingPolicies.get(0).getPackagingPrice()),
                 () -> assertEquals(packagingList.get(1).getPackagingId(), packagingPolicies.get(1).getPackagingId()),
-                () -> assertEquals(packagingList.get(1).getPackagingType(),
-                        packagingPolicies.get(1).getPackagingType()),
-                () -> assertEquals(packagingList.get(1).getPackagingPrice(),
-                        packagingPolicies.get(1).getPackagingPrice())
+                () -> assertEquals(packagingList.get(1).getPackagingType(), packagingPolicies.get(1).getPackagingType()),
+                () -> assertEquals(packagingList.get(1).getPackagingPrice(), packagingPolicies.get(1).getPackagingPrice())
         );
 
-        verify(packagingRepository, times(1)).findAll();
+        verify(packagingRepository, times(1)).getAllPackaging();
 
     }
 
