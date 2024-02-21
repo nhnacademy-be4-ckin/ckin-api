@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * {class name}.
+ * AuthorModifyRequestDto.
  *
  * @author 나국로
  * @version 2024. 02. 16.

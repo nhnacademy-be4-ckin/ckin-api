@@ -66,8 +66,8 @@ class AuthorControllerTest {
 
 
     @Test
-    @DisplayName("작가 생성 요청 시 작가 생성")
-    void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() throws Exception {
+    @DisplayName("이름으로 작가 검색")
+    void givenAuthorName_whenSearchAuthorsByName_thenReturnsAuthors() throws Exception {
         String name = "작가";
         List<AuthorResponseDto> mockAuthors = List.of(
                 new AuthorResponseDto(1L, "작가1"),
@@ -88,8 +88,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    @DisplayName("작가 정보 수정 요청 시 작가 정보 업데이트")
-    void givenAuthorIdAndModifyRequest_whenUpdateAuthor_thenAuthorUpdated() throws Exception {
+    @DisplayName("작가 생성 요청 시 작가 생성")
+    void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() throws Exception {
         AuthorCreateRequestDto createRequest = new AuthorCreateRequestDto("김작가");
         AuthorResponseDto createdAuthor = new AuthorResponseDto(1L, "김작가");
         when(authorService.createAuthor(any(AuthorCreateRequestDto.class))).thenReturn(createdAuthor);
