@@ -71,14 +71,12 @@ public class PointPolicyController {
     /**
      * 포인트 정책을 수정하는 메서드입니다.
      *
-     * @param id                수정할 포인트 정책 ID
      * @param updatePointPolicy 수정할 포인트 정책 요청 DTO
      * @return 200 (OK)
      */
-    @PutMapping("{id}")
-    public ResponseEntity<Void> updatePointPolicy(@PathVariable("id") Long id,
-                                                  @Valid @RequestBody PointPolicyUpdateRequestDto updatePointPolicy) {
-        pointPolicyService.updatePointPolicy(id, updatePointPolicy);
+    @PutMapping
+    public ResponseEntity<Void> updatePointPolicy(@Valid @RequestBody PointPolicyUpdateRequestDto updatePointPolicy) {
+        pointPolicyService.updatePointPolicy(updatePointPolicy);
         return ResponseEntity.ok().build();
     }
 
