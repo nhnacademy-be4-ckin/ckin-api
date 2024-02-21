@@ -175,7 +175,7 @@ class PackagingControllerTest {
     }
 
     @Test
-    @DisplayName("포장 정색 삭제")
+    @DisplayName("포장 정책 삭제")
     void testDeletePackagingPolicy() throws Exception {
 
         mockMvc.perform(delete("/api/packaging/{id}", 1L))
