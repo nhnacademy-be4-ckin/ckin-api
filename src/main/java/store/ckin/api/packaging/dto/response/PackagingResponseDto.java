@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.packaging.entity.Packaging;
 
 /**
  * 포장 정책 응답 DTO.
@@ -35,13 +34,5 @@ public class PackagingResponseDto {
         this.packagingId = packagingId;
         this.packagingType = packagingType;
         this.packagingPrice = packagingPrice;
-    }
-
-    public static PackagingResponseDto toDto(Packaging packaging) {
-        return PackagingResponseDto.builder()
-                .packagingId(packaging.getPackagingId())
-                .packagingType(packaging.getPackagingType())
-                .packagingPrice(packaging.getPackagingPrice())
-                .build();
     }
 }

@@ -1,7 +1,6 @@
 package store.ckin.api.packaging.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +12,6 @@ import store.ckin.api.packaging.exception.PackagingAlreadyExistsException;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 import store.ckin.api.packaging.service.PackagingService;
-import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
 
 /**
  * 포장 정책 서비스 구현 클래스입니다.
@@ -58,10 +56,8 @@ public class PackagingServiceImpl implements PackagingService {
     @Transactional(readOnly = true)
     @Override
     public PackagingResponseDto getPackagingPolicy(Long id) {
-
-        return packagingRepository.findById(id)
-                .map(PackagingResponseDto::toDto)
-                .orElseThrow(() -> new PointPolicyNotFoundException(id));
+        return packagingRepository.getPackagingById(id)
+                .orElseThrow(() -> new PackagingNotFoundException(id));
     }
 
     /**
@@ -72,10 +68,7 @@ public class PackagingServiceImpl implements PackagingService {
     @Transactional(readOnly = true)
     @Override
     public List<PackagingResponseDto> getPackagingPolicies() {
-        return packagingRepository.findAll()
-                .stream()
-                .map(PackagingResponseDto::toDto)
-                .collect(Collectors.toList());
+        return packagingRepository.getPackgingList();
     }
 
     /**
