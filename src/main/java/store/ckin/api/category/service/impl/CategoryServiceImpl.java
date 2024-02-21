@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category updatedCategory = existingCategory.toBuilder()
                 .categoryName(categoryUpdateDto.getCategoryName())
                 .build();
-        updatedCategory = categoryRepository.save(updatedCategory); // 업데이트된 인스턴스 저장
+        updatedCategory = categoryRepository.save(updatedCategory);
 
         return new CategoryResponseDto(updatedCategory.getCategoryId(), updatedCategory.getCategoryName());
     }
