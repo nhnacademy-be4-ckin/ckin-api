@@ -20,7 +20,7 @@ import store.ckin.api.author.repository.impl.AuthorRepositoryImpl;
  */
 @DataJpaTest
 @Import(AuthorRepositoryImpl.class)
-public class AuthorRepositoryTest {
+class AuthorRepositoryTest {
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -29,29 +29,23 @@ public class AuthorRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    public void whenFindById_thenReturnAuthor() {
-        // given
+    void whenFindById_thenReturnAuthor() {
         Author givenAuthor = Author.builder().authorName("테스트 작가").build();
         entityManager.persist(givenAuthor);
         entityManager.flush();
 
-        // when
         Author foundAuthor = authorRepository.findById(givenAuthor.getAuthorId()).orElse(null);
 
-        // then
         assertThat(foundAuthor).isNotNull();
         assertThat(foundAuthor.getAuthorName()).isEqualTo("테스트 작가");
     }
 
     @Test
-    public void whenSave_thenPersistAuthor() {
-        // given
+    void whenSave_thenPersistAuthor() {
         Author givenAuthor = Author.builder().authorName("테스트 작가").build();
 
-        // when
         Author savedAuthor = authorRepository.save(givenAuthor);
 
-        // then
         Author foundAuthor = entityManager.find(Author.class, savedAuthor.getAuthorId());
         assertThat(foundAuthor).isNotNull();
         assertThat(foundAuthor.getAuthorName()).isEqualTo("테스트 작가");
@@ -59,18 +53,15 @@ public class AuthorRepositoryTest {
 
 
     @Test
-    public void whenFindAuthorsByName_thenReturnMatchingAuthors() {
-        // given
+    void whenFindAuthorsByName_thenReturnMatchingAuthors() {
         Author author1 = Author.builder().authorName("김인직").build();
         Author author2 = Author.builder().authorName("김인후").build();
         entityManager.persist(author1);
         entityManager.persist(author2);
         entityManager.flush();
 
-        // when
         List<AuthorResponseDto> foundAuthors = authorRepository.findAuthorsByName("김");
 
-        // then
         assertThat(foundAuthors).isNotEmpty();
         assertThat(foundAuthors.stream().anyMatch(a -> a.getAuthorName().contains("김"))).isTrue();
     }

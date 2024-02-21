@@ -35,7 +35,7 @@ import store.ckin.api.author.repository.AuthorRepository;
  * @version 2024. 02. 19.
  */
 @ExtendWith(MockitoExtension.class)
-public class AuthorServiceImplTest {
+class AuthorServiceImplTest {
 
     @Mock
     private AuthorRepository authorRepository;
@@ -46,15 +46,12 @@ public class AuthorServiceImplTest {
 
     @Test
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() {
-        // given
         AuthorCreateRequestDto requestDto = new AuthorCreateRequestDto("테스트 작가");
         Author mockAuthor = new Author(1L, "테스트 작가");
         when(authorRepository.save(any(Author.class))).thenReturn(mockAuthor);
 
-        // when
         AuthorResponseDto result = authorService.createAuthor(requestDto);
 
-        // then
         assertNotNull(result);
         assertEquals(mockAuthor.getAuthorName(), result.getAuthorName());
     }
