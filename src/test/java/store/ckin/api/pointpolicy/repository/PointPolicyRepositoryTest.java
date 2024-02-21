@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 
 /**
@@ -27,6 +28,8 @@ class PointPolicyRepositoryTest {
     @Autowired
     PointPolicyRepository pointPolicyRepository;
 
+    PointPolicy savedPointPolicy;
+
     @BeforeEach
     void setUp() {
         PointPolicy pointPolicy = PointPolicy.builder()
@@ -35,7 +38,7 @@ class PointPolicyRepositoryTest {
                 .pointPolicyReserve(3000)
                 .build();
 
-        pointPolicyRepository.save(pointPolicy);
+        savedPointPolicy = pointPolicyRepository.save(pointPolicy);
     }
 
     @Test
@@ -95,5 +98,31 @@ class PointPolicyRepositoryTest {
     void testQuerydslExistsPointPolicy() {
         boolean actual = pointPolicyRepository.existsPointPolicy(1L, "포인트 정책1");
         assertTrue(actual);
+    }
+
+    @Test
+    @DisplayName("포인트 정책 단건 조회 - Querydsl")
+    void testQuerydslGetPointPolicyById() {
+        Optional<PointPolicyResponseDto> responseDto = pointPolicyRepository.getPointPolicyById(1L);
+
+        assertAll(
+                () -> assertTrue(responseDto.isPresent()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyId(), responseDto.get().getPointPolicyId()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyName(), responseDto.get().getPointPolicyName()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyReserve(), responseDto.get().getPointPolicyReserve())
+        );
+    }
+
+    @Test
+    @DisplayName("포인트 정책 전체 조회 - Querydsl")
+    void testQuerydslGetPointPolicies() {
+        List<PointPolicyResponseDto> pointPolicies = pointPolicyRepository.getPointPolicies();
+
+        assertAll(
+                () -> assertEquals(1, pointPolicies.size()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyId(), pointPolicies.get(0).getPointPolicyId()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyName(), pointPolicies.get(0).getPointPolicyName()),
+                () -> assertEquals(savedPointPolicy.getPointPolicyReserve(), pointPolicies.get(0).getPointPolicyReserve())
+        );
     }
 }

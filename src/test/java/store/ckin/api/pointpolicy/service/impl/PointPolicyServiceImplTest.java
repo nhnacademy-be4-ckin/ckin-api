@@ -48,9 +48,14 @@ class PointPolicyServiceImplTest {
     void testGetPointPolicy_Success() {
 
         // given
-        PointPolicy pointPolicy = new PointPolicy(1L, "회원가입", 5000);
+        PointPolicyResponseDto pointPolicy =
+                PointPolicyResponseDto.builder()
+                        .pointPolicyId(1L)
+                        .pointPolicyName("회원가입")
+                        .pointPolicyReserve(5000)
+                        .build();
 
-        given(pointPolicyRepository.findById(anyLong()))
+        given(pointPolicyRepository.getPointPolicyById(anyLong()))
                 .willReturn(Optional.of(pointPolicy));
 
         // when
@@ -63,7 +68,7 @@ class PointPolicyServiceImplTest {
                 () -> assertEquals(5000, actual.getPointPolicyReserve())
         );
 
-        verify(pointPolicyRepository, times(1)).findById(anyLong());
+        verify(pointPolicyRepository, times(1)).getPointPolicyById(anyLong());
     }
 
     @Test
@@ -71,7 +76,7 @@ class PointPolicyServiceImplTest {
     void testGetPointPolicy_Fail_NotFound() {
 
         // given
-        given(pointPolicyRepository.findById(anyLong()))
+        given(pointPolicyRepository.getPointPolicyById(anyLong()))
                 .willReturn(Optional.empty());
 
         // when
@@ -85,13 +90,13 @@ class PointPolicyServiceImplTest {
     void testGetPointPolicies() {
 
         // given
-        List<PointPolicy> pointPolicies = List.of(
-                new PointPolicy(1L, "회원가입", 5000),
-                new PointPolicy(2L, "리뷰작성", 200),
-                new PointPolicy(3L, "사진 포함 리뷰 작성", 300)
+        List<PointPolicyResponseDto> pointPolicies = List.of(
+                new PointPolicyResponseDto(1L, "회원가입", 5000),
+                new PointPolicyResponseDto(2L, "리뷰작성", 200),
+                new PointPolicyResponseDto(3L, "사진 포함 리뷰 작성", 300)
         );
 
-        given(pointPolicyRepository.findAll())
+        given(pointPolicyRepository.getPointPolicies())
                 .willReturn(pointPolicies);
 
         // when
@@ -103,7 +108,7 @@ class PointPolicyServiceImplTest {
         assertEquals("리뷰작성", actual.get(1).getPointPolicyName());
         assertEquals(300, actual.get(2).getPointPolicyReserve());
 
-        verify(pointPolicyRepository, times(1)).findAll();
+        verify(pointPolicyRepository, times(1)).getPointPolicies();
     }
 
     @Test
@@ -150,16 +155,21 @@ class PointPolicyServiceImplTest {
     void testUpdatePointPolicy_Success() {
 
         // given
-        PointPolicy pointPolicy = new PointPolicy(1L, "회원가입", 5000);
+        PointPolicy pointPolicy = PointPolicy.builder()
+                .pointPolicyId(1L)
+                .pointPolicyName("회원가입")
+                .pointPolicyReserve(5000)
+                .build();
 
         given(pointPolicyRepository.findById(anyLong()))
                 .willReturn(Optional.of(pointPolicy));
 
         // when
-        pointPolicyService.updatePointPolicy(1L, new PointPolicyUpdateRequestDto());
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", 1L);
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "리뷰작성");
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 200);
+        PointPolicyUpdateRequestDto updateRequestDto = new PointPolicyUpdateRequestDto();
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyId", 1L);
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyName", "리뷰작성");
+        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyReserve", 200);
+        pointPolicyService.updatePointPolicy(updateRequestDto);
 
         // then
         assertEquals("리뷰작성", pointPolicy.getPointPolicyName());
@@ -181,9 +191,7 @@ class PointPolicyServiceImplTest {
         // when
 
         // then
-        assertThrows(
-                PointPolicyNotFoundException.class,
-                () -> pointPolicyService.updatePointPolicy(1L, updateRequestDto));
+        assertThrows(PointPolicyNotFoundException.class, () -> pointPolicyService.updatePointPolicy(updateRequestDto));
     }
 
     @Test
@@ -212,8 +220,6 @@ class PointPolicyServiceImplTest {
         // when
 
         // then
-        assertThrows(
-                PointPolicyNotFoundException.class,
-                () -> pointPolicyService.deletePointPolicy(1L));
+        assertThrows(PointPolicyNotFoundException.class, () -> pointPolicyService.deletePointPolicy(1L));
     }
 }

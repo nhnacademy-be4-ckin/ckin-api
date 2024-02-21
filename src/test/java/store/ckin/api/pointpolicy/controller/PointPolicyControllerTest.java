@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyCreateRequestDto;
+import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
 
@@ -44,6 +46,13 @@ class PointPolicyControllerTest {
 
     @MockBean
     PointPolicyService pointPolicyService;
+
+    ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+    }
 
     @Test
     @DisplayName("포인트 정책 개별 조회")
@@ -95,7 +104,7 @@ class PointPolicyControllerTest {
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "포인트 정책");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 300);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(post("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,7 +124,7 @@ class PointPolicyControllerTest {
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", -3123213);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(post("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,34 +137,34 @@ class PointPolicyControllerTest {
     @DisplayName("포인트 정책 수정 - 성공")
     void testUpdatePointPolicy_Success() throws Exception {
 
-        PointPolicyCreateRequestDto pointPolicy = new PointPolicyCreateRequestDto();
+        PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", 1L);
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "포인트 정책");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 300);
 
         String json = new ObjectMapper().writeValueAsString(pointPolicy);
 
-        mockMvc.perform(put("/api/point-policies/{id}", 1L)
+        mockMvc.perform(put("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(pointPolicyService, times(1)).updatePointPolicy(anyLong(), any());
+        verify(pointPolicyService, times(1)).updatePointPolicy(any());
     }
 
     @Test
     @DisplayName("포인트 정책 수정 - 실패(Validation)")
     void testUpdatePointPolicy_Fail() throws Exception {
 
-        PointPolicyCreateRequestDto pointPolicy = new PointPolicyCreateRequestDto();
+        PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", null);
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", -3123213);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
-        mockMvc.perform(put("/api/point-policies/{id}", 1L)
+        mockMvc.perform(put("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
