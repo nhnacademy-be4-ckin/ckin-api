@@ -9,7 +9,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class ApiApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
     }
