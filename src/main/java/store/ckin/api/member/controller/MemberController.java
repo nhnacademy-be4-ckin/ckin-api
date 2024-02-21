@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.domain.MemberInfoRequestDto;
 import store.ckin.api.member.domain.MemberInfoResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -74,7 +74,7 @@ public class MemberController {
      * @return 403 (Unauthorized) : 로그인 정보 불일치
      */
     @ExceptionHandler({MemberNotFoundException.class})
-    public ResponseEntity<Void> loginFailedExceptionHandler(MemberNotFoundException exception) {
+    public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
         log.debug(exception.getClass().getName() + " : 이메일에 해당하는 계정이 없습니다.");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
