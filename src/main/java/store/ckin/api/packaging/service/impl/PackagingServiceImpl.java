@@ -89,7 +89,7 @@ public class PackagingServiceImpl implements PackagingService {
         Packaging packaging = packagingRepository.findById(requestDto.getPackagingId())
                 .orElseThrow(() -> new PackagingNotFoundException(requestDto.getPackagingId()));
 
-        packaging.update(requestDto);
+        packaging.update(requestDto.getPackagingId(), requestDto.getPackagingType(), requestDto.getPackagingPrice());
     }
 
     /**
