@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
@@ -31,7 +33,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Page<AuthorResponseDto> findAllAuthors(Pageable pageable) {
-        Page<Author> authors = authorRepository.findAll(pageable);
+        Pageable sortedByAuthorName = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("authorName"));
+
+        Page<Author> authors = authorRepository.findAll(sortedByAuthorName);
         return authors.map(author -> AuthorResponseDto.builder()
                 .authorId(author.getAuthorId())
                 .authorName(author.getAuthorName())
