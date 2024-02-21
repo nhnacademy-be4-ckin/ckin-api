@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,6 +23,7 @@ import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
 import store.ckin.api.packaging.dto.request.PackagingUpdateRequestDto;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.entity.Packaging;
+import store.ckin.api.packaging.exception.PackagingAlreadyExistsException;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 
@@ -42,16 +44,33 @@ class PackagingServiceImplTest {
     PackagingRepository packagingRepository;
 
     @Test
-    @DisplayName("포장 정책 생성")
-    void testCreatePackaging() {
+    @DisplayName("포장 정책 생성 - 성공")
+    void testCreatePackaging_Success() {
         PackagingCreateRequestDto requestDto = new PackagingCreateRequestDto();
         ReflectionTestUtils.setField(requestDto, "packagingType", "생일선물");
         ReflectionTestUtils.setField(requestDto, "packagingPrice", 5000);
 
         packagingService.createPackagingPolicy(requestDto);
 
+        verify(packagingRepository, times(1)).existsByType(anyString());
         verify(packagingRepository, times(1)).save(any());
+    }
 
+    @Test
+    @DisplayName("포장 정책 실패 - 존재하는 포장지 종류")
+    void testCreatePackaging_AlreadyExists() {
+        PackagingCreateRequestDto requestDto = new PackagingCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "packagingType", "생일선물");
+        ReflectionTestUtils.setField(requestDto, "packagingPrice", 5000);
+
+        given(packagingRepository.existsByType(anyString()))
+                .willReturn(true);
+
+        assertThrows(PackagingAlreadyExistsException.class,
+                () -> packagingService.createPackagingPolicy(requestDto));
+
+        verify(packagingRepository, times(1)).existsByType(anyString());
+        verify(packagingRepository, times(0)).save(any());
     }
 
     @Test

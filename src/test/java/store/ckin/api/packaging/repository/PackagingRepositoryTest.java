@@ -3,6 +3,7 @@ package store.ckin.api.packaging.repository;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,20 @@ class PackagingRepositoryTest {
                 () -> assertEquals(packaging.getPackagingType(), savedPackaging.getPackagingType()),
                 () -> assertEquals(packaging.getPackagingPrice(), savedPackaging.getPackagingPrice())
         );
+    }
+
+    @Test
+    @DisplayName("포장 정책 존재하는 포장지 타입 조회 테스트")
+    void testExistsByType() {
+        Packaging packaging = Packaging.builder()
+                .packagingId(null)
+                .packagingType("생일선물")
+                .packagingPrice(5000)
+                .build();
+
+        packagingRepository.save(packaging);
+
+        assertTrue(packagingRepository.existsByType("생일선물"));
     }
 
 }
