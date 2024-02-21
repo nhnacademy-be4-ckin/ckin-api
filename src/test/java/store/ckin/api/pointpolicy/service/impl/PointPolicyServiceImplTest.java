@@ -166,10 +166,9 @@ class PointPolicyServiceImplTest {
 
         // when
         PointPolicyUpdateRequestDto updateRequestDto = new PointPolicyUpdateRequestDto();
-        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyId", 1L);
         ReflectionTestUtils.setField(updateRequestDto, "pointPolicyName", "리뷰작성");
         ReflectionTestUtils.setField(updateRequestDto, "pointPolicyReserve", 200);
-        pointPolicyService.updatePointPolicy(updateRequestDto);
+        pointPolicyService.updatePointPolicy(pointPolicy.getPointPolicyId(), updateRequestDto);
 
         // then
         assertEquals("리뷰작성", pointPolicy.getPointPolicyName());
@@ -191,7 +190,7 @@ class PointPolicyServiceImplTest {
         // when
 
         // then
-        assertThrows(PointPolicyNotFoundException.class, () -> pointPolicyService.updatePointPolicy(updateRequestDto));
+        assertThrows(PointPolicyNotFoundException.class, () -> pointPolicyService.updatePointPolicy(1L, updateRequestDto));
     }
 
     @Test

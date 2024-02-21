@@ -150,7 +150,7 @@ class PointPolicyControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(pointPolicyService, times(1)).updatePointPolicy(any());
+        verify(pointPolicyService, times(1)).updatePointPolicy(anyLong(), any());
     }
 
     @Test
