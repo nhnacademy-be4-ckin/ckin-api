@@ -8,6 +8,6 @@ package store.ckin.api.packaging.exception;
  */
 public class PackagingAlreadyExistsException extends RuntimeException {
     public PackagingAlreadyExistsException(String packagingType) {
-        super("Packaging already exists [packaging type = " + packagingType + "]");
+        super(String.format("Packaging already exists [packaging type = %s]", packagingType));
     }
 }

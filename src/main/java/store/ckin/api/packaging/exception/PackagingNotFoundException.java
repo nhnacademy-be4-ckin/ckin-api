@@ -9,6 +9,6 @@ package store.ckin.api.packaging.exception;
 public class PackagingNotFoundException extends RuntimeException {
 
     public PackagingNotFoundException(Long id) {
-        super("Packaging not found [id = " + id + "]");
+        super(String.format("Packaging not found [packaging id = %d]", id));
     }
 }
