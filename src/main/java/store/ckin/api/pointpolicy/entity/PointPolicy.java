@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 
 /**
  * 포인트 정책 엔티티입니다.
@@ -47,9 +46,9 @@ public class PointPolicy {
         this.pointPolicyReserve = pointPolicyReserve;
     }
 
-    public void update(PointPolicyUpdateRequestDto updatePointPolicy) {
-        this.pointPolicyId = updatePointPolicy.getPointPolicyId();
-        this.pointPolicyName = updatePointPolicy.getPointPolicyName();
-        this.pointPolicyReserve = updatePointPolicy.getPointPolicyReserve();
+    public void update(Long pointPolicyId, String pointPolicyName, Integer pointPolicyReserve) {
+        this.pointPolicyId = pointPolicyId;
+        this.pointPolicyName = pointPolicyName;
+        this.pointPolicyReserve = pointPolicyReserve;
     }
 }
