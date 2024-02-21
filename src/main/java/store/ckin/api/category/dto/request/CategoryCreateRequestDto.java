@@ -1,9 +1,9 @@
 package store.ckin.api.category.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -13,6 +13,8 @@ import org.hibernate.validator.constraints.Length;
  * @version 2024. 02. 15.
  */
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryCreateRequestDto {
     private Long parentCategoryId;
     @NotBlank(message = "등록할 카테고리명을 기입해주세요.")
