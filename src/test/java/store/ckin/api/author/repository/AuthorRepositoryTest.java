@@ -13,7 +13,7 @@ import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.repository.impl.AuthorRepositoryImpl;
 
 /**
- * {class name}.
+ * AuthorRepositoryTest.
  *
  * @author 나국로
  * @version 2024. 02. 16.
