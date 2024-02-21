@@ -1,7 +1,9 @@
 package store.ckin.api.deliverypolicy.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
+import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 
 /**
@@ -15,4 +17,8 @@ import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 public interface DeliveryPolicyRepositoryCustom {
 
     Optional<DeliveryPolicy> findByState(boolean b);
+
+    List<DeliveryPolicyResponseDto> getDeliveryPolicies();
+
+    Optional<DeliveryPolicyResponseDto> getDeliveryPolicyById(Long id);
 }
