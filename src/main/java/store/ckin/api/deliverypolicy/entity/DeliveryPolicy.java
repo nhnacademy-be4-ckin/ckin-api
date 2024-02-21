@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 
 /**
  * 배송비 정책 Entity.
@@ -57,15 +56,18 @@ public class DeliveryPolicy {
         this.deliveryPolicyState = deliveryPolicyState;
     }
 
+
     /**
-     * 배송비 정책 수정을 위한 메서드입니다.
+     * 배송비 정책을 수정하는 메서드입니다.
      *
-     * @param updateDeliveryPolicy 수정된 배송비 정책 DTO
+     * @param deliveryPolicyFee       배송비
+     * @param deliveryPolicyCondition 배송비 무료 조건 금액
+     * @param deliveryPolicyState     배송비 정책 사용 여부
      */
-    public void update(DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
-        this.deliveryPolicyFee = updateDeliveryPolicy.getDeliveryPolicyFee();
-        this.deliveryPolicyCondition = updateDeliveryPolicy.getDeliveryPolicyCondition();
-        this.deliveryPolicyState = updateDeliveryPolicy.getDeliveryPolicyState();
+    public void update(Integer deliveryPolicyFee, Integer deliveryPolicyCondition, Boolean deliveryPolicyState) {
+        this.deliveryPolicyFee = deliveryPolicyFee;
+        this.deliveryPolicyCondition = deliveryPolicyCondition;
+        this.deliveryPolicyState = deliveryPolicyState;
     }
 
     /**
