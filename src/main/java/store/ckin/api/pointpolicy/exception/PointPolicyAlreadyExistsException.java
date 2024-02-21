@@ -9,6 +9,6 @@ package store.ckin.api.pointpolicy.exception;
 public class PointPolicyAlreadyExistsException extends RuntimeException {
 
     public PointPolicyAlreadyExistsException(Long id, String name) {
-        super("PointPolicy already exists [id = " + id + ", name = " + name + "]");
+        super(String.format("PointPolicy already exists. [id = %d, name = %s]", id, name));
     }
 }
