@@ -39,9 +39,10 @@ public interface PointPolicyService {
     /**
      * 포인트 정책을 수정하는 메서드입니다.
      *
+     * @param id                수정할 포인트 정책 ID
      * @param updatePointPolicy 수정할 포인트 정책 요청 DTO
      */
-    void updatePointPolicy(PointPolicyUpdateRequestDto updatePointPolicy);
+    void updatePointPolicy(Long id, PointPolicyUpdateRequestDto updatePointPolicy);
 
     /**
      * 포인트 정책를 삭제하는 메서드입니다.

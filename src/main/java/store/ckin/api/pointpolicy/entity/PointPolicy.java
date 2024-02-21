@@ -46,8 +46,13 @@ public class PointPolicy {
         this.pointPolicyReserve = pointPolicyReserve;
     }
 
-    public void update(Long pointPolicyId, String pointPolicyName, Integer pointPolicyReserve) {
-        this.pointPolicyId = pointPolicyId;
+    /**
+     * 포인트 정책 수정을 위한 메소드입니다.
+     *
+     * @param pointPolicyName    포인트 정책 이름
+     * @param pointPolicyReserve 포인트 적립 금액
+     */
+    public void update(String pointPolicyName, Integer pointPolicyReserve) {
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyReserve = pointPolicyReserve;
     }

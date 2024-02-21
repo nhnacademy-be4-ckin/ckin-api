@@ -80,12 +80,11 @@ public class PointPolicyServiceImpl implements PointPolicyService {
      */
     @Transactional
     @Override
-    public void updatePointPolicy(PointPolicyUpdateRequestDto updatePointPolicy) {
-        PointPolicy pointPolicy = pointPolicyRepository.findById(updatePointPolicy.getPointPolicyId())
-                .orElseThrow(() -> new PointPolicyNotFoundException(updatePointPolicy.getPointPolicyId()));
+    public void updatePointPolicy(Long id, PointPolicyUpdateRequestDto updatePointPolicy) {
+        PointPolicy pointPolicy = pointPolicyRepository.findById(id)
+                .orElseThrow(() -> new PointPolicyNotFoundException(id));
 
-        pointPolicy.update(updatePointPolicy.getPointPolicyId(),
-                updatePointPolicy.getPointPolicyName(),
+        pointPolicy.update(updatePointPolicy.getPointPolicyName(),
                 updatePointPolicy.getPointPolicyReserve());
     }
 
