@@ -9,6 +9,7 @@ import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
 import store.ckin.api.packaging.dto.request.PackagingUpdateRequestDto;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.entity.Packaging;
+import store.ckin.api.packaging.exception.PackagingAlreadyExistsException;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 import store.ckin.api.packaging.service.PackagingService;
@@ -35,6 +36,11 @@ public class PackagingServiceImpl implements PackagingService {
     @Transactional
     @Override
     public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
+
+        if (packagingRepository.existsByType(requestDto.getPackagingType())) {
+            throw new PackagingAlreadyExistsException(requestDto.getPackagingType());
+        }
+
         Packaging packaging = Packaging.builder()
                 .packagingType(requestDto.getPackagingType())
                 .packagingPrice(requestDto.getPackagingPrice())
