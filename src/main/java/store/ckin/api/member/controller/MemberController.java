@@ -47,8 +47,9 @@ public class MemberController {
      * @param memberInfoRequestDto 로그인 정보 요청 DTO
      * @return 200 (OK) : 로그인 정보 확인
      */
-    @PostMapping("/auth/login")
-    public ResponseEntity<MemberInfoResponseDto> doLogin(@Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
+    @PostMapping("/api/login")
+    public ResponseEntity<MemberInfoResponseDto> doLogin(
+            @Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
         MemberInfoResponseDto response = memberService.getLoginMemberInfo(memberInfoRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -62,7 +63,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberAlreadyExistsException.class})
     public ResponseEntity<Void> memberAlreadyExistsExceptionHandler(MemberAlreadyExistsException exception) {
-        log.debug(exception.getClass().getName() + " : 이미 존재하는 이메일 입니다.");
+        log.debug("{} : 이미 존재하는 이메일 입니다.", exception.getClass().getName());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
@@ -75,7 +76,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberNotFoundException.class})
     public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
-        log.debug(exception.getClass().getName() + " : 이메일에 해당하는 계정이 없습니다.");
+        log.debug("{} : 이메일에 해당하는 계정이 없습니다.", exception.getClass().getName());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

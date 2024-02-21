@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,11 +35,12 @@ class MemberServiceImplTest {
     private MemberServiceImpl memberService;
 
     @Test
+    @DisplayName("멤버 생성 성공 테스트")
     void testCreateMemberSuccess() {
         String testEmail = "test@test.com";
 
         when(memberRepository.existsByEmail(anyString()))
-                .thenReturn(true);
+                .thenReturn(false);
 
         MemberCreateRequestDto dto = new MemberCreateRequestDto();
 
@@ -55,11 +57,12 @@ class MemberServiceImplTest {
     }
 
     @Test
+    @DisplayName("멤버 생성 실패 시 MemberAlreadyExistsException 호출")
     void testCreateMemberFailed() {
         String testEmail = "test@test.com";
 
         when(memberRepository.existsByEmail(anyString()))
-                .thenReturn(false);
+                .thenReturn(true);
 
         MemberCreateRequestDto dto = new MemberCreateRequestDto();
 

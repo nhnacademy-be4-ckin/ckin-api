@@ -1,5 +1,9 @@
 package store.ckin.api.member.repository;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -7,13 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
 
 /**
  * MemberRepository 에 대한 Test 입니다.
@@ -31,6 +28,7 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @Test
+    @DisplayName("이메일로 계정 존재 여부 테스트")
     void testExistsByEmail() {
         Grade grade = Grade.builder()
                 .name("test")

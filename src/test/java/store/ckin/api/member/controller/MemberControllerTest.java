@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,6 +36,7 @@ class MemberControllerTest {
     private MemberService memberService;
 
     @Test
+    @DisplayName("멤버 생성 성공 테스트")
     void testCreateMemberSuccess() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -48,7 +50,7 @@ class MemberControllerTest {
 
         doNothing().when(memberService).createMember(dto);
 
-        mockMvc.perform(post("/members")
+        mockMvc.perform(post("/api/members")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
