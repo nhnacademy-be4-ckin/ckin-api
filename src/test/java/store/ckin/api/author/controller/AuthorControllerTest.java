@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,6 +50,7 @@ class AuthorControllerTest {
     private AuthorService authorService;
 
     @Test
+    @DisplayName("ID로 작가 조회")
     void givenAuthorId_whenGetAuthorById_thenReturnsAuthor() throws Exception {
         Long authorId = 1L;
         AuthorResponseDto authorResponseDto = new AuthorResponseDto(authorId, "김작가");
@@ -64,6 +66,7 @@ class AuthorControllerTest {
 
 
     @Test
+    @DisplayName("작가 생성 요청 시 작가 생성")
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() throws Exception {
         String name = "작가";
         List<AuthorResponseDto> mockAuthors = List.of(
@@ -85,6 +88,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("작가 정보 수정 요청 시 작가 정보 업데이트")
     void givenAuthorIdAndModifyRequest_whenUpdateAuthor_thenAuthorUpdated() throws Exception {
         AuthorCreateRequestDto createRequest = new AuthorCreateRequestDto("김작가");
         AuthorResponseDto createdAuthor = new AuthorResponseDto(1L, "김작가");
@@ -101,6 +105,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("작가 정보 업데이트")
     void updateAuthorTest() throws Exception {
         Long authorId = 1L;
         AuthorModifyRequestDto modifyRequest = new AuthorModifyRequestDto("김업뎃");
@@ -117,6 +122,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("작가 ID로 작가 삭제")
     void givenAuthorId_whenDeleteAuthor_thenAuthorDeleted() throws Exception {
         Long authorId = 1L;
         doNothing().when(authorService).deleteAuthor(authorId);
@@ -127,6 +133,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("잘못된 입력 시 400 반환")
     void whenInvalidInput_thenReturns400() throws Exception {
         AuthorCreateRequestDto dto = new AuthorCreateRequestDto("");
         mockMvc.perform(post("/api/authors")
@@ -136,6 +143,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("수정폼 잘못된 입력 시 400 반환")
     void whenInvalidInputForUpdate_thenReturns400() throws Exception {
         Long authorId = 1L;
         AuthorModifyRequestDto dto = new AuthorModifyRequestDto("");
@@ -147,6 +155,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("생성 시 작가 이름이 너무 길면 400 반환")
     void whenAuthorNameTooLongInCreate_thenReturns400() throws Exception {
         String longName = "a".repeat(201);
         AuthorCreateRequestDto dto = new AuthorCreateRequestDto(longName);
@@ -158,6 +167,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @DisplayName("업데이트 시 작가 이름이 너무 길면 400 반환")
     void whenAuthorNameTooLongInUpdate_thenReturns400() throws Exception {
         Long authorId = 1L;
         String longName = "a".repeat(201);
@@ -171,6 +181,7 @@ class AuthorControllerTest {
 
 
     @Test
+    @DisplayName("페이지 요청으로 모든 작가 조회")
     void givenPageRequest_whenGetAllAuthors_thenReturnsPagedAuthors() throws Exception {
         int page = 0;
         int size = 10;

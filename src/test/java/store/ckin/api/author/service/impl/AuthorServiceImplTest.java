@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,6 +46,7 @@ class AuthorServiceImplTest {
 
 
     @Test
+    @DisplayName("작가 생성 요청 시 작가 생성")
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() {
         AuthorCreateRequestDto requestDto = new AuthorCreateRequestDto("테스트 작가");
         Author mockAuthor = new Author(1L, "테스트 작가");
@@ -57,6 +59,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    @DisplayName("ID로 작가 조회 시 작가 반환")
     void givenAuthorId_whenFindAuthorById_thenAuthorFound() {
         Long authorId = 1L;
         Author author = new Author(authorId, "한국 작가");
@@ -69,6 +72,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 ID로 작가 조회 시 예외 발생")
     void givenNonExistingAuthorId_whenFindAuthorById_thenThrowsAuthorNotFoundException() {
         Long authorId = 1L;
         when(authorRepository.findById(authorId)).thenReturn(Optional.empty());
@@ -77,6 +81,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    @DisplayName("작가 정보 수정 요청 시 작가 정보 업데이트")
     void givenAuthorIdAndModifyRequest_whenUpdateAuthor_thenAuthorUpdated() {
         Long authorId = 1L;
         Author existingAuthor = new Author(authorId, "기존 이름");
@@ -91,6 +96,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    @DisplayName("작가 ID로 작가 삭제")
     void givenAuthorId_whenDeleteAuthor_thenAuthorDeleted() {
         Long authorId = 1L;
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(new Author()));
@@ -101,6 +107,7 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    @DisplayName("페이징 정보로 모든 작가 조회")
     void givenPageable_whenFindAllAuthors_thenReturnsPagedAuthors() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("authorName"));
         List<Author> authorsList = List.of(new Author(1L, "작가1"), new Author(2L, "작가2"));
@@ -120,6 +127,7 @@ class AuthorServiceImplTest {
 
 
     @Test
+    @DisplayName("이름으로 작가 검색 시 해당 작가 리스트 반환")
     void givenAuthorName_whenFindAuthorsByName_thenReturnsAuthorsList() {
         String name = "작가";
         List<AuthorResponseDto> mockResponse = List.of(
