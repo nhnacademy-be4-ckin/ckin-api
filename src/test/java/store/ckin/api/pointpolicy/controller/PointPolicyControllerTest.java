@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +46,7 @@ class PointPolicyControllerTest {
     @MockBean
     PointPolicyService pointPolicyService;
 
-    ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp() {
-        objectMapper = new ObjectMapper();
-    }
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("포인트 정책 개별 조회")
@@ -138,13 +132,12 @@ class PointPolicyControllerTest {
     void testUpdatePointPolicy_Success() throws Exception {
 
         PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", 1L);
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "포인트 정책");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 300);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
-        mockMvc.perform(put("/api/point-policies")
+        mockMvc.perform(put("/api/point-policies/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -158,13 +151,12 @@ class PointPolicyControllerTest {
     void testUpdatePointPolicy_Fail() throws Exception {
 
         PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", null);
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", -3123213);
 
         String json = objectMapper.writeValueAsString(pointPolicy);
 
-        mockMvc.perform(put("/api/point-policies")
+        mockMvc.perform(put("/api/point-policies/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())

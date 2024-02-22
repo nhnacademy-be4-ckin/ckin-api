@@ -181,7 +181,6 @@ class PointPolicyServiceImplTest {
 
         // given
         PointPolicyUpdateRequestDto updateRequestDto = new PointPolicyUpdateRequestDto();
-        ReflectionTestUtils.setField(updateRequestDto, "pointPolicyId", 1L);
         ReflectionTestUtils.setField(updateRequestDto, "pointPolicyName", "리뷰작성");
         ReflectionTestUtils.setField(updateRequestDto, "pointPolicyReserve", 200);
 
