@@ -1,8 +1,9 @@
 package store.ckin.api.member.service;
 
+import java.util.Optional;
+import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.domain.MemberInfoRequestDto;
 import store.ckin.api.member.domain.MemberInfoResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
 
 /**
  * Member 의 관한 로직을 처리하는 서비스 인터페이스 입니다.
@@ -24,5 +25,5 @@ public interface MemberService {
      * @param memberInfoRequestDto 로그인 정보 요청 DTO
      * @return LoginResponseDto 로그인 응답 DTO
      */
-    MemberInfoResponseDto getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto);
+    Optional<MemberInfoResponseDto> getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto);
 }

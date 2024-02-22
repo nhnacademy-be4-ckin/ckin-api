@@ -1,6 +1,7 @@
 package store.ckin.api.member.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional(readOnly = true)
     @Override
-    public MemberInfoResponseDto getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto) {
+    public Optional<MemberInfoResponseDto> getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto) {
         if (!memberRepository.existsByEmail(memberInfoRequestDto.getEmail())) {
             throw new MemberNotFoundException();
         }

@@ -1,5 +1,6 @@
 package store.ckin.api.member.controller;
 
+import java.util.Optional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,15 +43,15 @@ public class MemberController {
     }
 
     /**
-     * 로그인을 처리하는 API Method 입니다.
+     * JWT 토큰에 필요한 정보 요청을 처리하는 Method 입니다.
      *
-     * @param memberInfoRequestDto 로그인 정보 요청 DTO
-     * @return 200 (OK) : 로그인 정보 확인
+     * @param memberInfoRequestDto Member 정보 요청 DTO
+     * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
     @PostMapping("/api/login")
-    public ResponseEntity<MemberInfoResponseDto> doLogin(
+    public ResponseEntity<Optional<MemberInfoResponseDto>> getMemberInfo(
             @Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
-        MemberInfoResponseDto response = memberService.getLoginMemberInfo(memberInfoRequestDto);
+        Optional<MemberInfoResponseDto> response = memberService.getLoginMemberInfo(memberInfoRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
