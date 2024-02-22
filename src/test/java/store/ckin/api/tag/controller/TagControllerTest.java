@@ -40,14 +40,14 @@ import store.ckin.api.tag.service.impl.TagServiceImpl;
  * @author 김준현
  * @version 2024. 02. 17
  */
-@WebMvcTest
+@WebMvcTest(TagController.class)
 class TagControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private TagServiceImpl tagService;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("태그 목록 가져오기 - 성공")
