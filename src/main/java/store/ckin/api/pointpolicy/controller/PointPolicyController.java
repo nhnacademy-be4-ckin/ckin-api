@@ -75,7 +75,7 @@ public class PointPolicyController {
      * @param updatePointPolicy 수정할 포인트 정책 요청 DTO
      * @return 200 (OK)
      */
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updatePointPolicy(@PathVariable("id") Long id,
                                                   @Valid @RequestBody PointPolicyUpdateRequestDto updatePointPolicy) {
         pointPolicyService.updatePointPolicy(id, updatePointPolicy);

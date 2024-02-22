@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.pointpolicy.entity.PointPolicy;
 
 /**
  * 포인트 정책 응답 DTO.
@@ -28,13 +27,5 @@ public class PointPolicyResponseDto {
         this.pointPolicyId = pointPolicyId;
         this.pointPolicyName = pointPolicyName;
         this.pointPolicyReserve = pointPolicyReserve;
-    }
-
-    public static PointPolicyResponseDto toDto(PointPolicy entity) {
-        return PointPolicyResponseDto.builder()
-                .pointPolicyId(entity.getPointPolicyId())
-                .pointPolicyName(entity.getPointPolicyName())
-                .pointPolicyReserve(entity.getPointPolicyReserve())
-                .build();
     }
 }

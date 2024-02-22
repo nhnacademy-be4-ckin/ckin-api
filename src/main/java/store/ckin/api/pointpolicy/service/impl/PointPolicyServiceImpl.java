@@ -1,7 +1,6 @@
 package store.ckin.api.pointpolicy.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +36,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Transactional(readOnly = true)
     @Override
     public PointPolicyResponseDto getPointPolicy(Long id) {
-        return pointPolicyRepository.findById(id)
-                .map(PointPolicyResponseDto::toDto)
+        return pointPolicyRepository.getPointPolicyById(id)
                 .orElseThrow(() -> new PointPolicyNotFoundException(id));
     }
 
@@ -50,10 +48,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Transactional(readOnly = true)
     @Override
     public List<PointPolicyResponseDto> getPointPolicies() {
-        return pointPolicyRepository.findAll()
-                .stream()
-                .map(PointPolicyResponseDto::toDto)
-                .collect(Collectors.toList());
+        return pointPolicyRepository.getPointPolicies();
     }
 
     /**
@@ -81,7 +76,6 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     /**
      * {@inheritDoc}
      *
-     * @param id                수정할 포인트 정책 ID
      * @param updatePointPolicy 수정할 포인트 정책 요청 DTO
      */
     @Transactional
@@ -90,7 +84,8 @@ public class PointPolicyServiceImpl implements PointPolicyService {
         PointPolicy pointPolicy = pointPolicyRepository.findById(id)
                 .orElseThrow(() -> new PointPolicyNotFoundException(id));
 
-        pointPolicy.update(updatePointPolicy);
+        pointPolicy.update(updatePointPolicy.getPointPolicyName(),
+                updatePointPolicy.getPointPolicyReserve());
     }
 
     /**
