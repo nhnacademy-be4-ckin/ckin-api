@@ -1,7 +1,6 @@
 package store.ckin.api.author.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
