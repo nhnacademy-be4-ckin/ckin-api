@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
@@ -42,7 +43,10 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 생성 요청 시 성공 및 상태 코드 201 반환")
     void whenCreateCategory_thenStatusCreated() throws Exception {
-        CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto(null, "국내도서", null);
+        CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "parentCategoryId", 1L);
+        ReflectionTestUtils.setField(requestDto, "categoryName", "카테고리 테스트");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(requestDto);
 
@@ -78,7 +82,9 @@ class CategoryControllerTest {
     @DisplayName("부모 ID로 하위 카테고리 조회 요청 시 상태 코드 200 반환")
     void whenUpdateCategory_thenStatusOk() throws Exception {
         Long categoryId = 1L;
-        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto("외국도서");
+        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "categoryName", "외국도서");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(requestDto);
 
@@ -105,7 +111,9 @@ class CategoryControllerTest {
     @Test
     @DisplayName("잘못된 입력값으로 카테고리 생성 요청 시 상태 코드 400 반환 검증")
     void givenInvalidCreateRequest_whenCreateCategory_thenStatusBadRequest() throws Exception {
-        CategoryCreateRequestDto invalidRequest = new CategoryCreateRequestDto(null, "", null);
+        CategoryCreateRequestDto invalidRequest = new CategoryCreateRequestDto();
+        ReflectionTestUtils.setField(invalidRequest, "categoryName", "");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(invalidRequest);
 
@@ -119,7 +127,8 @@ class CategoryControllerTest {
     @DisplayName("잘못된 입력값으로 카테고리 업데이트 요청 시 상태 코드 400 반환 검증")
     void givenInvalidUpdateRequest_whenUpdateCategory_thenStatusBadRequest() throws Exception {
         Long categoryId = 1L;
-        CategoryUpdateRequestDto invalidRequest = new CategoryUpdateRequestDto("a".repeat(11)); // 너무 긴 카테고리명
+        CategoryUpdateRequestDto invalidRequest = new CategoryUpdateRequestDto();
+        ReflectionTestUtils.setField(invalidRequest, "categoryName", "a".repeat(11)); // 너무 긴 카테고리명 설정
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(invalidRequest);
 
@@ -128,7 +137,6 @@ class CategoryControllerTest {
                         .content(requestJson))
                 .andExpect(status().isBadRequest());
     }
-
 
 
 }

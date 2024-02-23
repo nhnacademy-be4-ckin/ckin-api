@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
 import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
@@ -48,7 +49,8 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("작가 생성 요청 시 작가 생성")
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() {
-        AuthorCreateRequestDto requestDto = new AuthorCreateRequestDto("테스트 작가");
+        AuthorCreateRequestDto requestDto = new AuthorCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "authorName", "테스트 작가");
         Author mockAuthor = new Author(1L, "테스트 작가");
         when(authorRepository.save(any(Author.class))).thenReturn(mockAuthor);
 
@@ -85,11 +87,12 @@ class AuthorServiceImplTest {
     void givenAuthorIdAndModifyRequest_whenUpdateAuthor_thenAuthorUpdated() {
         Long authorId = 1L;
         Author existingAuthor = new Author(authorId, "기존 이름");
-        AuthorModifyRequestDto dto = new AuthorModifyRequestDto("업데이트된 이름");
+        AuthorModifyRequestDto authorModifyRequestDto = new AuthorModifyRequestDto();
+        ReflectionTestUtils.setField(authorModifyRequestDto, "authorName", "업데이트된 이름");
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(existingAuthor));
         when(authorRepository.save(any(Author.class))).thenReturn(new Author(authorId, "업데이트된 이름"));
 
-        AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, dto);
+        AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, authorModifyRequestDto);
 
         assertNotNull(updatedAuthor);
         assertEquals("업데이트된 이름", updatedAuthor.getAuthorName());

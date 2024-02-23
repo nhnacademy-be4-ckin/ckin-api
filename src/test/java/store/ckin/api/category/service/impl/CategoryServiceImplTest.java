@@ -3,6 +3,7 @@ package store.ckin.api.category.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
@@ -41,8 +43,8 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("카테고리 생성 테스트")
     void whenCreateCategory_thenCategoryIsCreated() {
-        String categoryName = "국내도서";
-        CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto(null, categoryName, null);
+        CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "categoryName", "국내도서");
         Category category = new Category(null, null, "국내도서", 1);
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
@@ -89,7 +91,8 @@ class CategoryServiceImplTest {
     void whenUpdateCategory_thenCategoryIsUpdated() {
         Long categoryId = 1L;
         Category originalCategory = new Category(categoryId, null, "국내도서", 1);
-        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto("외국도서");
+        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "categoryName", "외국도서");
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(originalCategory));
         when(categoryRepository.save(any(Category.class))).thenReturn(new Category(categoryId, null, "외국도서", 1));
@@ -116,7 +119,8 @@ class CategoryServiceImplTest {
     void givenNonExistingCategoryId_whenUpdateCategory_thenThrowCategoryNotFoundException() {
 
         Long nonExistingCategoryId = 1L;
-        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto("외국도서");
+        CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "categoryName", "외국도서");
 
         when(categoryRepository.findById(nonExistingCategoryId)).thenReturn(Optional.empty());
 
@@ -134,5 +138,21 @@ class CategoryServiceImplTest {
         assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.deleteCategory(nonExistingCategoryId)
         );
+    }
+
+    @Test
+    @DisplayName("부모 카테고리가 존재하지 않을 때 CategoryNotFoundException 발생")
+    void whenParentCategoryNotFound_thenThrowCategoryNotFoundException() {
+        Long nonExistingParentId = 999L;
+        CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto();
+
+        ReflectionTestUtils.setField(requestDto, "parentCategoryId", nonExistingParentId);
+        ReflectionTestUtils.setField(requestDto, "categoryName", "테스트 카테고리");
+
+        when(categoryRepository.findByCategoryId(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(CategoryNotFoundException.class, () -> {
+            categoryService.createCategory(requestDto);
+        });
     }
 }
