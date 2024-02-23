@@ -1,7 +1,6 @@
 package store.ckin.api.author.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +32,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Page<AuthorResponseDto> findAllAuthors(Pageable pageable) {
-        Pageable sortedByAuthorName = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("authorName"));
+        Pageable sortedByAuthorName =
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("authorName"));
 
         Page<Author> authors = authorRepository.findAll(sortedByAuthorName);
         return authors.map(author -> AuthorResponseDto.builder()
@@ -74,7 +74,6 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-
     @Override
     @Transactional
     public AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto) {
@@ -93,15 +92,15 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-
     @Override
     @Transactional
     public void deleteAuthor(Long authorId) {
-        authorRepository.findById(authorId)
-                .orElseThrow(() -> new AuthorNotFoundException(authorId));
-
-        authorRepository.deleteById(authorId);
+        authorRepository.findById(authorId).ifPresentOrElse(
+                author -> authorRepository.deleteById(authorId),
+                () -> { throw new AuthorNotFoundException(authorId); }
+        );
     }
+
 
 }
 
