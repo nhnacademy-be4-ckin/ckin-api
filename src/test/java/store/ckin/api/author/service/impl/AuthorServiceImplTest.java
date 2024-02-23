@@ -146,5 +146,16 @@ class AuthorServiceImplTest {
         assertEquals("작가1", result.get(0).getAuthorName());
     }
 
+    @Test
+    @DisplayName("저자가 없을 때 삭제 시도시 예외 발생")
+    void givenNonExistingAuthorId_whenDeleteAuthor_thenThrowAuthorNotFoundException() {
+        Long nonExistingAuthorId = 1L;
+        when(authorRepository.findById(nonExistingAuthorId)).thenReturn(Optional.empty());
+
+        assertThrows(AuthorNotFoundException.class, () -> {
+            authorService.deleteAuthor(nonExistingAuthorId);
+        });
+    }
+
 
 }
