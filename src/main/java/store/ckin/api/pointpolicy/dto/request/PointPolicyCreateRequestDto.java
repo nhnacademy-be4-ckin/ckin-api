@@ -2,6 +2,7 @@ package store.ckin.api.pointpolicy.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import lombok.Getter;
 @Getter
 public class PointPolicyCreateRequestDto {
 
+    @Positive(message = "포인트 정책 ID는 1 이상의 숫자로 입력해주세요.")
     @NotNull(message = "포인트 정책 ID를 입력해주세요.")
     private Long pointPolicyId;
 

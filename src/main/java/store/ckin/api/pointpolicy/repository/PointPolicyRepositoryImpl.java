@@ -1,6 +1,10 @@
 package store.ckin.api.pointpolicy.repository;
 
+import com.querydsl.core.types.Projections;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.entity.QPointPolicy;
 
@@ -32,6 +36,40 @@ public class PointPolicyRepositoryImpl extends QuerydslRepositorySupport impleme
                 .where(pointPolicy.pointPolicyId.eq(id)
                         .or(pointPolicy.pointPolicyName.eq(name)))
                 .fetchCount() > 0;
-
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 포인트 정책 ID
+     * @return 조회된 포인트 정책 응답 DTO
+     */
+    @Override
+    public Optional<PointPolicyResponseDto> getPointPolicyById(Long id) {
+
+        QPointPolicy pointPolicy = QPointPolicy.pointPolicy;
+
+        return Optional.of(from(pointPolicy)
+                .where(pointPolicy.pointPolicyId.eq(id))
+                .select(Projections.constructor(PointPolicyResponseDto.class,
+                        pointPolicy.pointPolicyId,
+                        pointPolicy.pointPolicyName,
+                        pointPolicy.pointPolicyReserve))
+                .fetchOne());
+    }
+
+    @Override
+    public List<PointPolicyResponseDto> getPointPolicies() {
+
+        QPointPolicy pointPolicy = QPointPolicy.pointPolicy;
+
+        return from(pointPolicy)
+                .select(Projections.constructor(PointPolicyResponseDto.class,
+                        pointPolicy.pointPolicyId,
+                        pointPolicy.pointPolicyName,
+                        pointPolicy.pointPolicyReserve))
+                .fetch();
+    }
+
+
 }

@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
 
 /**
  * 배송비 정책 응답 DTO.
@@ -32,15 +31,5 @@ public class DeliveryPolicyResponseDto {
         this.deliveryPolicyFee = deliveryPolicyFee;
         this.deliveryPolicyCondition = deliveryPolicyCondition;
         this.deliveryPolicyState = deliveryPolicyState;
-    }
-
-
-    public static DeliveryPolicyResponseDto toDto(DeliveryPolicy deliveryPolicy) {
-        return DeliveryPolicyResponseDto.builder()
-                .deliveryPolicyId(deliveryPolicy.getDeliveryPolicyId())
-                .deliveryPolicyFee(deliveryPolicy.getDeliveryPolicyFee())
-                .deliveryPolicyCondition(deliveryPolicy.getDeliveryPolicyCondition())
-                .deliveryPolicyState(deliveryPolicy.getDeliveryPolicyState())
-                .build();
     }
 }

@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyCreateRequestDto;
+import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
 
@@ -44,6 +45,8 @@ class PointPolicyControllerTest {
 
     @MockBean
     PointPolicyService pointPolicyService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("포인트 정책 개별 조회")
@@ -95,7 +98,7 @@ class PointPolicyControllerTest {
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "포인트 정책");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 300);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(post("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,7 +118,7 @@ class PointPolicyControllerTest {
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", -3123213);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(post("/api/point-policies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,12 +131,11 @@ class PointPolicyControllerTest {
     @DisplayName("포인트 정책 수정 - 성공")
     void testUpdatePointPolicy_Success() throws Exception {
 
-        PointPolicyCreateRequestDto pointPolicy = new PointPolicyCreateRequestDto();
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", 1L);
+        PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "포인트 정책");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", 300);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(put("/api/point-policies/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -148,12 +150,11 @@ class PointPolicyControllerTest {
     @DisplayName("포인트 정책 수정 - 실패(Validation)")
     void testUpdatePointPolicy_Fail() throws Exception {
 
-        PointPolicyCreateRequestDto pointPolicy = new PointPolicyCreateRequestDto();
-        ReflectionTestUtils.setField(pointPolicy, "pointPolicyId", null);
+        PointPolicyUpdateRequestDto pointPolicy = new PointPolicyUpdateRequestDto();
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyName", "");
         ReflectionTestUtils.setField(pointPolicy, "pointPolicyReserve", -3123213);
 
-        String json = new ObjectMapper().writeValueAsString(pointPolicy);
+        String json = objectMapper.writeValueAsString(pointPolicy);
 
         mockMvc.perform(put("/api/point-policies/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)

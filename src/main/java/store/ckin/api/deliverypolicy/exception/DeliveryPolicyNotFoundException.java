@@ -9,6 +9,6 @@ package store.ckin.api.deliverypolicy.exception;
 public class DeliveryPolicyNotFoundException extends RuntimeException {
 
     public DeliveryPolicyNotFoundException(Long id) {
-        super("Delivery Policy Not Found [id = " + id + "]");
+        super(String.format("Delivery Policy Not Found [id = %d]", id));
     }
 }

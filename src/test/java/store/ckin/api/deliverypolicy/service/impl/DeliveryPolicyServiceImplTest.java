@@ -49,14 +49,15 @@ class DeliveryPolicyServiceImplTest {
     void testGetPointPolicy_Success() {
 
         // given
-        DeliveryPolicy deliveryPolicy = DeliveryPolicy.builder()
-                .deliveryPolicyId(1L)
-                .deliveryPolicyFee(5000)
-                .deliveryPolicyCondition(10000)
-                .deliveryPolicyState(true)
-                .build();
+        DeliveryPolicyResponseDto deliveryPolicy =
+                DeliveryPolicyResponseDto.builder()
+                        .deliveryPolicyId(1L)
+                        .deliveryPolicyFee(5000)
+                        .deliveryPolicyCondition(10000)
+                        .deliveryPolicyState(true)
+                        .build();
 
-        given(deliveryPolicyRepository.findById(anyLong()))
+        given(deliveryPolicyRepository.getDeliveryPolicyById(anyLong()))
                 .willReturn(Optional.of(deliveryPolicy));
 
         // when
@@ -70,14 +71,14 @@ class DeliveryPolicyServiceImplTest {
                 () -> assertEquals(deliveryPolicy.getDeliveryPolicyState(), actual.getDeliveryPolicyState())
         );
 
-        verify(deliveryPolicyRepository, times(1)).findById(anyLong());
+        verify(deliveryPolicyRepository, times(1)).getDeliveryPolicyById(anyLong());
     }
 
     @Test
     @DisplayName("배송비 정책 개별 조회 - 실패 (Not Found)")
     void testGetPointPolicy_Fail_NotFound() {
 
-        given(deliveryPolicyRepository.findById(anyLong()))
+        given(deliveryPolicyRepository.getDeliveryPolicyById(anyLong()))
                 .willReturn(Optional.empty());
 
         assertThrows(DeliveryPolicyNotFoundException.class,
@@ -87,18 +88,22 @@ class DeliveryPolicyServiceImplTest {
     @Test
     @DisplayName("배송비 정책 리스트 조회")
     void testGetPointPolicies() {
-        given(deliveryPolicyRepository.findAll()).willReturn(
-                List.of(new DeliveryPolicy(1L, 5000, 10000, true),
-                        new DeliveryPolicy(2L, 1000, 3000, false)));
+        List<DeliveryPolicyResponseDto> dtoList =
+                List.of(new DeliveryPolicyResponseDto(1L, 5000, 10000, true),
+                        new DeliveryPolicyResponseDto(2L, 1000, 3000, false));
+
+        given(deliveryPolicyRepository.getDeliveryPolicies()).willReturn(dtoList);
 
         List<DeliveryPolicyResponseDto> deliveryPolicies = deliveryPolicyService.getDeliveryPolicies();
 
         assertEquals(2, deliveryPolicies.size());
         assertAll(
-                () -> assertEquals(1L, deliveryPolicies.get(0).getDeliveryPolicyId()),
-                () -> assertEquals(2L, deliveryPolicies.get(1).getDeliveryPolicyId()),
-                () -> assertEquals(5000, deliveryPolicies.get(0).getDeliveryPolicyFee()),
-                () -> assertEquals(3000, deliveryPolicies.get(1).getDeliveryPolicyCondition()),
+                () -> assertEquals(dtoList.get(0).getDeliveryPolicyId(), deliveryPolicies.get(0).getDeliveryPolicyId()),
+                () -> assertEquals(dtoList.get(1).getDeliveryPolicyId(), deliveryPolicies.get(1).getDeliveryPolicyId()),
+                () -> assertEquals(dtoList.get(0).getDeliveryPolicyFee(), deliveryPolicies.get(0).getDeliveryPolicyFee()),
+                () -> assertEquals(dtoList.get(1).getDeliveryPolicyFee(), deliveryPolicies.get(1).getDeliveryPolicyFee()),
+                () -> assertEquals(dtoList.get(0).getDeliveryPolicyCondition(), deliveryPolicies.get(0).getDeliveryPolicyCondition()),
+                () -> assertEquals(dtoList.get(1).getDeliveryPolicyCondition(), deliveryPolicies.get(1).getDeliveryPolicyCondition()),
                 () -> assertTrue(deliveryPolicies.get(0).getDeliveryPolicyState()),
                 () -> assertFalse(deliveryPolicies.get(1).getDeliveryPolicyState())
         );
@@ -121,14 +126,16 @@ class DeliveryPolicyServiceImplTest {
         DeliveryPolicyUpdateRequestDto updateDto = new DeliveryPolicyUpdateRequestDto();
         ReflectionTestUtils.setField(updateDto, "deliveryPolicyFee", 300);
         ReflectionTestUtils.setField(updateDto, "deliveryPolicyCondition", 500);
-        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", true);
+        ReflectionTestUtils.setField(updateDto, "deliveryPolicyState", false);
 
 
         deliveryPolicyService.updateDeliveryPolicy(1L, updateDto);
 
-        assertEquals(updateDto.getDeliveryPolicyFee(), deliveryPolicy.getDeliveryPolicyFee());
-        assertEquals(updateDto.getDeliveryPolicyCondition(), deliveryPolicy.getDeliveryPolicyCondition());
-        assertEquals(updateDto.getDeliveryPolicyState(), deliveryPolicy.getDeliveryPolicyState());
+        assertAll(
+                () -> assertEquals(updateDto.getDeliveryPolicyFee(), deliveryPolicy.getDeliveryPolicyFee()),
+                () -> assertEquals(updateDto.getDeliveryPolicyCondition(), deliveryPolicy.getDeliveryPolicyCondition()),
+                () -> assertEquals(updateDto.getDeliveryPolicyState(), deliveryPolicy.getDeliveryPolicyState())
+        );
     }
 
     @Test

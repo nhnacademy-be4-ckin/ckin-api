@@ -1,7 +1,6 @@
 package store.ckin.api.deliverypolicy.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +33,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     @Override
     @Transactional(readOnly = true)
     public List<DeliveryPolicyResponseDto> getDeliveryPolicies() {
-        return deliveryPolicyRepository.findAll()
-                .stream()
-                .map(DeliveryPolicyResponseDto::toDto)
-                .collect(Collectors.toList());
+        return deliveryPolicyRepository.getDeliveryPolicies();
     }
 
     /**
@@ -49,8 +45,8 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     @Override
     @Transactional(readOnly = true)
     public DeliveryPolicyResponseDto getDeliveryPolicy(Long id) {
-        return deliveryPolicyRepository.findById(id)
-                .map(DeliveryPolicyResponseDto::toDto)
+
+        return deliveryPolicyRepository.getDeliveryPolicyById(id)
                 .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
     }
 
@@ -66,7 +62,9 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
         DeliveryPolicy deliveryPolicy = deliveryPolicyRepository.findById(id)
                 .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
 
-        deliveryPolicy.update(updateDeliveryPolicy);
+        deliveryPolicy.update(updateDeliveryPolicy.getDeliveryPolicyFee(),
+                updateDeliveryPolicy.getDeliveryPolicyCondition(),
+                updateDeliveryPolicy.getDeliveryPolicyState());
     }
 
     /**

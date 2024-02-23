@@ -9,6 +9,6 @@ package store.ckin.api.pointpolicy.exception;
 public class PointPolicyNotFoundException extends RuntimeException {
 
     public PointPolicyNotFoundException(Long id) {
-        super("PointPolicy not found [id = " + id + "]");
+        super(String.format("PointPolicy not found [id = %d]", id));
     }
 }
