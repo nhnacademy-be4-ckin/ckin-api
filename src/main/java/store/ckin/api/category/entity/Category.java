@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Table
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true) //일부 값만 변경하는 update로직 때문에 추가
+@Builder(toBuilder = true)
 public class Category {
 
     @Id
@@ -39,11 +39,7 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
-    //없어도 될 거 같음
     @Column(name = "category_priority")
     private Integer categoryPriority;
-
-
-
 }
 

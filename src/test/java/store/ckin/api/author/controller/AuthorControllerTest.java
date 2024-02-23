@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
 import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
@@ -90,7 +91,8 @@ class AuthorControllerTest {
     @Test
     @DisplayName("작가 생성 요청 시 작가 생성")
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() throws Exception {
-        AuthorCreateRequestDto createRequest = new AuthorCreateRequestDto("김작가");
+        AuthorCreateRequestDto createRequest = new AuthorCreateRequestDto();
+        ReflectionTestUtils.setField(createRequest, "authorName", "김작가");
         AuthorResponseDto createdAuthor = new AuthorResponseDto(1L, "김작가");
         when(authorService.createAuthor(any(AuthorCreateRequestDto.class))).thenReturn(createdAuthor);
 
@@ -108,7 +110,8 @@ class AuthorControllerTest {
     @DisplayName("작가 정보 업데이트")
     void updateAuthorTest() throws Exception {
         Long authorId = 1L;
-        AuthorModifyRequestDto modifyRequest = new AuthorModifyRequestDto("김업뎃");
+        AuthorModifyRequestDto modifyRequest = new AuthorModifyRequestDto();
+        ReflectionTestUtils.setField(modifyRequest, "authorName", "김업뎃");
         AuthorResponseDto updatedAuthor = new AuthorResponseDto(authorId, "김업뎃");
         when(authorService.updateAuthor(eq(authorId), any(AuthorModifyRequestDto.class))).thenReturn(updatedAuthor);
         String json = new ObjectMapper().writeValueAsString(modifyRequest);
@@ -135,7 +138,8 @@ class AuthorControllerTest {
     @Test
     @DisplayName("잘못된 입력 시 400 반환")
     void whenInvalidInput_thenReturns400() throws Exception {
-        AuthorCreateRequestDto dto = new AuthorCreateRequestDto("");
+        AuthorCreateRequestDto dto = new AuthorCreateRequestDto();
+        ReflectionTestUtils.setField(dto, "authorName", "");
         mockMvc.perform(post("/api/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto)))
@@ -146,7 +150,8 @@ class AuthorControllerTest {
     @DisplayName("수정폼 잘못된 입력 시 400 반환")
     void whenInvalidInputForUpdate_thenReturns400() throws Exception {
         Long authorId = 1L;
-        AuthorModifyRequestDto dto = new AuthorModifyRequestDto("");
+        AuthorModifyRequestDto dto = new AuthorModifyRequestDto();
+        ReflectionTestUtils.setField(dto, "authorName", "");
 
         mockMvc.perform(put("/api/authors/{authorId}", authorId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +163,8 @@ class AuthorControllerTest {
     @DisplayName("생성 시 작가 이름이 너무 길면 400 반환")
     void whenAuthorNameTooLongInCreate_thenReturns400() throws Exception {
         String longName = "a".repeat(201);
-        AuthorCreateRequestDto dto = new AuthorCreateRequestDto(longName);
+        AuthorCreateRequestDto dto = new AuthorCreateRequestDto();
+        ReflectionTestUtils.setField(dto, "authorName", longName);
 
         mockMvc.perform(post("/api/authors")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +177,8 @@ class AuthorControllerTest {
     void whenAuthorNameTooLongInUpdate_thenReturns400() throws Exception {
         Long authorId = 1L;
         String longName = "a".repeat(201);
-        AuthorModifyRequestDto dto = new AuthorModifyRequestDto(longName);
+        AuthorModifyRequestDto dto = new AuthorModifyRequestDto();
+        ReflectionTestUtils.setField(dto, "authorName", longName);
 
         mockMvc.perform(put("/api/authors/{authorId}", authorId)
                         .contentType(MediaType.APPLICATION_JSON)
