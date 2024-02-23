@@ -26,6 +26,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
 
         MemberAuthResponseDto memberAuthResponseDto =  from(member)
                 .select(Projections.constructor(MemberAuthResponseDto.class,
+                        member.id,
                         member.email,
                         member.password,
                         member.role))

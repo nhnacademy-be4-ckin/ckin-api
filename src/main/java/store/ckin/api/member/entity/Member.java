@@ -59,7 +59,7 @@ public class Member {
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long memberId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")

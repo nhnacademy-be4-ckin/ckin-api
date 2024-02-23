@@ -1,9 +1,9 @@
 package store.ckin.api.member.service;
 
 import java.util.Optional;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
+import store.ckin.api.member.domain.MemberCreateRequestDto;
 
 /**
  * Member 의 관한 로직을 처리하는 서비스 인터페이스 입니다.

@@ -13,6 +13,8 @@ import store.ckin.api.member.entity.Member;
 @Getter
 @NoArgsConstructor
 public class MemberAuthResponseDto {
+    Long id;
+
     String email;
 
     String password;
