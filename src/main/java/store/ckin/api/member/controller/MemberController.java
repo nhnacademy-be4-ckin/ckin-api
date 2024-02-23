@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoRequestDto;
-import store.ckin.api.member.domain.MemberInfoResponseDto;
+import store.ckin.api.member.domain.MemberAuthRequestDto;
+import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -45,13 +45,13 @@ public class MemberController {
     /**
      * JWT 토큰에 필요한 정보 요청을 처리하는 Method 입니다.
      *
-     * @param memberInfoRequestDto Member 정보 요청 DTO
+     * @param memberAuthRequestDto Member 정보 요청 DTO
      * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
     @PostMapping("/api/login")
-    public ResponseEntity<Optional<MemberInfoResponseDto>> getMemberInfo(
-            @Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
-        Optional<MemberInfoResponseDto> response = memberService.getLoginMemberInfo(memberInfoRequestDto);
+    public ResponseEntity<Optional<MemberAuthResponseDto>> getMemberInfo(
+            @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
+        Optional<MemberAuthResponseDto> response = memberService.getLoginMemberInfo(memberAuthRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
