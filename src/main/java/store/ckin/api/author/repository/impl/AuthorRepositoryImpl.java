@@ -3,7 +3,6 @@ package store.ckin.api.author.repository.impl;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.stereotype.Repository;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.entity.QAuthor;
@@ -34,7 +33,6 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
                         qAuthor.authorName))
                 .fetch();
     }
-
 
 
 }

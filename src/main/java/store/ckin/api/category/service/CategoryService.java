@@ -5,8 +5,6 @@ import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 
-;
-
 /**
  * CategoryService.
  *

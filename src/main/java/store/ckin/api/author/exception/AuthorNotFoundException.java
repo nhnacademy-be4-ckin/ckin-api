@@ -1,8 +1,5 @@
 package store.ckin.api.author.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * {class name}.
  *
@@ -11,10 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public class AuthorNotFoundException extends RuntimeException {
 
+
     /**
      * Instantiates a new Author not found exception.
      *
-     * @param message the message
+     * @param authorId the author id
      */
     public AuthorNotFoundException(Long authorId) {
         super(String.format("Author not found: %s", authorId));

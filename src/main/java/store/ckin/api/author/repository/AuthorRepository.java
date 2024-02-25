@@ -1,7 +1,6 @@
 package store.ckin.api.author.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import store.ckin.api.author.entity.Author;
 
 /**
