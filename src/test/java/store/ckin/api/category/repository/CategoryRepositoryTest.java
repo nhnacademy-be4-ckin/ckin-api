@@ -64,8 +64,9 @@ class CategoryRepositoryTest {
     @Test
     @DisplayName("특정 ID로 카테고리 조회")
     void givenCategoryId_whenFindByCategoryId_thenCategoryIsReturned() {
-        Category category = new Category(null, null, "국내도서", null);
-        categoryRepository.save(category);
+        Category category = Category.builder()
+                .categoryName("국내도서")
+                .build();        categoryRepository.save(category);
 
         Optional<Category> found = categoryRepository.findByCategoryId(category.getCategoryId());
 
@@ -76,7 +77,9 @@ class CategoryRepositoryTest {
     @Test
     @DisplayName("최상위 카테고리 조회")
     void whenFindRootCategories_thenRootCategoriesAreReturned() {
-        Category rootCategory = new Category(null, null, "최상위 카테고리", null);
+        Category rootCategory = Category.builder()
+                .categoryName("최상위 카테고리")
+                .build();
         categoryRepository.save(rootCategory);
 
         List<Category> rootCategories = categoryRepository.findByParentCategoryIsNull();
@@ -89,10 +92,15 @@ class CategoryRepositoryTest {
     @DisplayName("부모 ID로 하위 카테고리 조회")
     void givenParentCategoryId_whenFindChildCategories_thenChildCategoriesAreReturned() {
 
-        Category parentCategory = new Category(null, null, "부모 카테고리", null);
+        Category parentCategory = Category.builder()
+                .categoryName("부모 카테고리")
+                .build();
         categoryRepository.save(parentCategory);
 
-        Category childCategory = new Category(null, parentCategory, "자식 카테고리", null);
+        Category childCategory = Category.builder()
+                .parentCategory(parentCategory)
+                .categoryName("자식 카테고리")
+                .build();
         categoryRepository.save(childCategory);
 
         List<Category> childCategories =
