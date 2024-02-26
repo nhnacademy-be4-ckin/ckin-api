@@ -2,14 +2,8 @@ package store.ckin.api.member.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -84,12 +78,14 @@ public class Member {
     private LocalDate birth;
 
     @Column(name = "member_state")
+    @Enumerated(EnumType.STRING)
     private State state;
 
     @Column(name = "member_latest_login_at")
     private LocalDateTime latestLoginAt;
 
     @Column(name = "member_role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "member_point")

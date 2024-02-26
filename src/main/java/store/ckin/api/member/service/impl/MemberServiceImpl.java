@@ -3,7 +3,6 @@ package store.ckin.api.member.service.impl;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
@@ -24,7 +23,6 @@ import store.ckin.api.member.service.MemberService;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -44,8 +42,6 @@ public class MemberServiceImpl implements MemberService {
         if (grade.isEmpty()) {
            throw new GradeNotFoundException();
         }
-
-        log.info(String.valueOf(memberCreateRequestDto.getPassword().length()));
 
         Member member = Member.builder()
                 .grade(grade.get())
