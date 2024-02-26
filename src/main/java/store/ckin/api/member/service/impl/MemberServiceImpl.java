@@ -3,11 +3,15 @@ package store.ckin.api.member.service.impl;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.grade.entity.Grade;
+import store.ckin.api.grade.exception.GradeNotFoundException;
+import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
+import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -20,10 +24,13 @@ import store.ckin.api.member.service.MemberService;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+
+    private final GradeRepository gradeRepository;
 
     @Transactional
     @Override
@@ -32,12 +39,22 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberAlreadyExistsException();
         }
 
+        Optional<Grade> grade = gradeRepository.findById(1L);
+
+        if (grade.isEmpty()) {
+           throw new GradeNotFoundException();
+        }
+
+        log.info(String.valueOf(memberCreateRequestDto.getPassword().length()));
+
         Member member = Member.builder()
+                .grade(grade.get())
                 .email(memberCreateRequestDto.getEmail())
                 .password(memberCreateRequestDto.getPassword())
                 .name(memberCreateRequestDto.getName())
                 .contact(memberCreateRequestDto.getContact())
                 .birth(memberCreateRequestDto.getBirth())
+                .state(Member.State.ACTIVE)
                 .latestLoginAt(LocalDateTime.now())
                 .role(Member.Role.MEMBER)
                 .point(5000)
