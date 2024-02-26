@@ -1,15 +1,18 @@
 package store.ckin.api.author.entity;
 
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.ckin.api.relationship.bookauthor.entity.BookAuthor;
 
 /**
  * Author 테이블.
@@ -22,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "Author")
 @AllArgsConstructor
-@Builder(toBuilder = true) //일부 값만 변경하는 update로직 때문에 추가
+@Builder(toBuilder = true)
 public class Author {
 
     @Id
@@ -32,5 +35,9 @@ public class Author {
 
     @Column(name = "author_name")
     private String authorName;
+
+    @OneToMany(mappedBy = "author")
+    private Set<BookAuthor> books;
+
 
 }
