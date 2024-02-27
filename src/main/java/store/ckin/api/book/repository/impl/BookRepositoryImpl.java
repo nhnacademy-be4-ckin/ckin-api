@@ -13,11 +13,11 @@ import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
+import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
+import store.ckin.api.book.relationship.bookcategory.entity.QBookCategory;
+import store.ckin.api.book.relationship.booktag.entity.QBookTag;
 import store.ckin.api.book.repository.BookRepositoryCustom;
 import store.ckin.api.category.entity.QCategory;
-import store.ckin.api.relationship.bookauthor.entity.QBookAuthor;
-import store.ckin.api.relationship.bookcategory.entity.QBookCategory;
-import store.ckin.api.relationship.booktag.entity.QBookTag;
 import store.ckin.api.tag.entity.QTag;
 
 /**
