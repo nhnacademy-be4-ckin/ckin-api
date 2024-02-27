@@ -7,14 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * BookResponseDto 단일 조회 dto클래스.
+ * BookListResponseDto 리스트로 받아올 떄 Dto입니다.
  *
  * @author 나국로
- * @version 2024. 02. 26.
+ * @version 2024. 02. 27.
  */
 @Getter
 @NoArgsConstructor
-public class BookResponseDto {
+public class BookListResponseDto {
     private Long bookId;
     private String bookIsbn;
     private String bookTitle;
@@ -30,15 +30,14 @@ public class BookResponseDto {
     private Integer bookSalePrice;
     private String bookReviewRate;
     private List<String> authorNames;
-    private List<String> categoryNames;
-    private List<String> tagNames;
 
     @Builder
-    public BookResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription, String bookPublisher,
-                           Date bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
-                           Integer bookRegularPrice, Integer bookDiscountRate, String bookState, Integer bookSalePrice,
-                           String bookReviewRate, List<String> authorNames, List<String> categoryNames,
-                           List<String> tagNames) {
+    public BookListResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription,
+                               String bookPublisher,
+                               Date bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
+                               Integer bookRegularPrice, Integer bookDiscountRate, String bookState,
+                               Integer bookSalePrice,
+                               String bookReviewRate, List<String> authorNames) {
         this.bookId = bookId;
         this.bookIsbn = bookIsbn;
         this.bookTitle = bookTitle;
@@ -54,7 +53,5 @@ public class BookResponseDto {
         this.bookSalePrice = bookSalePrice;
         this.bookReviewRate = bookReviewRate;
         this.authorNames = authorNames;
-        this.categoryNames = categoryNames;
-        this.tagNames = tagNames;
     }
 }

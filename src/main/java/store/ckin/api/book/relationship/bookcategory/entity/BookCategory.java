@@ -1,4 +1,4 @@
-package store.ckin.api.relationship.booktag.entity;
+package store.ckin.api.book.relationship.bookcategory.entity;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -14,10 +14,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.ckin.api.book.entity.Book;
-import store.ckin.api.tag.entity.Tag;
+import store.ckin.api.category.entity.Category;
 
 /**
- * BookTag 연결 테이블.
+ * BookCategory 연결 테이블.
  *
  * @author 나국로
  * @version 2024. 02. 26.
@@ -25,8 +25,9 @@ import store.ckin.api.tag.entity.Tag;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Entity@Table(name = "Book_Tag")
-public class BookTag {
+@Entity
+@Table(name = "Book_Category")
+public class BookCategory {
 
     @EmbeddedId
     private PK pk;
@@ -36,19 +37,19 @@ public class BookTag {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @MapsId("tagId")
+    @MapsId("categoryId")
     @ManyToOne
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Embeddable
     @EqualsAndHashCode
+    @Embeddable
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PK implements Serializable {
         private Long bookId;
-        private Long tagId;
+        private Long categoryId;
     }
 
 }

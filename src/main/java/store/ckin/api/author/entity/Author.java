@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.relationship.bookauthor.entity.BookAuthor;
+import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 
 /**
  * Author 테이블.

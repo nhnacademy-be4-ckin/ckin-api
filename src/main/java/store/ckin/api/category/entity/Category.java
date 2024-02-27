@@ -14,10 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.relationship.bookcategory.entity.BookCategory;
+import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 
 /**
- * {class name}.
+ * Category 엔티티 클래스.
  *
  * @author 나국로
  * @version 2024. 02. 15.

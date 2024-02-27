@@ -1,7 +1,9 @@
 package store.ckin.api.book.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import store.ckin.api.author.exception.AuthorNotFoundException;
 import store.ckin.api.author.repository.AuthorRepository;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
@@ -20,15 +23,15 @@ import store.ckin.api.book.service.BookService;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;
 import store.ckin.api.category.repository.CategoryRepository;
-import store.ckin.api.relationship.bookauthor.entity.BookAuthor;
-import store.ckin.api.relationship.bookcategory.entity.BookCategory;
-import store.ckin.api.relationship.booktag.entity.BookTag;
+import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
+import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
+import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.tag.entity.Tag;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
 
 /**
- * {class name}.
+ * BookService 구현클래스.
  *
  * @author 나국로
  * @version 2024. 02. 26.
@@ -43,13 +46,26 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<BookResponseDto> findByAuthorName(String authorName, Pageable pageable) {
+    public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         return bookRepository.findByAuthorName(authorName, pageable);
     }
+
     @Transactional(readOnly = true)
     @Override
-    public Page<BookResponseDto> findByBookTitle(String bookTitle, Pageable pageable) {
+    public Page<BookListResponseDto> findByBookTitle(String bookTitle, Pageable pageable) {
         return bookRepository.findByBookTitleContaining(bookTitle, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
+        return bookRepository.findByCategoryId(categoryId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
+        return bookRepository.findAllBooks(pageable);
     }
 
     @Transactional
@@ -129,13 +145,20 @@ public class BookServiceImpl implements BookService {
                 .build();
 
 
-
         // 작가, 카테고리, 태그 정보 업데이트
         updateAuthors(updatedBook, requestDto.getAuthorIds());
         updateCategories(updatedBook, requestDto.getCategoryIds());
         updateTags(updatedBook, requestDto.getTagIds());
 
         bookRepository.save(updatedBook);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public BookResponseDto findBookById(Long bookId) {
+        Book book = bookRepository.findByBookId(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+        return convertToBookResponseDto(book);
     }
 
     private void updateAuthors(Book book, Set<Long> authorIds) {
@@ -163,7 +186,7 @@ public class BookServiceImpl implements BookService {
         book.getTags().clear();
         for (Long tagId : tagIds) {
             Tag tag = tagRepository.findById(tagId)
-                    .orElseThrow(() -> new CategoryNotFoundException(tagId));
+                    .orElseThrow(() -> new TagNotFoundException(tagId));
             book.getTags().add(new BookTag(new BookTag.PK(book.getBookId(), tag.getTagId()), book, tag));
         }
     }
@@ -172,6 +195,36 @@ public class BookServiceImpl implements BookService {
     private Integer calculateSalePrice(Integer regularPrice, Integer discountRate) {
         // 할인된 가격 계산 로직
         return regularPrice - (regularPrice * discountRate / 100);
+    }
+
+    private BookResponseDto convertToBookResponseDto(Book book) {
+        List<String> authorNames = book.getAuthors().stream()
+                .map(bookAuthor -> bookAuthor.getAuthor().getAuthorName())
+                .collect(Collectors.toList());
+        List<String> categoryNames = book.getCategories().stream()
+                .map(bookCategory -> bookCategory.getCategory().getCategoryName())
+                .collect(Collectors.toList());
+        List<String> tagNames = book.getTags().stream()
+                .map(bookTag -> bookTag.getTag().getTagName())
+                .collect(Collectors.toList());
+
+        return BookResponseDto.builder()
+                .bookId(book.getBookId())
+                .bookIsbn(book.getBookIsbn())
+                .bookTitle(book.getBookTitle())
+                .bookDescription(book.getBookDescription())
+                .bookPublisher(book.getBookPublisher())
+                .bookPublicationDate(book.getBookPublicationDate())
+                .bookIndex(book.getBookIndex())
+                .bookPackaging(book.getBookPackaging())
+                .bookStock(book.getBookStock())
+                .bookRegularPrice(book.getBookRegularPrice())
+                .bookDiscountRate(book.getBookDiscountRate())
+                .bookState(book.getBookState())
+                .authorNames(authorNames)
+                .categoryNames(categoryNames)
+                .tagNames(tagNames)
+                .build();
     }
 
 

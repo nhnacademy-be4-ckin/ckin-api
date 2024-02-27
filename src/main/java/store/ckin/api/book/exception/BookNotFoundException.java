@@ -1,7 +1,7 @@
 package store.ckin.api.book.exception;
 
 /**
- * BookNotFoundException 예외클래스.
+ * BookNotFoundException 예외 클래스.
  *
  * @author 나국로
  * @version 2024. 02. 26.

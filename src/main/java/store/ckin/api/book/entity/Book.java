@@ -16,9 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.relationship.bookauthor.entity.BookAuthor;
-import store.ckin.api.relationship.bookcategory.entity.BookCategory;
-import store.ckin.api.relationship.booktag.entity.BookTag;
+import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
+import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
+import store.ckin.api.book.relationship.booktag.entity.BookTag;
 
 /**
  * Book Entity.
@@ -39,7 +39,7 @@ public class Book {
     @Column(name = "book_id")
     private Long bookId;
 
-    @Column(name = "book_isbn", nullable = false, unique = true, length = 13)
+    @Column(name = "book_isbn", nullable = false, unique = true, length = 17)
     private String bookIsbn;
 
     @Column(name = "book_title", nullable = false, length = 100)
