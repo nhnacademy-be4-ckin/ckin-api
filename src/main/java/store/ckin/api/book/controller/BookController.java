@@ -1,5 +1,6 @@
 package store.ckin.api.book.controller;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,13 +59,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createBook(@RequestBody BookCreateRequestDto requestDto) {
+    public ResponseEntity<Void> createBook(@Valid @RequestBody BookCreateRequestDto requestDto) {
         bookService.createBook(requestDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<Void> updateBook(@PathVariable Long bookId, @RequestBody BookModifyRequestDto requestDto) {
+    public ResponseEntity<Void> updateBook(@PathVariable Long bookId, @Valid @RequestBody BookModifyRequestDto requestDto) {
         bookService.updateBook(bookId, requestDto);
         return ResponseEntity.ok().build();
     }
