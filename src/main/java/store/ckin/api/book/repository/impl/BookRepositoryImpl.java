@@ -43,7 +43,6 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
 
-        // 책 목록 가져오기
         List<Book> books = queryFactory
                 .selectFrom(qBook)
                 .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
@@ -53,24 +52,21 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 총 결과 수 계산
-        Long total = queryFactory
-                .select(qBook.count())
-                .from(qBook)
-                .join(qBook.authors, qBookAuthor)
-                .join(qBookAuthor.author, qAuthor)
-                .where(qAuthor.authorName.eq(authorName))
-                .fetchOne();
+        Long total = Optional.ofNullable(queryFactory
+                        .select(qBook.count())
+                        .from(qBook)
+                        .join(qBook.authors, qBookAuthor)
+                        .join(qBookAuthor.author, qAuthor)
+                        .where(qAuthor.authorName.eq(authorName))
+                        .fetchOne())
+                .orElse(0L);
 
-        // null 검사를 수행하고, null이면 0을 기본값으로 사용
-        long totalCount = total != null ? total : 0;
 
-        // Book 엔티티를 BookListResponseDto로 변환
         List<BookListResponseDto> bookResponseDtos = books.stream()
                 .map(this::convertToBookListResponseDto)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(bookResponseDtos, pageable, totalCount);
+        return new PageImpl<>(bookResponseDtos, pageable, total);
 
     }
 
