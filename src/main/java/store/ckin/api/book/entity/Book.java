@@ -39,45 +39,45 @@ public class Book {
     @Column(name = "book_id")
     private Long bookId;
 
-    @Column(name = "book_isbn", nullable = false, unique = true, length = 17)
+    @Column(name = "book_isbn")
     private String bookIsbn;
 
-    @Column(name = "book_title", nullable = false, length = 100)
+    @Column(name = "book_title")
     private String bookTitle;
 
-    @Column(name = "book_description", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "book_description")
     private String bookDescription;
 
-    @Column(name = "book_publisher", nullable = false, length = 100)
+    @Column(name = "book_publisher")
     private String bookPublisher;
 
-    @Column(name = "book_publication_date", nullable = false)
+    @Column(name = "book_publication_date")
     @Temporal(TemporalType.DATE)
     private Date bookPublicationDate;
 
-    @Column(name = "book_index", columnDefinition = "TEXT")
+    @Column(name = "book_index")
     private String bookIndex;
 
-    @Column(name = "book_packaging", nullable = false)
+    @Column(name = "book_packaging")
     private Boolean bookPackaging;
 
-    @Column(name = "book_state", nullable = false, length = 20)
+    @Column(name = "book_state")
     private String bookState = "ON_SALE";
 
-    @Column(name = "book_stock", nullable = false)
+    @Column(name = "book_stock")
     @Builder.Default
     private Integer bookStock = 0;
 
-    @Column(name = "book_regular_price", nullable = false)
+    @Column(name = "book_regular_price")
     private Integer bookRegularPrice;
 
-    @Column(name = "book_discount_rate", nullable = false)
+    @Column(name = "book_discount_rate")
     private Integer bookDiscountRate;
 
-    @Column(name = "book_sale_price", nullable = false)
+    @Column(name = "book_sale_price")
     private Integer bookSalePrice;
 
-    @Column(name = "book_review_rate", nullable = false, length = 5)
+    @Column(name = "book_review_rate")
     @Builder.Default
     private String bookReviewRate = "0";
 
