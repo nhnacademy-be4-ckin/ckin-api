@@ -24,12 +24,13 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     public Optional<MemberAuthResponseDto> getLoginInfo(String email) {
         QMember member = QMember.member;
 
-        MemberAuthResponseDto memberAuthResponseDto =  from(member)
+        MemberAuthResponseDto memberAuthResponseDto = from(member)
                 .select(Projections.constructor(MemberAuthResponseDto.class,
                         member.id,
                         member.email,
                         member.password,
-                        member.role))
+                        member.role
+                        ))
                 .where(member.email.eq(email))
                 .fetchOne();
 

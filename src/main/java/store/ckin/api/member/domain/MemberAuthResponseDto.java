@@ -19,5 +19,20 @@ public class MemberAuthResponseDto {
 
     String password;
 
-    Member.Role role;
+    String role;
+
+    /**
+     * Member.Role 값을 String 으로 변환하는 생성자 메서드 입니다.
+     *
+     * @param id       the id
+     * @param email    the email
+     * @param password the password
+     * @param role     the role
+     */
+    public MemberAuthResponseDto(Long id, String email, String password, Member.Role role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role.name();
+    }
 }
