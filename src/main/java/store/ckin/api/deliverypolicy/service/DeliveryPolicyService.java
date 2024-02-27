@@ -42,4 +42,12 @@ public interface DeliveryPolicyService {
      * @param updateDeliveryPolicy  수정할 배송비 정책 DTO
      */
     void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy);
+
+    /**
+     * 시행중인 배송비 정책을 반환하는 메서드입니다.
+     *
+     * @return 시행중인 배송비 정책 응답 DTO
+     */
+    DeliveryPolicyResponseDto getActiveDeliveryPolicy();
+
 }

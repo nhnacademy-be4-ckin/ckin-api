@@ -8,6 +8,7 @@ import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
+import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotActiveException;
 import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotFoundException;
 import store.ckin.api.deliverypolicy.repository.DeliveryPolicyRepository;
 import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
@@ -67,6 +68,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
                 updateDeliveryPolicy.getDeliveryPolicyState());
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -89,4 +91,17 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
 
         deliveryPolicyRepository.save(deliveryPolicy);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return 조회된 배송비 정책 응답 DTO
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public DeliveryPolicyResponseDto getActiveDeliveryPolicy() {
+        return deliveryPolicyRepository.getActiveDeliveryPolicy()
+                .orElseThrow(DeliveryPolicyNotActiveException::new);
+    }
+
 }

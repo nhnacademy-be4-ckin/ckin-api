@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotActiveException;
 
 /**
  * Controller Advice 입니다.
@@ -25,5 +26,10 @@ public class WebControllerAdvice {
                 .collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler({DeliveryPolicyNotActiveException.class})
+    public ResponseEntity<Object> handleDeliveryPolicyNotActiveException(DeliveryPolicyNotActiveException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

@@ -76,4 +76,8 @@ public class DeliveryPolicyController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<DeliveryPolicyResponseDto> getActiveDeliveryPolicy() {
+        return ResponseEntity.ok(deliveryPolicyService.getActiveDeliveryPolicy());
+    }
 }
