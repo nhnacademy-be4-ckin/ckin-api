@@ -43,7 +43,7 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
 
-        // 책에 대한 쿼리를 구성
+        // 책 목록 가져오기
         List<Book> books = queryFactory
                 .selectFrom(qBook)
                 .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
@@ -53,19 +53,25 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 전체 결과 수를 계산
-        long total = queryFactory.selectFrom(qBook)
+        // 총 결과 수 계산
+        Long total = queryFactory
+                .select(qBook.count())
+                .from(qBook)
                 .join(qBook.authors, qBookAuthor)
                 .join(qBookAuthor.author, qAuthor)
                 .where(qAuthor.authorName.eq(authorName))
-                .fetchCount();
+                .fetchOne();
 
-        // Book 엔티티를 BookResponseDto로 변환
+        // null 검사를 수행하고, null이면 0을 기본값으로 사용
+        long totalCount = total != null ? total : 0;
+
+        // Book 엔티티를 BookListResponseDto로 변환
         List<BookListResponseDto> bookResponseDtos = books.stream()
                 .map(this::convertToBookListResponseDto)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(bookResponseDtos, pageable, total);
+        return new PageImpl<>(bookResponseDtos, pageable, totalCount);
+
     }
 
     @Override
@@ -79,10 +85,12 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory
-                .selectFrom(qBook)
-                .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
-                .fetchCount();
+        Long total = Optional.ofNullable(queryFactory
+                        .select(qBook.count())
+                        .from(qBook)
+                        .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
+                        .fetchOne())
+                .orElse(0L);
 
         List<BookListResponseDto> bookResponseDtos = books.stream()
                 .map(this::convertToBookListResponseDto)
@@ -91,27 +99,26 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
+
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
-        // 카테고리 ID에 따른 책 목록을 조회
         List<Book> books = queryFactory
                 .selectFrom(qBook)
                 .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-//                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
                 .leftJoin(qBook.categories, qBookCategory).fetchJoin()
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 전체 결과 수를 계산
-        long total = queryFactory
-                .selectFrom(qBook)
-                .join(qBook.categories, qBookCategory)
-                .where(qBookCategory.category.categoryId.eq(categoryId))
-                .fetchCount();
+        Long total = Optional.ofNullable(queryFactory
+                        .select(qBook.count())
+                        .from(qBook)
+                        .join(qBook.categories, qBookCategory)
+                        .where(qBookCategory.category.categoryId.eq(categoryId))
+                        .fetchOne())
+                .orElse(0L);
 
-        // Book 엔티티를 BookResponseDto로 변환
         List<BookListResponseDto> bookResponseDtos = books.stream()
                 .map(this::convertToBookListResponseDto)
                 .collect(Collectors.toList());
@@ -122,27 +129,27 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
-        // 모든 책을 조회
         List<Book> books = queryFactory
                 .selectFrom(qBook)
                 .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin() // 저자 엔티티에 대한 fetchJoin 추가
+                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 전체 결과 수를 계산
-        long total = queryFactory
-                .selectFrom(qBook)
-                .fetchCount();
+        Long total = Optional.ofNullable(queryFactory
+                        .select(qBook.count())
+                        .from(qBook)
+                        .fetchOne())
+                .orElse(0L);
 
-        // Book 엔티티를 BookResponseDto로 변환
         List<BookListResponseDto> bookResponseDtos = books.stream()
                 .map(this::convertToBookListResponseDto)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
+
 
     @Override
     public Optional<Book> findByBookId(Long bookId) {
