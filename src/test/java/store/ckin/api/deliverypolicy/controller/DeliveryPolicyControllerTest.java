@@ -177,4 +177,31 @@ class DeliveryPolicyControllerTest {
         verify(deliveryPolicyService, times(0))
                 .updateDeliveryPolicy(anyLong(), any());
     }
+
+    @Test
+    @DisplayName("활성화된 배송비 정책 조회")
+    void testGetActiveDeliveryPolicy() throws Exception {
+
+        DeliveryPolicyResponseDto deliveryPolicy =
+                DeliveryPolicyResponseDto.builder()
+                        .deliveryPolicyId(1L)
+                        .deliveryPolicyFee(5000)
+                        .deliveryPolicyCondition(10000)
+                        .deliveryPolicyState(true)
+                        .build();
+
+        given(deliveryPolicyService.getActiveDeliveryPolicy())
+                .willReturn(deliveryPolicy);
+
+        mockMvc.perform(get("/api/delivery-policies/activation"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        jsonPath("$.deliveryPolicyId").value(deliveryPolicy.getDeliveryPolicyId()),
+                        jsonPath("$.deliveryPolicyFee").value(deliveryPolicy.getDeliveryPolicyFee()),
+                        jsonPath("$.deliveryPolicyCondition").value(deliveryPolicy.getDeliveryPolicyCondition()),
+                        jsonPath("$.deliveryPolicyState").value(deliveryPolicy.getDeliveryPolicyState())
+                )
+                .andDo(print());
+    }
 }

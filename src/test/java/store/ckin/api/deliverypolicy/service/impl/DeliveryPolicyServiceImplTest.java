@@ -25,6 +25,7 @@ import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyCreateRequestDto;
 import store.ckin.api.deliverypolicy.dto.request.DeliveryPolicyUpdateRequestDto;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;
+import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotActiveException;
 import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotFoundException;
 import store.ckin.api.deliverypolicy.repository.DeliveryPolicyRepository;
 
@@ -100,10 +101,14 @@ class DeliveryPolicyServiceImplTest {
         assertAll(
                 () -> assertEquals(dtoList.get(0).getDeliveryPolicyId(), deliveryPolicies.get(0).getDeliveryPolicyId()),
                 () -> assertEquals(dtoList.get(1).getDeliveryPolicyId(), deliveryPolicies.get(1).getDeliveryPolicyId()),
-                () -> assertEquals(dtoList.get(0).getDeliveryPolicyFee(), deliveryPolicies.get(0).getDeliveryPolicyFee()),
-                () -> assertEquals(dtoList.get(1).getDeliveryPolicyFee(), deliveryPolicies.get(1).getDeliveryPolicyFee()),
-                () -> assertEquals(dtoList.get(0).getDeliveryPolicyCondition(), deliveryPolicies.get(0).getDeliveryPolicyCondition()),
-                () -> assertEquals(dtoList.get(1).getDeliveryPolicyCondition(), deliveryPolicies.get(1).getDeliveryPolicyCondition()),
+                () -> assertEquals(dtoList.get(0).getDeliveryPolicyFee(),
+                        deliveryPolicies.get(0).getDeliveryPolicyFee()),
+                () -> assertEquals(dtoList.get(1).getDeliveryPolicyFee(),
+                        deliveryPolicies.get(1).getDeliveryPolicyFee()),
+                () -> assertEquals(dtoList.get(0).getDeliveryPolicyCondition(),
+                        deliveryPolicies.get(0).getDeliveryPolicyCondition()),
+                () -> assertEquals(dtoList.get(1).getDeliveryPolicyCondition(),
+                        deliveryPolicies.get(1).getDeliveryPolicyCondition()),
                 () -> assertTrue(deliveryPolicies.get(0).getDeliveryPolicyState()),
                 () -> assertFalse(deliveryPolicies.get(1).getDeliveryPolicyState())
         );
@@ -183,5 +188,44 @@ class DeliveryPolicyServiceImplTest {
         verify(deliveryPolicyRepository, times(0)).findByState(anyBoolean());
         verify(deliveryPolicyRepository, times(1)).save(any());
     }
+
+    @Test
+    @DisplayName("배송비 정책 조회 - 활성화된 배송비 정책 조회")
+    void testGetActiveDeliveryPolicy() {
+
+        DeliveryPolicyResponseDto deliveryPolicy =
+                DeliveryPolicyResponseDto.builder()
+                        .deliveryPolicyId(1L)
+                        .deliveryPolicyFee(5000)
+                        .deliveryPolicyCondition(10000)
+                        .deliveryPolicyState(true)
+                        .build();
+
+        given(deliveryPolicyRepository.getActiveDeliveryPolicy())
+                .willReturn(Optional.of(deliveryPolicy));
+
+        DeliveryPolicyResponseDto actual = deliveryPolicyService.getActiveDeliveryPolicy();
+
+        assertAll(
+                () -> assertEquals(deliveryPolicy.getDeliveryPolicyId(), actual.getDeliveryPolicyId()),
+                () -> assertEquals(deliveryPolicy.getDeliveryPolicyFee(), actual.getDeliveryPolicyFee()),
+                () -> assertEquals(deliveryPolicy.getDeliveryPolicyCondition(), actual.getDeliveryPolicyCondition()),
+                () -> assertEquals(deliveryPolicy.getDeliveryPolicyState(), actual.getDeliveryPolicyState())
+        );
+
+        verify(deliveryPolicyRepository, times(1)).getActiveDeliveryPolicy();
+    }
+
+    @Test
+    @DisplayName("배송비 정책 조회 - 활성화된 배송비 정책이 없는 경우 (NotActiveException)")
+    void testGetActiveDeliveryPolicy_NotActive() {
+
+        given(deliveryPolicyRepository.getActiveDeliveryPolicy())
+                .willReturn(Optional.empty());
+
+        assertThrows(DeliveryPolicyNotActiveException.class,
+                () -> deliveryPolicyService.getActiveDeliveryPolicy());
+    }
+
 
 }
