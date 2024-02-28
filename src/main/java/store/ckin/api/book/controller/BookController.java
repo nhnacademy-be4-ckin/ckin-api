@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
-import store.ckin.api.book.dto.response.BookSaleResponseDto;
 import store.ckin.api.book.service.BookService;
 
 /**
@@ -78,10 +78,16 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/sale-info")
-    public ResponseEntity<List<BookSaleResponseDto>> getBookSaleList(@RequestParam("bookId") List<Long> bookIds) {
-        log.info("getBookSaleList bookIds: {}", bookIds);
-        return ResponseEntity.ok(bookService.getBookSaleList(bookIds));
+    /**
+     * 도서에서 필요한 정보만 반환하는 메서드입니다.
+     *
+     * @param bookIds 도서 ID 리스트
+     * @return 200(OK), 도서 정보 리스트
+     */
+    @GetMapping("/extraction")
+    public ResponseEntity<List<BookExtractionResponseDto>> getExtractBookListByBookIds(
+            @RequestParam("bookId") List<Long> bookIds) {
+        return ResponseEntity.ok(bookService.getExtractBookListByBookIds(bookIds));
     }
 
 }

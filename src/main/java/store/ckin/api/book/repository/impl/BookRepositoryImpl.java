@@ -11,11 +11,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import store.ckin.api.author.entity.QAuthor;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
-import store.ckin.api.book.dto.response.BookSaleResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
+import store.ckin.api.book.relationship.bookcategory.dto.response.BookCategoryResponseDto;
 import store.ckin.api.book.relationship.bookcategory.entity.QBookCategory;
 import store.ckin.api.book.relationship.booktag.entity.QBookTag;
 import store.ckin.api.book.repository.BookRepositoryCustom;
@@ -165,17 +166,43 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
         return Optional.ofNullable(book);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
     @Override
-    public List<BookSaleResponseDto> getBookSaleList(List<Long> bookIds) {
-        return queryFactory
+    public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
+
+        List<BookExtractionResponseDto> bookInfoList = queryFactory
                 .from(qBook)
+                .join(qBook.categories, qBookCategory)
                 .where(qBook.bookId.in(bookIds))
-                .select(Projections.constructor(BookSaleResponseDto.class,
+                .select(Projections.constructor(BookExtractionResponseDto.class,
                         qBook.bookId,
                         qBook.bookTitle,
                         qBook.bookPackaging,
-                        qBook.bookSalePrice))
+                        qBook.bookSalePrice,
+                        qBook.bookStock))
+                .distinct()
                 .fetch();
+
+        List<BookCategoryResponseDto> bookCategoryList = queryFactory
+                .from(qBookCategory)
+                .select(Projections.constructor(BookCategoryResponseDto.class,
+                        qBookCategory.book.bookId,
+                        qBookCategory.category.categoryId))
+                .where(qBookCategory.book.bookId.in(bookIds))
+                .fetch();
+
+        bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategory -> {
+            if (bookInfo.getBookId().equals(bookCategory.getBookId())) {
+                bookInfo.getCategoryIds().add(bookCategory.getCategoryId());
+            }
+        }));
+
+        return bookInfoList;
     }
 
 
