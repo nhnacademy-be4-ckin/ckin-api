@@ -47,6 +47,7 @@ public class BookExtractionResponseDto {
         this.bookTitle = bookTitle;
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;
+        this.bookStock = bookStock;
         this.categoryIds = categoryIds;
     }
 }
