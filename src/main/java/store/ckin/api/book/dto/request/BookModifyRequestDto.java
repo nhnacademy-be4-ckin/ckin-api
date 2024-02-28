@@ -1,9 +1,11 @@
 package store.ckin.api.book.dto.request;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,26 +21,33 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @NoArgsConstructor
 public class BookModifyRequestDto {
-    @Length(max = 17, message = "ISBN을 입력해주세요.")
+    @NotBlank(message = "ISBN을 입력해주세요.")
+    @Length(max = 17, message = "ISBN은 최대 17자까지 가능합니다.")
     private String bookIsbn;
 
-    @Length(max = 100, message = "제목을 입력해주세요.")
+    @NotBlank(message = "제목을 입력해주세요.")
+    @Length(max = 100, message = "제목은 최대 100자까지 가능합니다.")
     private String bookTitle;
 
-    @Length(max = 8000, message = "책 설명을 입력해주세요.")
+    @NotBlank(message = "책 설명을 입력해주세요.")
+    @Length(max = 8000, message = "책 설명은 최대 8000자까지 가능합니다.")
     private String bookDescription;
 
-    @Length(max = 100, message = "출판사 이름을 입력해주세요.")
+    @NotBlank(message = "출판사 이름을 입력해주세요.")
+    @Length(max = 100, message = "출판사 이름은 최대 100자까지 가능합니다.")
     private String bookPublisher;
 
-    private Date bookPublicationDate;
+    @NotNull(message = "출판일을 입력해주세요.")
+    private LocalDate bookPublicationDate;
 
-    @Length(max = 8000, message = "책 목차를 입력해주세요.")
+    @Length(max = 8000, message = "책 목차는 최대 8000자까지 가능합니다.")
     private String bookIndex;
 
+    @NotNull(message = "포장 여부를 선택해주세요.")
     private Boolean bookPackaging;
 
-    @Length(max = 20, message = "책 상태를 입력해주세요.")
+    @NotBlank(message = "책 상태를 입력해주세요.")
+    @Length(max = 20, message = "책 상태는 최대 20자까지 가능합니다.")
     private String bookState;
 
     @NotNull(message = "재고를 입력해주세요.")

@@ -31,33 +31,33 @@ import store.ckin.api.tag.entity.QTag;
 public class BookRepositoryImpl implements BookRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
-    QBook qBook = QBook.book;
-    QBookAuthor qBookAuthor = QBookAuthor.bookAuthor;
-    QAuthor qAuthor = QAuthor.author;
-    QCategory qCategory = QCategory.category;
-    QTag qTag = QTag.tag;
-    QBookCategory qBookCategory = QBookCategory.bookCategory;
-    QBookTag qBookTag = QBookTag.bookTag;
+    QBook book = QBook.book;
+    QBookAuthor BookAuthor = QBookAuthor.bookAuthor;
+    QAuthor author = QAuthor.author;
+    QCategory category = QCategory.category;
+    QTag tag = QTag.tag;
+    QBookCategory bookCategory = QBookCategory.bookCategory;
+    QBookTag bookTag = QBookTag.bookTag;
 
 
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
 
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .where(qAuthor.authorName.eq(authorName))
+                .selectFrom(book)
+                .leftJoin(book.authors, BookAuthor).fetchJoin()
+                .leftJoin(BookAuthor.author, author).fetchJoin()
+                .where(author.authorName.eq(authorName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .join(qBook.authors, qBookAuthor)
-                        .join(qBookAuthor.author, qAuthor)
-                        .where(qAuthor.authorName.eq(authorName))
+                        .select(book.count())
+                        .from(book)
+                        .join(book.authors, BookAuthor)
+                        .join(BookAuthor.author, author)
+                        .where(author.authorName.eq(authorName))
                         .fetchOne())
                 .orElse(0L);
 
@@ -73,18 +73,18 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
+                .selectFrom(book)
+                .leftJoin(book.authors, BookAuthor).fetchJoin()
+                .leftJoin(BookAuthor.author, author).fetchJoin()
+                .where(book.bookTitle.containsIgnoreCase(bookTitle))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
+                        .select(book.count())
+                        .from(book)
+                        .where(book.bookTitle.containsIgnoreCase(bookTitle))
                         .fetchOne())
                 .orElse(0L);
 
@@ -99,19 +99,19 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBook.categories, qBookCategory).fetchJoin()
-                .where(qBookCategory.category.categoryId.eq(categoryId))
+                .selectFrom(book)
+                .leftJoin(book.authors, BookAuthor).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .where(bookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .join(qBook.categories, qBookCategory)
-                        .where(qBookCategory.category.categoryId.eq(categoryId))
+                        .select(book.count())
+                        .from(book)
+                        .join(book.categories, bookCategory)
+                        .where(bookCategory.category.categoryId.eq(categoryId))
                         .fetchOne())
                 .orElse(0L);
 
@@ -126,16 +126,16 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
+                .selectFrom(book)
+                .leftJoin(book.authors, BookAuthor).fetchJoin()
+                .leftJoin(BookAuthor.author, author).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
+                        .select(book.count())
+                        .from(book)
                         .fetchOne())
                 .orElse(0L);
 
@@ -150,14 +150,14 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public Optional<Book> findByBookId(Long bookId) {
         Book book = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .leftJoin(qBook.categories, qBookCategory).fetchJoin()
-                .leftJoin(qBookCategory.category, qCategory).fetchJoin()
-                .leftJoin(qBook.tags, qBookTag).fetchJoin()
-                .leftJoin(qBookTag.tag, qTag).fetchJoin()
-                .where(qBook.bookId.eq(bookId))
+                .selectFrom(this.book)
+                .leftJoin(this.book.authors, BookAuthor).fetchJoin()
+                .leftJoin(BookAuthor.author, author).fetchJoin()
+                .leftJoin(this.book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(this.book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .where(this.book.bookId.eq(bookId))
                 .fetchOne();
 
         return Optional.ofNullable(book);
@@ -182,6 +182,8 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
                 .bookRegularPrice(book.getBookRegularPrice())
                 .bookDiscountRate(book.getBookDiscountRate())
                 .bookState(book.getBookState())
+                .bookSalePrice(book.getBookSalePrice())
+                .bookReviewRate(book.getBookReviewRate())
                 .authorNames(authorNames)
                 .build();
     }
