@@ -21,4 +21,6 @@ public interface DeliveryPolicyRepositoryCustom {
     List<DeliveryPolicyResponseDto> getDeliveryPolicies();
 
     Optional<DeliveryPolicyResponseDto> getDeliveryPolicyById(Long id);
+
+    Optional<DeliveryPolicyResponseDto> getActiveDeliveryPolicy();
 }

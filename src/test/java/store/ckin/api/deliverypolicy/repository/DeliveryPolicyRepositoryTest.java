@@ -91,4 +91,18 @@ class DeliveryPolicyRepositoryTest {
                 () -> assertEquals(savedPolicy.getDeliveryPolicyState(), savedDto.get().getDeliveryPolicyState())
         );
     }
+
+    @Test
+    @DisplayName("배송비 정책 사용 여부 조회 - Querydsl")
+    void testQuerydslGetActiveDeliveryPolicy() {
+        Optional<DeliveryPolicyResponseDto> savedDto = deliveryPolicyRepository.getActiveDeliveryPolicy();
+
+        assertAll(
+                () -> assertTrue(savedDto.isPresent()),
+                () -> assertEquals(savedPolicy.getDeliveryPolicyId(), savedDto.get().getDeliveryPolicyId()),
+                () -> assertEquals(savedPolicy.getDeliveryPolicyFee(), savedDto.get().getDeliveryPolicyFee()),
+                () -> assertEquals(savedPolicy.getDeliveryPolicyCondition(), savedDto.get().getDeliveryPolicyCondition()),
+                () -> assertEquals(savedPolicy.getDeliveryPolicyState(), savedDto.get().getDeliveryPolicyState())
+        );
+    }
 }

@@ -58,4 +58,21 @@ public class DeliveryPolicyRepositoryImpl extends QuerydslRepositorySupport
                         deliveryPolicy.deliveryPolicyState))
                 .fetchOne());
     }
+
+    @Override
+    public Optional<DeliveryPolicyResponseDto> getActiveDeliveryPolicy() {
+
+        QDeliveryPolicy deliveryPolicy = QDeliveryPolicy.deliveryPolicy;
+
+        return Optional.ofNullable(from(deliveryPolicy)
+                .where(deliveryPolicy.deliveryPolicyState.eq(true))
+                .select(Projections.constructor(DeliveryPolicyResponseDto.class,
+                        deliveryPolicy.deliveryPolicyId,
+                        deliveryPolicy.deliveryPolicyFee,
+                        deliveryPolicy.deliveryPolicyCondition,
+                        deliveryPolicy.deliveryPolicyState))
+                .fetchOne());
+    }
+
+
 }
