@@ -203,5 +203,7 @@ class DeliveryPolicyControllerTest {
                         jsonPath("$.deliveryPolicyState").value(deliveryPolicy.getDeliveryPolicyState())
                 )
                 .andDo(print());
+
+        verify(deliveryPolicyService, times(1)).getActiveDeliveryPolicy();
     }
 }
