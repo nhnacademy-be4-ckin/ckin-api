@@ -126,9 +126,9 @@ class CategoryControllerTest {
     @Test
     @DisplayName("잘못된 입력값으로 카테고리 업데이트 요청 시 상태 코드 400 반환 검증")
     void givenInvalidUpdateRequest_whenUpdateCategory_thenStatusBadRequest() throws Exception {
-        Long categoryId = 1L;
+        long categoryId = 1L;
         CategoryUpdateRequestDto invalidRequest = new CategoryUpdateRequestDto();
-        ReflectionTestUtils.setField(invalidRequest, "categoryName", "a".repeat(11)); // 너무 긴 카테고리명 설정
+        ReflectionTestUtils.setField(invalidRequest, "categoryName", "a".repeat(11));
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(invalidRequest);
 
