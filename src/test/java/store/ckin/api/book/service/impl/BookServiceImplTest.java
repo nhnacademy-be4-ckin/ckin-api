@@ -134,16 +134,13 @@ class BookServiceImplTest {
         ReflectionTestUtils.setField(requestDto, "categoryIds", new HashSet<>(Set.of(1L)));
         ReflectionTestUtils.setField(requestDto, "tagIds", new HashSet<>(Set.of(1L)));
 
-        // 모의 객체 동작 설정
         when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
         when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
         when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // 테스트 실행
         bookService.createBook(requestDto);
 
-        // 검증
         verify(bookRepository).save(any(Book.class));
         verify(authorRepository).findById(anyLong());
         verify(categoryRepository).findById(anyLong());
@@ -236,7 +233,6 @@ class BookServiceImplTest {
         verify(bookRepository).findByBookTitleContaining("제목", pageable);
     }
 
-    // 카테고리 ID로 책 검색 성공 테스트
     @Test
     @DisplayName("카테고리 ID로 책 검색 성공")
     void givenCategoryId_whenFindByCategoryId_thenReturnsBooks() {
@@ -248,7 +244,6 @@ class BookServiceImplTest {
         verify(bookRepository).findByCategoryId(1L, pageable);
     }
 
-    // 모든 책 검색 성공 테스트
     @Test
     @DisplayName("모든 책 검색 성공")
     void whenFindAllBooks_thenReturnsAllBooks() {

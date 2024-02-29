@@ -1,7 +1,6 @@
 package store.ckin.api.book.repository.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -118,14 +117,13 @@ class BookRepositoryImplTest {
     @Test
     @DisplayName("카테고리 ID로 책 검색")
     void findByCategoryIdTest() {
-        // setup() 메서드에서 생성된 카테고리의 ID 가져오기
         Long categoryId = category.getCategoryId();
         Page<BookListResponseDto> results = bookRepository.findByCategoryId(categoryId, PageRequest.of(0, 10));
 
         assertThat(results.getContent())
                 .isNotEmpty()
                 .extracting("bookId")
-                .contains(testBook.getBookId()); // 반환된 책들 중 testBook의 ID가 있는지 확인
+                .contains(testBook.getBookId());
     }
 
     @Test
