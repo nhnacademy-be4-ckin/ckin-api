@@ -45,7 +45,12 @@ class CategoryServiceImplTest {
     void whenCreateCategory_thenCategoryIsCreated() {
         CategoryCreateRequestDto requestDto = new CategoryCreateRequestDto();
         ReflectionTestUtils.setField(requestDto, "categoryName", "국내도서");
-        Category category = new Category(null, null, "국내도서", 1);
+        Category category = Category.builder()
+                .categoryId(null)
+                .parentCategory(null)
+                .categoryName("국내도서")
+                .categoryPriority(1)
+                .build();
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
         CategoryResponseDto createdCategory = categoryService.createCategory(requestDto);
@@ -58,8 +63,8 @@ class CategoryServiceImplTest {
     void whenFindSubcategories_thenSubcategoriesAreReturned() {
         Long parentId = 1L;
         List<Category> subcategories = List.of(
-                new Category(null, new Category(), "소설", 2),
-                new Category(null, new Category(), "시", 2)
+                Category.builder().categoryName("소설").categoryPriority(2).build(),
+                Category.builder().categoryName("시").categoryPriority(2).build()
         );
         when(categoryRepository.findByParentCategory_CategoryId(parentId)).thenReturn(subcategories);
 
@@ -74,8 +79,8 @@ class CategoryServiceImplTest {
     @DisplayName("최상위 카테고리 조회 테스트")
     void whenFindTopCategories_thenTopCategoriesAreReturned() {
         List<Category> topCategories = List.of(
-                new Category(null, null, "국내도서", 1),
-                new Category(null, null, "외국도서", 1)
+                Category.builder().categoryName("국내도서").categoryPriority(1).build(),
+                Category.builder().categoryName("외국도서").categoryPriority(1).build()
         );
         when(categoryRepository.findByParentCategoryIsNull()).thenReturn(topCategories);
 
@@ -90,12 +95,21 @@ class CategoryServiceImplTest {
     @DisplayName("카테고리 업데이트 테스트")
     void whenUpdateCategory_thenCategoryIsUpdated() {
         Long categoryId = 1L;
-        Category originalCategory = new Category(categoryId, null, "국내도서", 1);
+        Category originalCategory = Category.builder()
+                .categoryId(categoryId)
+                .categoryName("국내도서")
+                .categoryPriority(1)
+                .build();
         CategoryUpdateRequestDto requestDto = new CategoryUpdateRequestDto();
         ReflectionTestUtils.setField(requestDto, "categoryName", "외국도서");
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(originalCategory));
-        when(categoryRepository.save(any(Category.class))).thenReturn(new Category(categoryId, null, "외국도서", 1));
+        when(categoryRepository.save(any(Category.class))).thenReturn(
+                Category.builder()
+                        .categoryId(categoryId)
+                        .categoryName("외국도서")
+                        .categoryPriority(1)
+                        .build());
 
         CategoryResponseDto updatedCategory = categoryService.updateCategory(categoryId, requestDto);
 

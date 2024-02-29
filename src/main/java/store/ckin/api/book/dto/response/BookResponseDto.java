@@ -1,7 +1,6 @@
 package store.ckin.api.book.dto.response;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
