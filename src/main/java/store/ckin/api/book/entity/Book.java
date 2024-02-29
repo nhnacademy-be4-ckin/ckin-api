@@ -59,6 +59,7 @@ public class Book {
     private Boolean bookPackaging;
 
     @Column(name = "book_state")
+    @Builder.Default
     private String bookState = "ON_SALE";
 
     @Column(name = "book_stock")

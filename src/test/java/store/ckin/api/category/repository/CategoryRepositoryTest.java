@@ -66,7 +66,8 @@ class CategoryRepositoryTest {
     void givenCategoryId_whenFindByCategoryId_thenCategoryIsReturned() {
         Category category = Category.builder()
                 .categoryName("국내도서")
-                .build();        categoryRepository.save(category);
+                .build();
+        categoryRepository.save(category);
 
         Optional<Category> found = categoryRepository.findByCategoryId(category.getCategoryId());
 
