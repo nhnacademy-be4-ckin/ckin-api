@@ -48,8 +48,8 @@ public class Sale {
     }
 
     @Id
-    @Column(name = "sale_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sale_id")
     private Long saleId;
 
     @JoinColumn(name = "member_id")
@@ -99,12 +99,14 @@ public class Sale {
     private PaymentStatus salePaymentStatus;
 
     @Builder
-    public Sale(Long saleId, Member member, String saleNumber, String saleOrdererName, String saleOrdererContact,
+    public Sale(Member member, String saleNumber, String saleOrdererName, String saleOrdererContact,
                 String saleReceiverName, String saleReceiverContact, String saleReceiverAddress, LocalDateTime saleDate,
                 LocalDateTime saleShippingDate, LocalDate saleDeliveryDate, DeliveryStatus saleDeliveryStatus,
                 Integer saleDeliveryFee, Integer salePointUsage, Integer saleTotalPrice,
                 PaymentStatus salePaymentStatus) {
-        this.saleId = saleId;
+
+        System.out.println("Sale builder called");
+
         this.member = member;
         this.saleNumber = saleNumber;
         this.saleOrdererName = saleOrdererName;
