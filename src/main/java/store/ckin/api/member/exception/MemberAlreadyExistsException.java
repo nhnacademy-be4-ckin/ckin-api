@@ -6,5 +6,8 @@ package store.ckin.api.member.exception;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
-public class MemberAlreadyExistsException extends RuntimeException{
+public class MemberAlreadyExistsException extends RuntimeException {
+    public MemberAlreadyExistsException(String email) {
+        super(String.format("Member already Exist for this email [%s]", email));
+    }
 }

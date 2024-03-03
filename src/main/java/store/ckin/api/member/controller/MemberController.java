@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import store.ckin.api.member.domain.MemberAuthRequestDto;
+import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoRequestDto;
-import store.ckin.api.member.domain.MemberInfoResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -42,15 +42,15 @@ public class MemberController {
     }
 
     /**
-     * 로그인을 처리하는 API Method 입니다.
+     * JWT 토큰에 필요한 정보 요청을 처리하는 Method 입니다.
      *
-     * @param memberInfoRequestDto 로그인 정보 요청 DTO
-     * @return 200 (OK) : 로그인 정보 확인
+     * @param memberAuthRequestDto Member 정보 요청 DTO
+     * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
     @PostMapping("/api/login")
-    public ResponseEntity<MemberInfoResponseDto> doLogin(
-            @Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
-        MemberInfoResponseDto response = memberService.getLoginMemberInfo(memberInfoRequestDto);
+    public ResponseEntity<MemberAuthResponseDto> getMemberInfo(
+            @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
+        MemberAuthResponseDto response = memberService.getLoginMemberInfo(memberAuthRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -63,7 +63,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberAlreadyExistsException.class})
     public ResponseEntity<Void> memberAlreadyExistsExceptionHandler(MemberAlreadyExistsException exception) {
-        log.debug("{} : 이미 존재하는 이메일 입니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
@@ -76,7 +76,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberNotFoundException.class})
     public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
-        log.debug("{} : 이메일에 해당하는 계정이 없습니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
