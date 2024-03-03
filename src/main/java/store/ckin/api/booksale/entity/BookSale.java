@@ -6,20 +6,24 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 주문 리스트 Entity.
+ * 주문 도서 (리스트) Entity.
  *
  * @author 정승조
  * @version 2024. 02. 27.
  */
 
+@Getter
 @Entity
 @Table(name = "BookSale")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookSale {
 
     public enum BookSaleState {
@@ -61,5 +65,16 @@ public class BookSale {
         private Long bookId;
     }
 
+    @Builder
+    public BookSale(Pk pk, Long couponId, Integer bookSaleQuantity, Integer bookSalePackagingPrice,
+                    String bookSalePackagingType, Integer bookSalePaymentAmount, BookSaleState bookSaleState) {
+        this.pk = pk;
+        this.couponId = couponId;
+        this.bookSaleQuantity = bookSaleQuantity;
+        this.bookSalePackagingPrice = bookSalePackagingPrice;
+        this.bookSalePackagingType = bookSalePackagingType;
+        this.bookSalePaymentAmount = bookSalePaymentAmount;
+        this.bookSaleState = bookSaleState;
+    }
 
 }
