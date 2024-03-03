@@ -12,5 +12,5 @@ import store.ckin.api.member.domain.MemberAuthResponseDto;
  */
 @NoRepositoryBean
 public interface MemberRepositoryCustom {
-    Optional<MemberAuthResponseDto> getLoginInfo(String email);
+    MemberAuthResponseDto getLoginInfo(String email);
 }

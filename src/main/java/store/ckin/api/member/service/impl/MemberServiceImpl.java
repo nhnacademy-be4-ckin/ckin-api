@@ -66,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberNotFoundException();
         }
 
-        return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
+        return Optional.of(
+                memberRepository.getLoginInfo(memberAuthRequestDto.getEmail()));
     }
 }

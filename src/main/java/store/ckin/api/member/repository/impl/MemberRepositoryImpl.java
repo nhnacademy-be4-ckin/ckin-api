@@ -21,10 +21,10 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Optional<MemberAuthResponseDto> getLoginInfo(String email) {
+    public MemberAuthResponseDto getLoginInfo(String email) {
         QMember member = QMember.member;
 
-        MemberAuthResponseDto memberAuthResponseDto = from(member)
+        return from(member)
                 .select(Projections.constructor(MemberAuthResponseDto.class,
                         member.id,
                         member.email,
@@ -33,7 +33,5 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         ))
                 .where(member.email.eq(email))
                 .fetchOne();
-
-        return Optional.of(memberAuthResponseDto);
     }
 }
