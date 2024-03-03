@@ -1,6 +1,5 @@
 package store.ckin.api.member.service;
 
-import java.util.Optional;
 import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
@@ -25,5 +24,5 @@ public interface MemberService {
      * @param memberAuthRequestDto 로그인 정보 요청 DTO
      * @return LoginResponseDto 로그인 응답 DTO
      */
-    Optional<MemberAuthResponseDto> getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
+    MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
 }

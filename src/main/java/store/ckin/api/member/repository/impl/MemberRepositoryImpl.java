@@ -1,7 +1,6 @@
 package store.ckin.api.member.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.entity.Member;

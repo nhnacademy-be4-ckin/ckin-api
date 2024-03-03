@@ -1,6 +1,5 @@
 package store.ckin.api.member.repository;
 
-import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 

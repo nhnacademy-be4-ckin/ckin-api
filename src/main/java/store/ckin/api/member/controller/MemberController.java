@@ -1,6 +1,5 @@
 package store.ckin.api.member.controller;
 
-import java.util.Optional;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +48,9 @@ public class MemberController {
      * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
     @PostMapping("/api/login")
-    public ResponseEntity<Optional<MemberAuthResponseDto>> getMemberInfo(
+    public ResponseEntity<MemberAuthResponseDto> getMemberInfo(
             @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
-        Optional<MemberAuthResponseDto> response = memberService.getLoginMemberInfo(memberAuthRequestDto);
+        MemberAuthResponseDto response = memberService.getLoginMemberInfo(memberAuthRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -64,7 +63,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberAlreadyExistsException.class})
     public ResponseEntity<Void> memberAlreadyExistsExceptionHandler(MemberAlreadyExistsException exception) {
-        log.debug("{} : 이미 존재하는 이메일 입니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
@@ -77,7 +76,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberNotFoundException.class})
     public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
-        log.debug("{} : 이메일에 해당하는 계정이 없습니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

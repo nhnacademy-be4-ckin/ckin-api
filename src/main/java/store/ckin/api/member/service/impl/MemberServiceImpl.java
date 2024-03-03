@@ -1,7 +1,6 @@
 package store.ckin.api.member.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,17 +33,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
         if (memberRepository.existsByEmail(memberCreateRequestDto.getEmail())) {
-            throw new MemberAlreadyExistsException();
+            throw new MemberAlreadyExistsException(memberCreateRequestDto.getEmail());
         }
 
-        Optional<Grade> grade = gradeRepository.findById(1L);
-
-        if (grade.isEmpty()) {
-           throw new GradeNotFoundException();
-        }
+        Grade grade = gradeRepository.findById(1L)
+                .orElseThrow(GradeNotFoundException::new);
 
         Member member = Member.builder()
-                .grade(grade.get())
+                .grade(grade)
                 .email(memberCreateRequestDto.getEmail())
                 .password(memberCreateRequestDto.getPassword())
                 .name(memberCreateRequestDto.getName())
@@ -61,12 +57,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<MemberAuthResponseDto> getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto) {
+    public MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto) {
         if (!memberRepository.existsByEmail(memberAuthRequestDto.getEmail())) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(memberAuthRequestDto.getEmail());
         }
 
-        return Optional.of(
-                memberRepository.getLoginInfo(memberAuthRequestDto.getEmail()));
+        return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
     }
 }
