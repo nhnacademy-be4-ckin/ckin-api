@@ -11,7 +11,7 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * 주문 생성 요청 DTO.
+ * 도서 정보를 제외한 주문 생성 요청 DTO .
  *
  * @author 정승조
  * @version 2024. 03. 02.

@@ -9,5 +9,5 @@ import store.ckin.api.sale.entity.Sale;
  * @author 정승조
  * @version 2024. 02. 26.
  */
-public interface SaleRepository extends JpaRepository<Sale, Long> {
+public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositoryCustom {
 }

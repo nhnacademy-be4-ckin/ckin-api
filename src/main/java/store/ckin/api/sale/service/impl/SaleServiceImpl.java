@@ -1,6 +1,7 @@
 package store.ckin.api.sale.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.repository.SaleRepository;
 import store.ckin.api.sale.service.SaleService;
@@ -60,5 +62,11 @@ public class SaleServiceImpl implements SaleService {
                 .build();
 
         return saleRepository.save(sale).getSaleId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SaleResponseDto> getSales() {
+        return saleRepository.findAllOrderByIdDesc();
     }
 }
