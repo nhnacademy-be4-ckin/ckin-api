@@ -5,6 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -49,6 +51,7 @@ public class BookSale {
     private Integer bookSalePaymentAmount;
 
     @Column(name = "booksale_state")
+    @Enumerated(EnumType.STRING)
     private BookSaleState bookSaleState;
 
     @Embeddable

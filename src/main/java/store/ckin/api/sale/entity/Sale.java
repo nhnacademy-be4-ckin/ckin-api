@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -84,6 +86,7 @@ public class Sale {
     private LocalDate saleDeliveryDate;
 
     @Column(name = "sale_delivery_status")
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus saleDeliveryStatus;
 
     @Column(name = "sale_delivery_fee")
@@ -96,6 +99,7 @@ public class Sale {
     private Integer saleTotalPrice;
 
     @Column(name = "sale_payment_status")
+    @Enumerated(EnumType.STRING)
     private PaymentStatus salePaymentStatus;
 
     @Builder
@@ -104,8 +108,6 @@ public class Sale {
                 LocalDateTime saleShippingDate, LocalDate saleDeliveryDate, DeliveryStatus saleDeliveryStatus,
                 Integer saleDeliveryFee, Integer salePointUsage, Integer saleTotalPrice,
                 PaymentStatus salePaymentStatus) {
-
-        System.out.println("Sale builder called");
 
         this.member = member;
         this.saleNumber = saleNumber;
