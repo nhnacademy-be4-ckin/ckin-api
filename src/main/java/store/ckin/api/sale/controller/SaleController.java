@@ -30,18 +30,25 @@ public class SaleController {
 
     private final SaleFacade saleFacade;
 
+    /**
+     * 주문을 등록하는 메서드입니다.
+     *
+     * @param requestDto 주문 등록 요청 DTO
+     * @return 주문 번호
+     */
     @PostMapping
     public ResponseEntity<Long> createSale(@Valid @RequestBody SaleCreateRequestDto requestDto) {
         Long saleId = saleFacade.createSale(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saleId);
     }
 
+    /**
+     * 모든 주문 목록을 조회하는 메서드입니다.
+     *
+     * @return 주문 DTO 리스트
+     */
     @GetMapping
     public ResponseEntity<List<SaleResponseDto>> getSales() {
-        List<SaleResponseDto> sales = saleFacade.getSales();
-
-        log.info("주문 목록 조회 = {}", sales);
-
-        return ResponseEntity.ok(sales);
+        return ResponseEntity.ok(saleFacade.getSales());
     }
 }

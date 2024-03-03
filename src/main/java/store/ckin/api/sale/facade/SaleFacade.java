@@ -25,6 +25,12 @@ public class SaleFacade {
 
     private final BookSaleService bookSaleService;
 
+    /**
+     * 주문을 생성하는 메서드입니다.
+     *
+     * @param requestDto 주문 생성 요청 DTO
+     * @return 생성된 주문 ID
+     */
     @Transactional
     public Long createSale(SaleCreateRequestDto requestDto) {
 
@@ -37,6 +43,11 @@ public class SaleFacade {
         return saleId;
     }
 
+    /**
+     * 모든 주문 목록을 조회하는 메서드입니다.
+     *
+     * @return 주문 DTO 리스트
+     */
     public List<SaleResponseDto> getSales() {
         return saleService.getSales();
     }

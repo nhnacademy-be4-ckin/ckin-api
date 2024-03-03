@@ -31,11 +31,16 @@ public class SaleServiceImpl implements SaleService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param requestDto 주문 생성 요청 DTO
+     * @return 생성된 주문 ID
+     */
     @Override
     @Transactional
     public Long createSale(SaleCreateNoBookRequestDto requestDto) {
 
-        // TODO : 검토 필요!!
         Optional<Member> member = Optional.empty();
         if (Objects.nonNull(requestDto.getMemberId())) {
             member = memberRepository.findById(requestDto.getMemberId());
@@ -64,6 +69,11 @@ public class SaleServiceImpl implements SaleService {
         return saleRepository.save(sale).getSaleId();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return 주문 DTO 리스트
+     */
     @Override
     @Transactional(readOnly = true)
     public List<SaleResponseDto> getSales() {

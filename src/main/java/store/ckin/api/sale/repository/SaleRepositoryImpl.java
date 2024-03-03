@@ -20,6 +20,11 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
         super(Sale.class);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return 주문 응답 DTO 리스트
+     */
     @Override
     public List<SaleResponseDto> findAllOrderByIdDesc() {
         QSale sale = QSale.sale;

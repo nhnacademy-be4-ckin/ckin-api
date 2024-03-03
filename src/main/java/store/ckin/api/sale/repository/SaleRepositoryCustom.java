@@ -11,5 +11,10 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
  */
 public interface SaleRepositoryCustom {
 
+    /**
+     * 모든 주문을 조회하는 메서드.
+     *
+     * @return 주문 응답 DTO 리스트
+     */
     List<SaleResponseDto> findAllOrderByIdDesc();
 }

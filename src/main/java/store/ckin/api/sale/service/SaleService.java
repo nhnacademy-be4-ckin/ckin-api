@@ -12,7 +12,17 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
  */
 public interface SaleService {
 
+    /**
+     * 주문 생성 요청을 합니다.
+     *
+     * @param requestDto 주문 생성 요청 DTO
+     * @return 생성된 주문 ID
+     */
     Long createSale(SaleCreateNoBookRequestDto requestDto);
 
+    /**
+     * 모든 주문을 조회합니다.
+     * @return 주문 응답 DTO 리스트
+     */
     List<SaleResponseDto> getSales();
 }
