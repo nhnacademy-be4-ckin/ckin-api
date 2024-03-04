@@ -6,12 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -24,6 +27,7 @@ import store.ckin.api.member.service.MemberService;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
@@ -34,7 +38,7 @@ public class MemberController {
      * @param memberCreateRequestDto Member 생성 요청 DTO
      * @return 201 (Created) : 생성 성공
      */
-    @PostMapping("/api/members")
+    @PostMapping("/members")
     public ResponseEntity<Void> createMember(@Valid @RequestBody MemberCreateRequestDto memberCreateRequestDto) {
         memberService.createMember(memberCreateRequestDto);
 
@@ -47,12 +51,26 @@ public class MemberController {
      * @param memberAuthRequestDto Member 정보 요청 DTO
      * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<MemberAuthResponseDto> getMemberInfo(
             @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
-        MemberAuthResponseDto response = memberService.getLoginMemberInfo(memberAuthRequestDto);
+        MemberAuthResponseDto responseDto = memberService.getLoginMemberInfo(memberAuthRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    /**
+     * SecurityContextHolder 에 담을 멤버 정보 요청을 처리하는 Method 입니다.
+     *
+     * @param id Member ID
+     * @return MemberInfoDetail
+     */
+    @PostMapping("/login/{id}")
+    public ResponseEntity<MemberInfoDetailResponseDto> getMemberInfoDetail(
+            @PathVariable("id") Long id) {
+        MemberInfoDetailResponseDto responseDto = memberService.getMemberInfoDetail(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     /**
