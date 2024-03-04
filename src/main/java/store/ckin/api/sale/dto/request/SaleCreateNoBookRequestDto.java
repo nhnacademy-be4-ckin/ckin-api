@@ -43,8 +43,8 @@ public class SaleCreateNoBookRequestDto {
     @NotNull(message = "배송 날짜를 선택해주세요.")
     private LocalDate saleDeliveryDate;
 
-    @NotNull(message = "우편번호를 입력해주세요.")
-    private Integer postcode;
+    @NotBlank(message = "우편번호를 입력해주세요.")
+    private String postcode;
 
     @NotBlank(message = "주소를 입력해주세요.")
     private String address;

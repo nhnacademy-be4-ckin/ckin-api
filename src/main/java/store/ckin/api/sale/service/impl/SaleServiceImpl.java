@@ -64,6 +64,7 @@ public class SaleServiceImpl implements SaleService {
                 .salePointUsage(requestDto.getPointUsage())
                 .saleTotalPrice(requestDto.getTotalPrice())
                 .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode(requestDto.getPostcode())
                 .build();
 
         return saleRepository.save(sale).getSaleId();

@@ -102,12 +102,15 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentStatus salePaymentStatus;
 
+    @Column(name = "sale_shipping_post_code")
+    private String saleShippingPostCode;
+
     @Builder
     public Sale(Member member, String saleNumber, String saleOrdererName, String saleOrdererContact,
                 String saleReceiverName, String saleReceiverContact, String saleReceiverAddress, LocalDateTime saleDate,
                 LocalDateTime saleShippingDate, LocalDate saleDeliveryDate, DeliveryStatus saleDeliveryStatus,
                 Integer saleDeliveryFee, Integer salePointUsage, Integer saleTotalPrice,
-                PaymentStatus salePaymentStatus) {
+                PaymentStatus salePaymentStatus, String saleShippingPostCode) {
 
         this.member = member;
         this.saleNumber = saleNumber;
@@ -124,5 +127,6 @@ public class Sale {
         this.salePointUsage = salePointUsage;
         this.saleTotalPrice = saleTotalPrice;
         this.salePaymentStatus = salePaymentStatus;
+        this.saleShippingPostCode = saleShippingPostCode;
     }
 }
