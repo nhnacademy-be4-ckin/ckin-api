@@ -225,7 +225,7 @@ class DeliveryPolicyServiceImplTest {
 
         assertThrows(DeliveryPolicyNotActiveException.class,
                 () -> deliveryPolicyService.getActiveDeliveryPolicy());
+
+        verify(deliveryPolicyRepository, times(1)).getActiveDeliveryPolicy();
     }
-
-
 }

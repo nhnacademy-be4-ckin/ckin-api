@@ -3,9 +3,11 @@ package store.ckin.api.book.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,6 @@ import store.ckin.api.book.service.BookService;
  * @author 나국로
  * @version 2024. 02. 26.
  */
-
-@Slf4j
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
@@ -45,30 +45,36 @@ public class BookController {
 
     @GetMapping("/search/by-author")
     public ResponseEntity<Page<BookListResponseDto>> findByAuthorName(@RequestParam String authorName,
+                                                                      @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
                                                                       Pageable pageable) {
         return ResponseEntity.ok(bookService.findByAuthorName(authorName, pageable));
     }
 
     @GetMapping("/search/by-title")
-    public ResponseEntity<Page<BookListResponseDto>> findByBookTitle(@RequestParam String title, Pageable pageable) {
+    public ResponseEntity<Page<BookListResponseDto>> findByBookTitle(@RequestParam String title,
+                                                                     @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+                                                                     Pageable pageable) {
         return ResponseEntity.ok(bookService.findByBookTitle(title, pageable));
     }
 
     @GetMapping("/search/by-category")
     public ResponseEntity<Page<BookListResponseDto>> findByCategoryId(@RequestParam Long categoryId,
+                                                                      @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
                                                                       Pageable pageable) {
         return ResponseEntity.ok(bookService.findByCategoryId(categoryId, pageable));
     }
 
     @GetMapping
-    public ResponseEntity<Page<BookListResponseDto>> findAllBooks(Pageable pageable) {
+    public ResponseEntity<Page<BookListResponseDto>> findAllBooks(
+            @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+            Pageable pageable) {
         return ResponseEntity.ok(bookService.findAllBooks(pageable));
     }
 
     @PostMapping
     public ResponseEntity<Void> createBook(@Valid @RequestBody BookCreateRequestDto requestDto) {
         bookService.createBook(requestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{bookId}")

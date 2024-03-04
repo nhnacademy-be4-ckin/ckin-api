@@ -51,7 +51,10 @@ class AuthorServiceImplTest {
     void givenAuthorCreateRequest_whenCreateAuthor_thenAuthorCreated() {
         AuthorCreateRequestDto requestDto = new AuthorCreateRequestDto();
         ReflectionTestUtils.setField(requestDto, "authorName", "테스트 작가");
-        Author mockAuthor = new Author(1L, "테스트 작가");
+        Author mockAuthor = Author.builder()
+                .authorId(1L)
+                .authorName("테스트 작가")
+                .build();
         when(authorRepository.save(any(Author.class))).thenReturn(mockAuthor);
 
         AuthorResponseDto result = authorService.createAuthor(requestDto);
@@ -64,7 +67,11 @@ class AuthorServiceImplTest {
     @DisplayName("ID로 작가 조회 시 작가 반환")
     void givenAuthorId_whenFindAuthorById_thenAuthorFound() {
         Long authorId = 1L;
-        Author author = new Author(authorId, "한국 작가");
+        Author author = Author.builder()
+                .authorId(authorId)
+                .authorName("한국 작가")
+                .build();
+
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
 
         AuthorResponseDto result = authorService.findAuthorById(authorId);
@@ -86,11 +93,17 @@ class AuthorServiceImplTest {
     @DisplayName("작가 정보 수정 요청 시 작가 정보 업데이트")
     void givenAuthorIdAndModifyRequest_whenUpdateAuthor_thenAuthorUpdated() {
         Long authorId = 1L;
-        Author existingAuthor = new Author(authorId, "기존 이름");
+        Author existingAuthor = Author.builder()
+                .authorId(authorId)
+                .authorName("기존 이름")
+                .build();
         AuthorModifyRequestDto authorModifyRequestDto = new AuthorModifyRequestDto();
         ReflectionTestUtils.setField(authorModifyRequestDto, "authorName", "업데이트된 이름");
         when(authorRepository.findById(authorId)).thenReturn(Optional.of(existingAuthor));
-        when(authorRepository.save(any(Author.class))).thenReturn(new Author(authorId, "업데이트된 이름"));
+        when(authorRepository.save(any(Author.class))).thenReturn(Author.builder()
+                .authorId(authorId)
+                .authorName("업데이트된 이름")
+                .build());
 
         AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, authorModifyRequestDto);
 
@@ -113,7 +126,14 @@ class AuthorServiceImplTest {
     @DisplayName("페이징 정보로 모든 작가 조회")
     void givenPageable_whenFindAllAuthors_thenReturnsPagedAuthors() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("authorName"));
-        List<Author> authorsList = List.of(new Author(1L, "작가1"), new Author(2L, "작가2"));
+        List<Author> authorsList = List.of(Author.builder()
+                        .authorId(1L)
+                        .authorName("작가1")
+                        .build(),
+                Author.builder()
+                        .authorId(2L)
+                        .authorName("작가2")
+                        .build());
         Page<Author> authorsPage = new PageImpl<>(authorsList, pageable, authorsList.size());
 
         when(authorRepository.findAll(pageable)).thenReturn(authorsPage);

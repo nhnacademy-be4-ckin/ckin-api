@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
   <component name="CheckStyle-IDEA-Module" serialisationVersion="2">
-    <option name="activeLocationsIds" />
+    <option name="activeLocationsIds">
+      <option value="a8fb8a04-ef3f-4177-9d2c-6c531f81164c" />
+    </option>
   </component>
   <component name="FacetManager">
     <facet type="jpa" name="JPA">

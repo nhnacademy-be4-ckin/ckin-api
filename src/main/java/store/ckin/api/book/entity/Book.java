@@ -1,6 +1,6 @@
 package store.ckin.api.book.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,8 +50,7 @@ public class Book {
     private String bookPublisher;
 
     @Column(name = "book_publication_date")
-    @Temporal(TemporalType.DATE)
-    private Date bookPublicationDate;
+    private LocalDate bookPublicationDate;
 
     @Column(name = "book_index")
     private String bookIndex;
@@ -62,6 +59,7 @@ public class Book {
     private Boolean bookPackaging;
 
     @Column(name = "book_state")
+    @Builder.Default
     private String bookState = "ON_SALE";
 
     @Column(name = "book_stock")

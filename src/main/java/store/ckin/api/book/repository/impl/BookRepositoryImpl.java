@@ -5,11 +5,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
@@ -29,38 +29,42 @@ import store.ckin.api.tag.entity.QTag;
  * @author 나국로
  * @version 2024. 02. 26.
  */
-@Repository
-@RequiredArgsConstructor
-public class BookRepositoryImpl implements BookRepositoryCustom {
-    private final JPAQueryFactory queryFactory;
+public class BookRepositoryImpl extends QuerydslRepositorySupport implements BookRepositoryCustom {
+    private final EntityManager entityManager;
 
-    QBook qBook = QBook.book;
-    QBookAuthor qBookAuthor = QBookAuthor.bookAuthor;
-    QAuthor qAuthor = QAuthor.author;
-    QCategory qCategory = QCategory.category;
-    QTag qTag = QTag.tag;
-    QBookCategory qBookCategory = QBookCategory.bookCategory;
-    QBookTag qBookTag = QBookTag.bookTag;
+    public BookRepositoryImpl(EntityManager entityManager) {
+        super(Book.class);
+        this.entityManager = entityManager;
+    }
+
+    QBook book = QBook.book;
+    QBookAuthor bookAuthor = QBookAuthor.bookAuthor;
+    QAuthor author = QAuthor.author;
+    QCategory category = QCategory.category;
+    QTag tag = QTag.tag;
+    QBookCategory bookCategory = QBookCategory.bookCategory;
+    QBookTag bookTag = QBookTag.bookTag;
 
 
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .where(qAuthor.authorName.eq(authorName))
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .where(author.authorName.eq(authorName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .join(qBook.authors, qBookAuthor)
-                        .join(qBookAuthor.author, qAuthor)
-                        .where(qAuthor.authorName.eq(authorName))
+                        .select(book.count())
+                        .from(book)
+                        .join(book.authors, bookAuthor)
+                        .join(bookAuthor.author, author)
+                        .where(author.authorName.eq(authorName))
                         .fetchOne())
                 .orElse(0L);
 
@@ -75,19 +79,21 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .where(book.bookTitle.containsIgnoreCase(bookTitle))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .where(qBook.bookTitle.containsIgnoreCase(bookTitle))
+                        .select(book.count())
+                        .from(book)
+                        .where(book.bookTitle.containsIgnoreCase(bookTitle))
                         .fetchOne())
                 .orElse(0L);
 
@@ -101,20 +107,22 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBook.categories, qBookCategory).fetchJoin()
-                .where(qBookCategory.category.categoryId.eq(categoryId))
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .where(bookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
-                        .join(qBook.categories, qBookCategory)
-                        .where(qBookCategory.category.categoryId.eq(categoryId))
+                        .select(book.count())
+                        .from(book)
+                        .join(book.categories, bookCategory)
+                        .where(bookCategory.category.categoryId.eq(categoryId))
                         .fetchOne())
                 .orElse(0L);
 
@@ -128,17 +136,19 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
         List<Book> books = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
-                        .select(qBook.count())
-                        .from(qBook)
+                        .select(book.count())
+                        .from(book)
                         .fetchOne())
                 .orElse(0L);
 
@@ -152,15 +162,17 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 
     @Override
     public Optional<Book> findByBookId(Long bookId) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
         Book book = queryFactory
-                .selectFrom(qBook)
-                .leftJoin(qBook.authors, qBookAuthor).fetchJoin()
-                .leftJoin(qBookAuthor.author, qAuthor).fetchJoin()
-                .leftJoin(qBook.categories, qBookCategory).fetchJoin()
-                .leftJoin(qBookCategory.category, qCategory).fetchJoin()
-                .leftJoin(qBook.tags, qBookTag).fetchJoin()
-                .leftJoin(qBookTag.tag, qTag).fetchJoin()
-                .where(qBook.bookId.eq(bookId))
+                .selectFrom(this.book)
+                .leftJoin(this.book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(this.book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(this.book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .where(this.book.bookId.eq(bookId))
                 .fetchOne();
 
         return Optional.ofNullable(book);
@@ -175,25 +187,27 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
     @Override
     public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
 
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);;
+
         List<BookExtractionResponseDto> bookInfoList = queryFactory
-                .from(qBook)
-                .join(qBook.categories, qBookCategory)
-                .where(qBook.bookId.in(bookIds))
+                .from(book)
+                .join(book.categories, bookCategory)
+                .where(book.bookId.in(bookIds))
                 .select(Projections.constructor(BookExtractionResponseDto.class,
-                        qBook.bookId,
-                        qBook.bookTitle,
-                        qBook.bookPackaging,
-                        qBook.bookSalePrice,
-                        qBook.bookStock))
+                        book.bookId,
+                        book.bookTitle,
+                        book.bookPackaging,
+                        book.bookSalePrice,
+                        book.bookStock))
                 .distinct()
                 .fetch();
 
         List<BookCategoryResponseDto> bookCategoryList = queryFactory
-                .from(qBookCategory)
+                .from(bookCategory)
                 .select(Projections.constructor(BookCategoryResponseDto.class,
-                        qBookCategory.book.bookId,
-                        qBookCategory.category.categoryId))
-                .where(qBookCategory.book.bookId.in(bookIds))
+                        bookCategory.book.bookId,
+                        bookCategory.category.categoryId))
+                .where(bookCategory.book.bookId.in(bookIds))
                 .fetch();
 
         bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategory -> {
@@ -224,6 +238,8 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
                 .bookRegularPrice(book.getBookRegularPrice())
                 .bookDiscountRate(book.getBookDiscountRate())
                 .bookState(book.getBookState())
+                .bookSalePrice(book.getBookSalePrice())
+                .bookReviewRate(book.getBookReviewRate())
                 .authorNames(authorNames)
                 .build();
     }

@@ -1,6 +1,6 @@
 package store.ckin.api.book.dto.response;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BookListResponseDto {
     private String bookTitle;
     private String bookDescription;
     private String bookPublisher;
-    private Date bookPublicationDate;
+    private LocalDate bookPublicationDate;
     private String bookIndex;
     private Boolean bookPackaging;
     private Integer bookStock;
@@ -34,7 +34,8 @@ public class BookListResponseDto {
     @Builder
     public BookListResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription,
                                String bookPublisher,
-                               Date bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
+                               LocalDate bookPublicationDate, String bookIndex, Boolean bookPackaging,
+                               Integer bookStock,
                                Integer bookRegularPrice, Integer bookDiscountRate, String bookState,
                                Integer bookSalePrice,
                                String bookReviewRate, List<String> authorNames) {

@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
-import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 
 /**
  * BookService 인터페이스.
