@@ -29,6 +29,7 @@ public class BookListResponseDto {
     private String bookState;
     private Integer bookSalePrice;
     private String bookReviewRate;
+    private String thumbnail;
     private List<String> authorNames;
 
     @Builder
@@ -38,7 +39,7 @@ public class BookListResponseDto {
                                Integer bookStock,
                                Integer bookRegularPrice, Integer bookDiscountRate, String bookState,
                                Integer bookSalePrice,
-                               String bookReviewRate, List<String> authorNames) {
+                               String bookReviewRate, List<String> authorNames, String thumbnail) {
         this.bookId = bookId;
         this.bookIsbn = bookIsbn;
         this.bookTitle = bookTitle;
@@ -54,5 +55,6 @@ public class BookListResponseDto {
         this.bookSalePrice = bookSalePrice;
         this.bookReviewRate = bookReviewRate;
         this.authorNames = authorNames;
+        this.thumbnail = thumbnail;
     }
 }
