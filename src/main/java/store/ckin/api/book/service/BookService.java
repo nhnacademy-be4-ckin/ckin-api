@@ -1,7 +1,9 @@
 package store.ckin.api.book.service;
 
+import java.io.IOException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
@@ -23,7 +25,7 @@ public interface BookService {
 
     Page<BookListResponseDto> findAllBooks(Pageable pageable);
 
-    void createBook(BookCreateRequestDto requestDto);
+    void createBook(BookCreateRequestDto requestDto, MultipartFile file) throws IOException;
 
     void updateBook(Long bookId, BookModifyRequestDto requestDto);
 
