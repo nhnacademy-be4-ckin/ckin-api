@@ -48,28 +48,28 @@ public class BookController {
 
     @GetMapping("/search/by-author")
     public ResponseEntity<Page<BookListResponseDto>> findByAuthorName(@RequestParam String authorName,
-                                                                      @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+                                                                      @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
                                                                       Pageable pageable) {
         return ResponseEntity.ok(bookService.findByAuthorName(authorName, pageable));
     }
 
     @GetMapping("/search/by-title")
     public ResponseEntity<Page<BookListResponseDto>> findByBookTitle(@RequestParam String title,
-                                                                     @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+                                                                     @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
                                                                      Pageable pageable) {
         return ResponseEntity.ok(bookService.findByBookTitle(title, pageable));
     }
 
     @GetMapping("/search/by-category")
     public ResponseEntity<Page<BookListResponseDto>> findByCategoryId(@RequestParam Long categoryId,
-                                                                      @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+                                                                      @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
                                                                       Pageable pageable) {
         return ResponseEntity.ok(bookService.findByCategoryId(categoryId, pageable));
     }
 
     @GetMapping
     public ResponseEntity<Page<BookListResponseDto>> findAllBooks(
-            @PageableDefault(size = 10, sort = "bookPublicationDate", direction = Sort.Direction.DESC)
+            @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ResponseEntity.ok(bookService.findAllBooks(pageable));
     }
