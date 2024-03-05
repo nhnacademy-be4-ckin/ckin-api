@@ -1,7 +1,6 @@
 package store.ckin.api.book.dto.request;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

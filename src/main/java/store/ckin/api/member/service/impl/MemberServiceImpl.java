@@ -10,6 +10,7 @@ import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -63,5 +64,15 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public MemberInfoDetailResponseDto getMemberInfoDetail(Long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new MemberNotFoundException(id);
+        }
+
+        return memberRepository.getMemberInfoDetail(id);
     }
 }
