@@ -16,7 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
@@ -36,7 +36,7 @@ import store.ckin.api.objectstorage.service.ObjectStorageService;
  * @version 2024. 03. 01.
  */
 @RequiredArgsConstructor
-@Component
+@Service
 @Slf4j
 public class ObjectStorageServiceImpl implements ObjectStorageService {
 
