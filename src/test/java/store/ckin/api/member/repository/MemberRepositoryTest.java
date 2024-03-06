@@ -2,6 +2,7 @@ package store.ckin.api.member.repository;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class MemberRepositoryTest {
                 .email("test@test.com")
                 .password("1234")
                 .contact("12312312345")
-                .birth(LocalDateTime.now())
+                .birth(LocalDate.now())
                 .latestLoginAt(LocalDateTime.now())
                 .role(Member.Role.MEMBER)
                 .point(5000)

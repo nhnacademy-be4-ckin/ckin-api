@@ -7,7 +7,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import store.ckin.api.grade.entity.Grade;
+import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
@@ -31,6 +34,9 @@ class MemberServiceImplTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private GradeRepository gradeRepository;
+
     @InjectMocks
     private MemberServiceImpl memberService;
 
@@ -38,9 +44,12 @@ class MemberServiceImplTest {
     @DisplayName("멤버 생성 성공 테스트")
     void testCreateMemberSuccess() {
         String testEmail = "test@test.com";
+        Grade grade = Grade.builder().build();
 
         when(memberRepository.existsByEmail(anyString()))
                 .thenReturn(false);
+        when(gradeRepository.findById(1L))
+                .thenReturn(Optional.of(grade));
 
         MemberCreateRequestDto dto = new MemberCreateRequestDto();
 
@@ -48,7 +57,7 @@ class MemberServiceImplTest {
         ReflectionTestUtils.setField(dto, "password", "pwd");
         ReflectionTestUtils.setField(dto, "name", "abc");
         ReflectionTestUtils.setField(dto, "contact", "0101111234");
-        ReflectionTestUtils.setField(dto, "birth", LocalDateTime.now());
+        ReflectionTestUtils.setField(dto, "birth", LocalDate.now());
 
         memberService.createMember(dto);
 
@@ -70,7 +79,7 @@ class MemberServiceImplTest {
         ReflectionTestUtils.setField(dto, "password", "pwd");
         ReflectionTestUtils.setField(dto, "name", "abc");
         ReflectionTestUtils.setField(dto, "contact", "0101111234");
-        ReflectionTestUtils.setField(dto, "birth", LocalDateTime.now());
+        ReflectionTestUtils.setField(dto, "birth", LocalDate.now());
 
         assertThrows(MemberAlreadyExistsException.class,
                 () -> memberService.createMember(dto));
