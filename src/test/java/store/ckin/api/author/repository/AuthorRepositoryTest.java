@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.repository.impl.AuthorRepositoryImpl;
@@ -63,8 +66,8 @@ class AuthorRepositoryTest {
         entityManager.persist(author1);
         entityManager.persist(author2);
         entityManager.flush();
-
-        List<AuthorResponseDto> foundAuthors = authorRepository.findAuthorsByName("김");
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<AuthorResponseDto> foundAuthors = authorRepository.findAuthorsByName("김", pageable);
 
         assertThat(foundAuthors).isNotEmpty();
         assertThat(foundAuthors.stream().anyMatch(a -> a.getAuthorName().contains("김"))).isTrue();

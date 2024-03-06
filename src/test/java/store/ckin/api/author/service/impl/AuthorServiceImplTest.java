@@ -153,17 +153,24 @@ class AuthorServiceImplTest {
     @DisplayName("이름으로 작가 검색 시 해당 작가 리스트 반환")
     void givenAuthorName_whenFindAuthorsByName_thenReturnsAuthorsList() {
         String name = "작가";
-        List<AuthorResponseDto> mockResponse = List.of(
+        Pageable pageable = PageRequest.of(0, 2);
+
+        List<AuthorResponseDto> authorList = List.of(
                 new AuthorResponseDto(1L, "작가1"),
                 new AuthorResponseDto(2L, "작가2")
         );
-        when(authorRepository.findAuthorsByName(name)).thenReturn(mockResponse);
+        Page<AuthorResponseDto> mockResponse = new PageImpl<>(authorList, pageable, authorList.size());
 
-        List<AuthorResponseDto> result = authorService.findAuthorsByName(name);
+        when(authorRepository.findAuthorsByName(name, pageable)).thenReturn(mockResponse);
+
+        Page<AuthorResponseDto> result = authorService.findAuthorsByName(name, pageable);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals("작가1", result.get(0).getAuthorName());
+        assertEquals(2, result.getTotalElements()); // Check total elements in the page
+        assertEquals("작가1", result.getContent().get(0).getAuthorName()); // Check first author's name
+        assertEquals("작가2", result.getContent().get(1).getAuthorName()); // Check second author's name
+
     }
 
     @Test
