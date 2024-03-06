@@ -17,4 +17,12 @@ public interface SaleRepositoryCustom {
      * @return 주문 응답 DTO 리스트
      */
     List<SaleResponseDto> findAllOrderByIdDesc();
+
+    /**
+     * 주문 상세 정보를 조회하는 메서드.
+     *
+     * @param saleId 주문 ID
+     * @return 주문 응답 DTO
+     */
+    SaleResponseDto findBySaleId(Long saleId);
 }

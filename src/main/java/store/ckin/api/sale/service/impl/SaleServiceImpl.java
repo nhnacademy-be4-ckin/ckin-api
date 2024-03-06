@@ -13,6 +13,7 @@ import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 import store.ckin.api.sale.service.SaleService;
 
@@ -79,5 +80,21 @@ public class SaleServiceImpl implements SaleService {
     @Transactional(readOnly = true)
     public List<SaleResponseDto> getSales() {
         return saleRepository.findAllOrderByIdDesc();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @param saleId
+     * @return 주문 조회 응답 DTO
+     */
+    @Override
+    public SaleResponseDto getSaleInformation(Long saleId) {
+
+        if (!saleRepository.existsById(saleId)) {
+            throw new SaleNotFoundException(saleId);
+        }
+
+        return saleRepository.findBySaleId(saleId);
     }
 }

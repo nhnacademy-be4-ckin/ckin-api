@@ -22,7 +22,16 @@ public interface SaleService {
 
     /**
      * 모든 주문을 조회합니다.
+     *
      * @return 주문 응답 DTO 리스트
      */
     List<SaleResponseDto> getSales();
+
+    /**
+     * 주문 상세 정보를 조회합니다.
+     *
+     * @param saleId 주문 ID
+     * @return 주문 응답 DTO
+     */
+    SaleResponseDto getSaleInformation(Long saleId);
 }
