@@ -70,21 +70,33 @@ class AuthorControllerTest {
     @DisplayName("이름으로 작가 검색")
     void givenAuthorName_whenSearchAuthorsByName_thenReturnsAuthors() throws Exception {
         String name = "작가";
-        List<AuthorResponseDto> mockAuthors = List.of(
+        int page = 0;
+        int size = 2;
+
+        List<AuthorResponseDto> authorList = List.of(
                 new AuthorResponseDto(1L, "작가1"),
                 new AuthorResponseDto(2L, "작가2")
         );
-        when(authorService.findAuthorsByName(name)).thenReturn(mockAuthors);
+        Page<AuthorResponseDto> mockResponse =
+                new PageImpl<>(authorList, PageRequest.of(page, size), authorList.size());
+
+        when(authorService.findAuthorsByName(eq(name), any(Pageable.class))).thenReturn(mockResponse);
 
         mockMvc.perform(get("/api/authors/search")
-                        .param("name", name))
+                        .param("name", name)
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(mockAuthors.size())))
-                .andExpect(jsonPath("$[0].authorId", equalTo(1)))
-                .andExpect(jsonPath("$[0].authorName", equalTo("작가1")))
-                .andExpect(jsonPath("$[1].authorId", equalTo(2)))
-                .andExpect(jsonPath("$[1].authorName", equalTo("작가2")))
+                .andExpect(jsonPath("$.content", hasSize(mockResponse.getContent().size())))
+                .andExpect(jsonPath("$.content[0].authorId", equalTo(1)))
+                .andExpect(jsonPath("$.content[0].authorName", equalTo("작가1")))
+                .andExpect(jsonPath("$.content[1].authorId", equalTo(2)))
+                .andExpect(jsonPath("$.content[1].authorName", equalTo("작가2")))
+                .andExpect(jsonPath("$.totalPages", equalTo(mockResponse.getTotalPages())))
+                .andExpect(jsonPath("$.totalElements", equalTo((int) mockResponse.getTotalElements())))
+                .andExpect(jsonPath("$.size", equalTo(size)))
+                .andExpect(jsonPath("$.number", equalTo(page)))
                 .andDo(print());
     }
 

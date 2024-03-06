@@ -43,7 +43,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
         List<Review> reviews = queryFactory
                 .selectFrom(review)
                 .leftJoin(review.member, member)
-                .where(member.memberId.eq(memberId))
+                .where(member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -52,7 +52,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
                         .select(review.count())
                         .from(review)
                         .leftJoin(review.member, member)
-                        .where(member.memberId.eq(memberId))
+                        .where(member.id.eq(memberId))
                         .fetchOne())
                 .orElse(0L);
 
