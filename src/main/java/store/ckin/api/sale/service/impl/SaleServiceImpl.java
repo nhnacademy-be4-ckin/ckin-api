@@ -5,9 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
@@ -24,6 +30,7 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 02.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
@@ -67,8 +74,10 @@ public class SaleServiceImpl implements SaleService {
                 .salePaymentStatus(Sale.PaymentStatus.WAITING)
                 .saleShippingPostCode(requestDto.getPostcode())
                 .build();
+        Sale save = saleRepository.save(sale);
 
-        return saleRepository.save(sale).getSaleId();
+        log.info("주문 생성 완료: {}", save);
+        return save.getSaleId();
     }
 
     /**
@@ -78,13 +87,27 @@ public class SaleServiceImpl implements SaleService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<SaleResponseDto> getSales() {
-        return saleRepository.findAllOrderByIdDesc();
+    public PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable) {
+        Page<Sale> salePage = saleRepository.findAllByOrderBySaleIdDesc(pageable);
+
+        PageInfo pageInfo = PageInfo.builder()
+                .page(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .totalElements((int) salePage.getTotalElements())
+                .totalPages(salePage.getTotalPages())
+                .build();
+
+        List<SaleResponseDto> currentPageSalesResponse =
+                salePage.getContent().stream().map(SaleResponseDto::toDto).collect(
+                        Collectors.toList());
+
+        return new PagedResponse<>(currentPageSalesResponse, pageInfo);
     }
 
 
     /**
      * {@inheritDoc}
+     *
      * @param saleId
      * @return 주문 조회 응답 DTO
      */

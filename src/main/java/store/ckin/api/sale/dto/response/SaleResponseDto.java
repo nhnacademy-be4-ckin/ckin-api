@@ -51,4 +51,25 @@ public class SaleResponseDto {
 
     private Sale.PaymentStatus salePaymentStatus;
 
+    public static SaleResponseDto toDto(Sale sale) {
+        return new SaleResponseDto(
+                sale.getSaleId(),
+                sale.getMember().getEmail(),
+                sale.getSaleNumber(),
+                sale.getSaleOrdererName(),
+                sale.getSaleOrdererContact(),
+                sale.getSaleReceiverName(),
+                sale.getSaleReceiverContact(),
+                sale.getSaleReceiverAddress(),
+                sale.getSaleDate(),
+                sale.getSaleShippingDate(),
+                sale.getSaleDeliveryDate(),
+                sale.getSaleDeliveryStatus(),
+                sale.getSaleDeliveryFee(),
+                sale.getSalePointUsage(),
+                sale.getSaleTotalPrice(),
+                sale.getSalePaymentStatus()
+        );
+    }
+
 }

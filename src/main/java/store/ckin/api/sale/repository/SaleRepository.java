@@ -1,5 +1,7 @@
 package store.ckin.api.sale.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.sale.entity.Sale;
 
@@ -10,4 +12,6 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 02. 26.
  */
 public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositoryCustom {
+
+    Page<Sale> findAllByOrderBySaleIdDesc(Pageable pageable);
 }

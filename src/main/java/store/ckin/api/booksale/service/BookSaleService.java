@@ -10,5 +10,6 @@ import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
  * @version 2024. 03. 02.
  */
 public interface BookSaleService {
+
     void createBookSale(Long saleId, List<BookSaleCreateRequestDto> bookSaleList);
 }

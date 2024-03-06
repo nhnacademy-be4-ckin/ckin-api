@@ -2,9 +2,11 @@ package store.ckin.api.sale.facade;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.service.BookSaleService;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
@@ -42,6 +44,7 @@ public class SaleFacade {
                 requestDto.toCreateSaleWithoutBookRequestDto();
 
         Long saleId = saleService.createSale(saleInfo);
+
         bookSaleService.createBookSale(saleId, requestDto.getBookSaleList());
 
         memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
@@ -54,8 +57,8 @@ public class SaleFacade {
      *
      * @return 주문 DTO 리스트
      */
-    public List<SaleResponseDto> getSales() {
-        return saleService.getSales();
+    public PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable) {
+        return saleService.getSales(pageable);
     }
 
     public SaleResponseDto getSaleInformation(Long saleId) {

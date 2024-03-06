@@ -34,6 +34,8 @@ public class BookSaleServiceImpl implements BookSaleService {
 
         for (BookSaleCreateRequestDto bookSaleDto : bookSaleList) {
 
+            log.info("saleId = {}, bookId = {}", saleId, bookSaleDto.getBookId());
+
             PackagingResponseDto packagingPolicy;
             if (bookSaleDto.getPackagingId() > 0) {
                 packagingPolicy = packagingService.getPackagingPolicy(bookSaleDto.getPackagingId());

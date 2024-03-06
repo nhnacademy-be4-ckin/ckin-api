@@ -1,6 +1,8 @@
 package store.ckin.api.sale.service;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 
@@ -20,12 +22,14 @@ public interface SaleService {
      */
     Long createSale(SaleCreateNoBookRequestDto requestDto);
 
+
     /**
-     * 모든 주문을 조회합니다.
+     * 페이징 처리된 주문 목록을 조회합니다.
      *
+     * @param pageable 페이지 정보
      * @return 주문 응답 DTO 리스트
      */
-    List<SaleResponseDto> getSales();
+    PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable);
 
     /**
      * 주문 상세 정보를 조회합니다.
