@@ -1,6 +1,8 @@
 package store.ckin.api.author.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 
@@ -18,5 +20,5 @@ public interface AuthorRepositoryCustom {
      * @param name the name
      * @return the list
      */
-    List<AuthorResponseDto> findAuthorsByName(String name);
+    Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable);
 }

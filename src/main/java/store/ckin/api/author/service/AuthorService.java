@@ -15,7 +15,7 @@ import store.ckin.api.author.dto.response.AuthorResponseDto;
 public interface AuthorService {
     Page<AuthorResponseDto> findAllAuthors(Pageable pageable);
 
-    List<AuthorResponseDto> findAuthorsByName(String name);
+    Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable);
 
     AuthorResponseDto createAuthor(AuthorCreateRequestDto authorCreateRequestDto);
 
