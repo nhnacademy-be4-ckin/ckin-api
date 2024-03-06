@@ -179,9 +179,7 @@ class AuthorServiceImplTest {
         Long nonExistingAuthorId = 1L;
         when(authorRepository.findById(nonExistingAuthorId)).thenReturn(Optional.empty());
 
-        assertThrows(AuthorNotFoundException.class, () -> {
-            authorService.deleteAuthor(nonExistingAuthorId);
-        });
+        assertThrows(AuthorNotFoundException.class, () -> authorService.deleteAuthor(nonExistingAuthorId));
     }
 
 
