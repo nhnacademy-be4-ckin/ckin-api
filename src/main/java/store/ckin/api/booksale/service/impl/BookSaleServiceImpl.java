@@ -2,7 +2,6 @@ package store.ckin.api.booksale.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
@@ -19,7 +18,6 @@ import store.ckin.api.packaging.service.PackagingService;
  * @version 2024. 03. 02.
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookSaleServiceImpl implements BookSaleService {
@@ -34,8 +32,6 @@ public class BookSaleServiceImpl implements BookSaleService {
 
         for (BookSaleCreateRequestDto bookSaleDto : bookSaleList) {
 
-            log.info("saleId = {}, bookId = {}", saleId, bookSaleDto.getBookId());
-
             PackagingResponseDto packagingPolicy;
             if (bookSaleDto.getPackagingId() > 0) {
                 packagingPolicy = packagingService.getPackagingPolicy(bookSaleDto.getPackagingId());
@@ -45,7 +41,6 @@ public class BookSaleServiceImpl implements BookSaleService {
                         .build();
             }
 
-            log.info("packagingPolicy = {}", packagingPolicy);
 
             // TODO : 주문 도서에 수량 추가하기
             BookSale.Pk pk = new BookSale.Pk(saleId, bookSaleDto.getBookId());
