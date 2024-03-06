@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
@@ -26,11 +27,11 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
 
         return from(member)
                 .select(Projections.constructor(MemberAuthResponseDto.class,
-                        member.memberId,
+                        member.id,
                         member.email,
                         member.password,
                         member.role
-                        ))
+                ))
                 .where(member.email.eq(email))
                 .fetchOne();
     }
@@ -44,6 +45,24 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         member.email,
                         member.role))
                 .where(member.id.eq(id))
+                .fetchOne();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 회원 ID
+     * @return 회원 포인트 응답 DTO
+     */
+    @Override
+    public MemberPointResponseDto getMemberPointById(Long id) {
+
+        QMember member = QMember.member;
+
+        return from(member)
+                .where(member.id.eq(id))
+                .select(Projections.constructor(MemberPointResponseDto.class,
+                        member.point))
                 .fetchOne();
     }
 }

@@ -11,6 +11,7 @@ import store.ckin.api.member.domain.MemberAuthRequestDto;
 import store.ckin.api.member.domain.MemberAuthResponseDto;
 import store.ckin.api.member.domain.MemberCreateRequestDto;
 import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -74,5 +75,37 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return memberRepository.getMemberInfoDetail(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param id 회원 ID
+     * @return 회원 포인트 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public MemberPointResponseDto getMemberPoint(Long id) {
+
+        if (!memberRepository.existsById(id)) {
+            throw new MemberNotFoundException(id);
+        }
+
+        return memberRepository.getMemberPointById(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberId   회원 ID
+     * @param pointUsage 사용한 포인트
+     */
+    @Transactional
+    @Override
+    public void updatePoint(Long memberId, Integer pointUsage) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        member.updatePoint(pointUsage);
     }
 }
