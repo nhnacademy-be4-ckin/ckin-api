@@ -12,6 +12,6 @@ import store.ckin.api.review.entity.Review;
  * @version 2024. 03. 03.
  */
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Page<Review> findAllByMember_MemberId(Long memberId, Pageable pageable);
+    Page<Review> findAllByMember_id(Long memberId, Pageable pageable);
     Page<Review> findAllByBook_BookId(Long bookId, Pageable pageable);
 }
