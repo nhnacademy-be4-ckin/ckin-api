@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.service.BookSaleService;
+import store.ckin.api.member.service.MemberService;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -25,6 +26,8 @@ public class SaleFacade {
 
     private final BookSaleService bookSaleService;
 
+    private final MemberService memberService;
+
     /**
      * 주문을 생성하는 메서드입니다.
      *
@@ -40,6 +43,8 @@ public class SaleFacade {
         Long saleId = saleService.createSale(saleInfo);
         bookSaleService.createBookSale(saleId, requestDto.getBookSaleList());
 
+        memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
+
         return saleId;
     }
 
@@ -50,5 +55,9 @@ public class SaleFacade {
      */
     public List<SaleResponseDto> getSales() {
         return saleService.getSales();
+    }
+
+    public SaleResponseDto getSaleInformation(Long saleId) {
+        return saleService.getSaleInformation(saleId);
     }
 }
