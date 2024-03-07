@@ -12,6 +12,7 @@ import store.ckin.api.member.service.MemberService;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -48,7 +49,9 @@ public class SaleFacade {
 
         bookSaleService.createBookSale(saleId, requestDto.getBookSaleList());
 
-        memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
+        if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
+            memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
+        }
 
         return saleId;
     }
@@ -85,5 +88,15 @@ public class SaleFacade {
     public void updateSalePaymentPaidStatus(Long saleId) {
         bookSaleService.updateBookSaleState(saleId, BookSale.BookSaleState.COMPLETE);
         saleService.updateSalePaymentPaidStatus(saleId);
+    }
+
+    /**
+     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     * @return 주문 상세 정보와 주문한 책 정보
+     */
+    public SaleWithBookResponseDto SaleWithBookResponseDto(Long saleId) {
+        return saleService.getSaleWithBook(saleId);
     }
 }

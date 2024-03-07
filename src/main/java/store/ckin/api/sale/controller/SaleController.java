@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.facade.SaleFacade;
 
 /**
@@ -80,5 +81,17 @@ public class SaleController {
     public ResponseEntity<Void> updateSalePaymentPaidStatus(@PathVariable("saleId") Long saleId) {
         saleFacade.updateSalePaymentPaidStatus(saleId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     * @return 200 (OK), 주문 상세 정보와 주문한 책 정보
+     */
+    @GetMapping("/{saleId}/books")
+    public ResponseEntity<SaleWithBookResponseDto> getSaleWithBooks(@PathVariable Long saleId) {
+        SaleWithBookResponseDto responseDto = saleFacade.SaleWithBookResponseDto(saleId);
+        return ResponseEntity.ok(responseDto);
     }
 }

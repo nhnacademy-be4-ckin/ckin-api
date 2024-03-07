@@ -13,5 +13,11 @@ import store.ckin.api.sale.entity.Sale;
  */
 public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositoryCustom {
 
+    /**
+     * 주문 목록을 생성된 ID의 내림차순으로 페이징처리하여 조회합니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 주문 목록
+     */
     Page<Sale> findAllByOrderBySaleIdDesc(Pageable pageable);
 }

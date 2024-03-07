@@ -18,6 +18,7 @@ import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
@@ -48,6 +49,8 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional
     public Long createSale(SaleCreateNoBookRequestDto requestDto) {
+
+        log.debug("{} : {}", this.getClass().getName(), requestDto.getAddress());
 
         Optional<Member> member = Optional.empty();
         if (Objects.nonNull(requestDto.getMemberId())) {
@@ -132,5 +135,16 @@ public class SaleServiceImpl implements SaleService {
                 .orElseThrow(() -> new SaleNotFoundException(saleId));
 
         sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SaleWithBookResponseDto getSaleWithBook(Long saleId) {
+
+        if (!saleRepository.existsById(saleId)) {
+            throw new SaleNotFoundException(saleId);
+        }
+
+        return saleRepository.getSaleWithBook(saleId);
     }
 }
