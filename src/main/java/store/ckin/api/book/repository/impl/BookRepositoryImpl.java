@@ -194,10 +194,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
 
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);;
 
-        List<BookExtractionResponseDto> bookInfoList = queryFactory
-                .from(book)
+        List<BookExtractionResponseDto> bookInfoList = from(book)
                 .join(book.categories, bookCategory)
                 .where(book.bookId.in(bookIds))
                 .select(Projections.constructor(BookExtractionResponseDto.class,
@@ -209,17 +207,19 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .distinct()
                 .fetch();
 
-        List<BookCategoryResponseDto> bookCategoryList = queryFactory
-                .from(bookCategory)
+
+        List<BookCategoryResponseDto> bookCategoryList = from(bookCategory)
                 .select(Projections.constructor(BookCategoryResponseDto.class,
                         bookCategory.book.bookId,
                         bookCategory.category.categoryId))
                 .where(bookCategory.book.bookId.in(bookIds))
                 .fetch();
 
-        bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategory -> {
-            if (bookInfo.getBookId().equals(bookCategory.getBookId())) {
-                bookInfo.getCategoryIds().add(bookCategory.getCategoryId());
+
+
+        bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategoryDto -> {
+            if (bookInfo.getBookId().equals(bookCategoryDto.getBookId())) {
+                bookInfo.getCategoryIds().add(bookCategoryDto.getCategoryId());
             }
         }));
 
