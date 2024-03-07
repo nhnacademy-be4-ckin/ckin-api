@@ -16,6 +16,7 @@ import store.ckin.api.author.exception.AuthorNotFoundException;
 import store.ckin.api.author.repository.AuthorRepository;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
@@ -175,6 +176,18 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findByBookId(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
         return convertToBookResponseDto(book);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
+        return bookRepository.getExtractBookListByBookIds(bookIds);
     }
 
     private void updateAuthors(Book book, Set<Long> authorIds) {

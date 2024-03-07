@@ -1,11 +1,13 @@
 package store.ckin.api.book.service;
 
+import java.util.List;
 import java.io.IOException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 
@@ -30,4 +32,12 @@ public interface BookService {
     void updateBook(Long bookId, BookModifyRequestDto requestDto);
 
     BookResponseDto findBookById(Long bookId);
+
+    /**
+     * 도서에서 필요한 정보만 반환하는 메서드입니다.
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds);
 }
