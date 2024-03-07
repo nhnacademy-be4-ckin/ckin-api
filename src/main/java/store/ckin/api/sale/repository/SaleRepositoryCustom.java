@@ -1,6 +1,5 @@
 package store.ckin.api.sale.repository;
 
-import java.util.List;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 
 /**
@@ -10,13 +9,6 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
  * @version 2024. 03. 03.
  */
 public interface SaleRepositoryCustom {
-
-    /**
-     * 모든 주문을 조회하는 메서드.
-     *
-     * @return 주문 응답 DTO 리스트
-     */
-    List<SaleResponseDto> findAllOrderByIdDesc();
 
     /**
      * 주문 상세 정보를 조회하는 메서드.
