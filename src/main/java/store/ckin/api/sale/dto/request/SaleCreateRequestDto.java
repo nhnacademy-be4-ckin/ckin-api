@@ -7,9 +7,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 
@@ -20,7 +20,6 @@ import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
  * @version 2024. 03. 02.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class SaleCreateRequestDto {
@@ -54,6 +53,8 @@ public class SaleCreateRequestDto {
     @NotBlank(message = "주소를 입력해주세요.")
     private String address;
 
+    @NotBlank(message = "상세 주소는 필수입니다.")
+    @Size(min = 1, max = 50, message = "상세 주소는 1자 이상 50자 이하로 입력해주세요.")
     private String detailAddress;
 
     @PositiveOrZero(message = "포인트 사용량은 0보다 작을 수 없습니다.")

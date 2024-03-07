@@ -7,7 +7,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -17,7 +16,6 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @version 2024. 03. 02.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class SaleCreateNoBookRequestDto {

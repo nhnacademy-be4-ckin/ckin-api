@@ -17,7 +17,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import store.ckin.api.member.entity.Member;
 
 /**
@@ -27,7 +26,6 @@ import store.ckin.api.member.entity.Member;
  * @version 2024. 02. 26.
  */
 
-@ToString
 @Getter
 @Entity
 @Table(name = "Sale")
