@@ -28,6 +28,7 @@ import store.ckin.api.file.repository.FileRepository;
 import store.ckin.api.objectstorage.dto.request.TokenRequest;
 import store.ckin.api.objectstorage.dto.response.TokenResponse;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
+import store.ckin.api.skm.util.KeyManager;
 
 /**
  * ObjectStorageService 구현 클래스.
@@ -55,13 +56,14 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     private final ObjectStorageProperties properties;
     private final RestTemplate restTemplate;
     private final FileRepository fileRepository;
+    private final KeyManager keyManager;
 
     private static final String X_AUTH_TOKEN = "X-Auth-Token";
 
     public String requestToken() {
 
         // 헤더 생성
-        String identityUrl = properties.getIdentity() + "/tokens";
+        String identityUrl = keyManager.keyStore(properties.getIdentity()) + "/tokens";
 
         if (Objects.isNull(tokenId)
                 || expires.minusMinutes(1).isAfter(LocalDateTime.now())) {
@@ -69,8 +71,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
 
-            TokenRequest tokenRequest = new TokenRequest(properties.getTenantId(),
-                    properties.getUsername(), properties.getPassword());
+            TokenRequest tokenRequest = new TokenRequest(keyManager.keyStore(properties.getTenantId()),
+                    keyManager.keyStore(properties.getUsername()), keyManager.keyStore(properties.getPassword()));
 
             HttpEntity<TokenRequest> httpEntity
                     = new HttpEntity<>(tokenRequest, headers);
@@ -112,8 +114,8 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
 
         String fileUrl = String.format("%s/%s/%s/%s%s",
-                properties.getUrl(),
-                properties.getContainerName(),
+                keyManager.keyStore(properties.getUrl()),
+                keyManager.keyStore(properties.getContainerName()),
                 category,
                 fileId,
                 fileExtension);
