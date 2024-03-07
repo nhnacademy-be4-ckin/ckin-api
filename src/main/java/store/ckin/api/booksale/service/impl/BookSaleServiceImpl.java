@@ -58,4 +58,11 @@ public class BookSaleServiceImpl implements BookSaleService {
             bookSaleRepository.save(bookSale);
         }
     }
+
+    @Override
+    @Transactional
+    public void updateBookSaleState(Long saleId, BookSale.BookSaleState state) {
+        bookSaleRepository.findAllByPkSaleId(saleId)
+                .forEach(bookSale -> bookSale.updateBookSaleState(state));
+    }
 }

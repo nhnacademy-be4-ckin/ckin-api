@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
@@ -57,11 +58,32 @@ public class SaleFacade {
      *
      * @return 주문 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable) {
         return saleService.getSales(pageable);
     }
 
-    public SaleResponseDto getSaleInformation(Long saleId) {
-        return saleService.getSaleInformation(saleId);
+
+    /**
+     * 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     * @return 주문 상세 정보 DTO
+     */
+    @Transactional(readOnly = true)
+    public SaleResponseDto getSaleDetail(Long saleId) {
+        return saleService.getSaleDetail(saleId);
+    }
+
+    /**
+     * 주문의 결제 상태를 결제 완료(PAID)로 업데이트하는 메서드입니다.
+     * 주문의 상태를 업데이트하고, 책 주문의 상태를 완료(COMPLETE)로 업데이트합니다.
+     *
+     * @param saleId 주문 ID
+     */
+    @Transactional
+    public void updateSalePaymentPaidStatus(Long saleId) {
+        bookSaleService.updateBookSaleState(saleId, BookSale.BookSaleState.COMPLETE);
+        saleService.updateSalePaymentPaidStatus(saleId);
     }
 }

@@ -34,6 +34,7 @@ import store.ckin.api.member.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sale {
 
+
     /**
      * 주문의 배송 상태를 나타내는 Enum.
      */
@@ -130,5 +131,10 @@ public class Sale {
         this.saleTotalPrice = saleTotalPrice;
         this.salePaymentStatus = salePaymentStatus;
         this.saleShippingPostCode = saleShippingPostCode;
+    }
+
+
+    public void updatePaymentStatus(PaymentStatus paymentStatus) {
+        this.salePaymentStatus = paymentStatus;
     }
 }

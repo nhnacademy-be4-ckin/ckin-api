@@ -1,5 +1,6 @@
 package store.ckin.api.booksale.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.booksale.entity.BookSale;
 
@@ -11,4 +12,6 @@ import store.ckin.api.booksale.entity.BookSale;
  */
 
 public interface BookSaleRepository extends JpaRepository<BookSale, BookSale.Pk> {
+
+    List<BookSale> findAllByPkSaleId(Long saleId);
 }

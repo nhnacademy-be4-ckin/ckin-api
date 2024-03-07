@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookSale {
 
+
     public enum BookSaleState {
         ORDER, RETURN, CANCEL, COMPLETE
     }
@@ -78,6 +79,11 @@ public class BookSale {
         this.bookSalePackagingType = bookSalePackagingType;
         this.bookSalePaymentAmount = bookSalePaymentAmount;
         this.bookSaleState = bookSaleState;
+    }
+
+
+    public void updateBookSaleState(BookSaleState state) {
+        this.bookSaleState = state;
     }
 
 }

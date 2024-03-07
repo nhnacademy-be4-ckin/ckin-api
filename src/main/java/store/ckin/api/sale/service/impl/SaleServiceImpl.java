@@ -112,12 +112,22 @@ public class SaleServiceImpl implements SaleService {
      * @return 주문 조회 응답 DTO
      */
     @Override
-    public SaleResponseDto getSaleInformation(Long saleId) {
+    @Transactional(readOnly = true)
+    public SaleResponseDto getSaleDetail(Long saleId) {
 
         if (!saleRepository.existsById(saleId)) {
             throw new SaleNotFoundException(saleId);
         }
 
         return saleRepository.findBySaleId(saleId);
+    }
+
+    @Override
+    @Transactional
+    public void updateSalePaymentPaidStatus(Long saleId) {
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new SaleNotFoundException(saleId));
+
+        sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
     }
 }

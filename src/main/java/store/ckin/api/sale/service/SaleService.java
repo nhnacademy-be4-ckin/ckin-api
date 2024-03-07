@@ -37,5 +37,12 @@ public interface SaleService {
      * @param saleId 주문 ID
      * @return 주문 응답 DTO
      */
-    SaleResponseDto getSaleInformation(Long saleId);
+    SaleResponseDto getSaleDetail(Long saleId);
+
+
+    /**
+     * 주문 결제 상태를 결제 완료(PAID))로 변경합니다.
+     * @param saleId 주문 ID
+     */
+    void updateSalePaymentPaidStatus(Long saleId);
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,8 +64,21 @@ public class SaleController {
      * @return 주문 상세 정보 DTO
      */
     @GetMapping("/{saleId}")
-    public ResponseEntity<SaleResponseDto> getSaleInformation(@PathVariable("saleId") Long saleId) {
+    public ResponseEntity<SaleResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
 
-        return ResponseEntity.ok(saleFacade.getSaleInformation(saleId));
+        return ResponseEntity.ok(saleFacade.getSaleDetail(saleId));
+    }
+
+    /**
+     * 주문 결제 상태를 결제 완료(PAID)로 변경하는 메서드입니다.
+     * 주문의 상태를 업데이트하고, 책 주문의 상태를 완료(COMPLETE)로 업데이트합니다.
+     *
+     * @param saleId 주문 ID
+     * @return 200 (OK)
+     */
+    @PutMapping("/{saleId}")
+    public ResponseEntity<Void> updateSalePaymentPaidStatus(@PathVariable("saleId") Long saleId) {
+        saleFacade.updateSalePaymentPaidStatus(saleId);
+        return ResponseEntity.ok().build();
     }
 }
