@@ -106,6 +106,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
+        // TODO : PointHistory - 사용한 포인트 기록 남기기 (추후 구현)
+
         member.updatePoint(pointUsage);
     }
 }
