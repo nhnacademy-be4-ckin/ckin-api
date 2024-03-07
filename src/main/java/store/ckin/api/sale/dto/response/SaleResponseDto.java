@@ -51,6 +51,8 @@ public class SaleResponseDto {
 
     private Sale.PaymentStatus salePaymentStatus;
 
+    private String saleShippingPostCode;
+
     public static SaleResponseDto toDto(Sale sale) {
         return new SaleResponseDto(
                 sale.getSaleId(),
@@ -68,7 +70,8 @@ public class SaleResponseDto {
                 sale.getSaleDeliveryFee(),
                 sale.getSalePointUsage(),
                 sale.getSaleTotalPrice(),
-                sale.getSalePaymentStatus()
+                sale.getSalePaymentStatus(),
+                sale.getSaleShippingPostCode()
         );
     }
 
