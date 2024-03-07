@@ -74,9 +74,12 @@ public class SaleServiceImpl implements SaleService {
                 .salePaymentStatus(Sale.PaymentStatus.WAITING)
                 .saleShippingPostCode(requestDto.getPostcode())
                 .build();
+
+        log.debug("주문 생성: {}", sale);
+
         Sale save = saleRepository.save(sale);
 
-        log.info("주문 생성 완료: {}", save);
+        log.debug("주문 생성 완료: {}", save);
         return save.getSaleId();
     }
 
