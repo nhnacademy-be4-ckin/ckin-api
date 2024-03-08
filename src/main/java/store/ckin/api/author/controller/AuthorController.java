@@ -1,6 +1,5 @@
 package store.ckin.api.author.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,8 +53,9 @@ public class AuthorController {
      * @return the authors by name
      */
     @GetMapping("/search")
-    public ResponseEntity<Page<AuthorResponseDto>> getAuthorsByName(@RequestParam String name, @PageableDefault Pageable pageable) {
-        Page<AuthorResponseDto> authors = authorService.findAuthorsByName(name,pageable);
+    public ResponseEntity<Page<AuthorResponseDto>> getAuthorsByName(@RequestParam String name,
+                                                                    @PageableDefault Pageable pageable) {
+        Page<AuthorResponseDto> authors = authorService.findAuthorsByName(name, pageable);
         return ResponseEntity.ok(authors);
     }
 
@@ -67,7 +67,8 @@ public class AuthorController {
      * @return the response entity
      */
     @PostMapping
-    public ResponseEntity<AuthorResponseDto> createAuthor(@Valid @RequestBody AuthorCreateRequestDto authorCreateRequestDto) {
+    public ResponseEntity<AuthorResponseDto> createAuthor(
+            @Valid @RequestBody AuthorCreateRequestDto authorCreateRequestDto) {
         AuthorResponseDto createdAuthor = authorService.createAuthor(authorCreateRequestDto);
         return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
     }
@@ -86,7 +87,8 @@ public class AuthorController {
 
     @PutMapping("/{authorId}")
     public ResponseEntity<AuthorResponseDto> updateAuthor(@PathVariable Long authorId,
-                                                          @Valid @RequestBody AuthorModifyRequestDto authorModifyRequestDto) {
+                                                          @Valid @RequestBody
+                                                          AuthorModifyRequestDto authorModifyRequestDto) {
         AuthorResponseDto updatedAuthor = authorService.updateAuthor(authorId, authorModifyRequestDto);
         return ResponseEntity.ok(updatedAuthor);
     }
@@ -96,7 +98,6 @@ public class AuthorController {
         authorService.deleteAuthor(authorId);
         return ResponseEntity.ok().build();
     }
-
 
 
 }
