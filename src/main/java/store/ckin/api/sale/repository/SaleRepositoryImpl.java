@@ -2,7 +2,6 @@ package store.ckin.api.sale.repository;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
@@ -20,7 +19,6 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 03. 03.
  */
 
-@Slf4j
 public class SaleRepositoryImpl extends QuerydslRepositorySupport implements SaleRepositoryCustom {
 
     public SaleRepositoryImpl() {
@@ -126,8 +124,6 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .where(book.bookId.eq(bookSaleResponseDtoList.get(0).getBookId()))
                 .select(book.bookTitle)
                 .fetchFirst();
-
-        log.info("saleTitle = {}", saleTitle);
 
         responseDto.updateSaleTitle(saleTitle);
 
