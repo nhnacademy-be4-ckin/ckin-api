@@ -1,5 +1,6 @@
 package store.ckin.api.book.repository.impl;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.author.entity.QAuthor;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
+import store.ckin.api.book.relationship.bookcategory.dto.response.BookCategoryResponseDto;
 import store.ckin.api.book.relationship.bookcategory.entity.QBookCategory;
 import store.ckin.api.book.relationship.booktag.entity.QBookTag;
 import store.ckin.api.book.repository.BookRepositoryCustom;
@@ -180,6 +183,47 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .fetchOne();
 
         return Optional.ofNullable(resultBook);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    @Override
+    public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
+
+
+        List<BookExtractionResponseDto> bookInfoList = from(book)
+                .join(book.categories, bookCategory)
+                .where(book.bookId.in(bookIds))
+                .select(Projections.constructor(BookExtractionResponseDto.class,
+                        book.bookId,
+                        book.bookTitle,
+                        book.bookPackaging,
+                        book.bookSalePrice,
+                        book.bookStock))
+                .distinct()
+                .fetch();
+
+
+        List<BookCategoryResponseDto> bookCategoryList = from(bookCategory)
+                .select(Projections.constructor(BookCategoryResponseDto.class,
+                        bookCategory.book.bookId,
+                        bookCategory.category.categoryId))
+                .where(bookCategory.book.bookId.in(bookIds))
+                .fetch();
+
+
+
+        bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategoryDto -> {
+            if (bookInfo.getBookId().equals(bookCategoryDto.getBookId())) {
+                bookInfo.getCategoryIds().add(bookCategoryDto.getCategoryId());
+            }
+        }));
+
+        return bookInfoList;
     }
 
 

@@ -5,12 +5,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -107,5 +114,19 @@ public class MemberController {
         log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    /**
+     * 회원의 포인트를 조회하는 메서드 입니다.
+     *
+     * @param id 회원 ID
+     * @return 회원 포인트 응답 DTO
+     */
+    @GetMapping("/members/{id}/point")
+    public ResponseEntity<MemberPointResponseDto> getMemberPoint(@PathVariable("id") Long id) {
+        MemberPointResponseDto responseDto = memberService.getMemberPoint(id);
+
+        log.debug("MemberPointResponseDto = {}", responseDto.getPoint());
+        return ResponseEntity.ok(responseDto);
     }
 }

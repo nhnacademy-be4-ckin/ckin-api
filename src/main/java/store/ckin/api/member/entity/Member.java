@@ -102,4 +102,9 @@ public class Member {
     @Column(name = "member_accumulate_amount")
     @ColumnDefault("0")
     private Integer accumulateAmount;
+
+
+    public void updatePoint(Integer pointUsage) {
+        this.point -= pointUsage;
+    }
 }
