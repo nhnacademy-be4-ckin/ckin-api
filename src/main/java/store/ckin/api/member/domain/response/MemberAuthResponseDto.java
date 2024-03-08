@@ -1,4 +1,4 @@
-package store.ckin.api.member.domain;
+package store.ckin.api.member.domain.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,13 +13,13 @@ import store.ckin.api.member.entity.Member;
 @Getter
 @NoArgsConstructor
 public class MemberAuthResponseDto {
-    Long id;
+    private Long id;
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    String role;
+    private String role;
 
     /**
      * Member.Role 값을 String 으로 변환하는 생성자 메서드 입니다.

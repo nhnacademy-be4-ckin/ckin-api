@@ -1,4 +1,4 @@
-package store.ckin.api.member.domain;
+package store.ckin.api.member.domain.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +13,9 @@ import store.ckin.api.member.entity.Member;
 @Getter
 @NoArgsConstructor
 public class MemberInfoDetailResponseDto {
-    String email;
+    private String email;
 
-    String role;
+    private String role;
 
     public MemberInfoDetailResponseDto(String email, Member.Role role) {
         this.email = email;

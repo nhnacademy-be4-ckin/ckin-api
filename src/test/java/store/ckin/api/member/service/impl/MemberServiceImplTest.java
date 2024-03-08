@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.repository.GradeRepository;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.repository.MemberRepository;
