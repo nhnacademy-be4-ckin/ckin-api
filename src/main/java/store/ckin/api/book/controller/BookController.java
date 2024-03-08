@@ -1,5 +1,6 @@
 package store.ckin.api.book.controller;
 
+import java.util.List;
 import java.io.IOException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.service.BookService;
@@ -88,6 +90,20 @@ public class BookController {
         bookService.updateBook(bookId, requestDto);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 도서에서 필요한 정보만 반환하는 메서드입니다.
+     *
+     * @param bookIds 도서 ID 리스트
+     * @return 200(OK), 도서 정보 리스트
+     */
+    @GetMapping("/extraction")
+    public ResponseEntity<List<BookExtractionResponseDto>> getExtractBookListByBookIds(
+            @RequestParam("bookId") List<Long> bookIds) {
+        return ResponseEntity.ok(bookService.getExtractBookListByBookIds(bookIds));
+    }
+
+
     @PostMapping("/upload/description")
     public ResponseEntity<String> uploadDescriptionImage(@RequestPart("file") MultipartFile file) throws IOException {
         String category = "description";
@@ -95,4 +111,5 @@ public class BookController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
     }
+
 }
