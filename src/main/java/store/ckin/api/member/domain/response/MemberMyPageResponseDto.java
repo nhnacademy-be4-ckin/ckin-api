@@ -19,4 +19,6 @@ public class MemberMyPageResponseDto {
     private Integer accumulateAmount;
 
     private Integer point;
+
+    private Long countReview;
 }

@@ -9,6 +9,7 @@ import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
+import store.ckin.api.review.entity.QReview;
 
 /**
  * MemberRepositoryCustom 의 구현체 입니다.
@@ -53,16 +54,19 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         QMember member = QMember.member;
         QGrade grade = QGrade.grade;
+        QReview review = QReview.review;
 
         return from(member)
                 .select(Projections.constructor(MemberMyPageResponseDto.class,
                         member.name,
                         grade.name,
                         member.accumulateAmount,
-                        member.point))
-                .innerJoin(grade)
-                .on(member.grade.gradeId.eq(grade.gradeId))
+                        member.point,
+                        review.count()))
+                .innerJoin(member.grade, grade)
+                .leftJoin(review).on(member.id.eq(review.member.id))
                 .where(member.id.eq(id))
+                .groupBy(member.name, grade.name, member.accumulateAmount, member.point)
                 .fetchOne();
     }
 }
