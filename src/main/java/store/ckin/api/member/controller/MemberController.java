@@ -6,12 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoRequestDto;
-import store.ckin.api.member.domain.MemberInfoResponseDto;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -24,6 +30,7 @@ import store.ckin.api.member.service.MemberService;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
@@ -34,7 +41,7 @@ public class MemberController {
      * @param memberCreateRequestDto Member 생성 요청 DTO
      * @return 201 (Created) : 생성 성공
      */
-    @PostMapping("/api/members")
+    @PostMapping("/members")
     public ResponseEntity<Void> createMember(@Valid @RequestBody MemberCreateRequestDto memberCreateRequestDto) {
         memberService.createMember(memberCreateRequestDto);
 
@@ -42,17 +49,45 @@ public class MemberController {
     }
 
     /**
-     * 로그인을 처리하는 API Method 입니다.
+     * JWT 토큰에 필요한 정보 요청을 처리하는 Method 입니다.
      *
-     * @param memberInfoRequestDto 로그인 정보 요청 DTO
-     * @return 200 (OK) : 로그인 정보 확인
+     * @param memberAuthRequestDto Member 정보 요청 DTO
+     * @return MemberInfoResponseDto Member 정보 응답 DTO (200 OK)
      */
-    @PostMapping("/api/login")
-    public ResponseEntity<MemberInfoResponseDto> doLogin(
-            @Valid @RequestBody MemberInfoRequestDto memberInfoRequestDto) {
-        MemberInfoResponseDto response = memberService.getLoginMemberInfo(memberInfoRequestDto);
+    @PostMapping("/login")
+    public ResponseEntity<MemberAuthResponseDto> getMemberInfo(
+            @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
+        MemberAuthResponseDto responseDto = memberService.getLoginMemberInfo(memberAuthRequestDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    /**
+     * SecurityContextHolder 에 담을 멤버 정보 요청을 처리하는 Method 입니다.
+     *
+     * @param id Member ID
+     * @return MemberInfoDetail
+     */
+    @PostMapping("/login/{id}")
+    public ResponseEntity<MemberInfoDetailResponseDto> getMemberInfoDetail(
+            @PathVariable("id") Long id) {
+        MemberInfoDetailResponseDto responseDto = memberService.getMemberInfoDetail(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    /**
+     * 마이 페이지 정보를 조회하는 Method 입니다.
+     *
+     * @param id Member ID
+     * @return MemberMyPageResponseDto
+     */
+    @GetMapping("/members/mypage/{memberId}")
+    public ResponseEntity<MemberMyPageResponseDto> getMyPageInfo(
+            @PathVariable("memberId") Long id) {
+        MemberMyPageResponseDto responseDto = memberService.getMyPageInfo(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     /**
@@ -63,7 +98,7 @@ public class MemberController {
      */
     @ExceptionHandler({MemberAlreadyExistsException.class})
     public ResponseEntity<Void> memberAlreadyExistsExceptionHandler(MemberAlreadyExistsException exception) {
-        log.debug("{} : 이미 존재하는 이메일 입니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
@@ -76,8 +111,22 @@ public class MemberController {
      */
     @ExceptionHandler({MemberNotFoundException.class})
     public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
-        log.debug("{} : 이메일에 해당하는 계정이 없습니다.", exception.getClass().getName());
+        log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    /**
+     * 회원의 포인트를 조회하는 메서드 입니다.
+     *
+     * @param id 회원 ID
+     * @return 회원 포인트 응답 DTO
+     */
+    @GetMapping("/members/{id}/point")
+    public ResponseEntity<MemberPointResponseDto> getMemberPoint(@PathVariable("id") Long id) {
+        MemberPointResponseDto responseDto = memberService.getMemberPoint(id);
+
+        log.debug("MemberPointResponseDto = {}", responseDto.getPoint());
+        return ResponseEntity.ok(responseDto);
     }
 }

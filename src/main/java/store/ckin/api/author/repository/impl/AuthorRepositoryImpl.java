@@ -2,6 +2,9 @@ package store.ckin.api.author.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
@@ -24,14 +27,24 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
     }
 
     @Override
-    public List<AuthorResponseDto> findAuthorsByName(String name) {
-        QAuthor qAuthor = QAuthor.author;
-        return from(qAuthor)
-                .where(qAuthor.authorName.contains(name))
+    public Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable) {
+        QAuthor author = QAuthor.author;
+        List<AuthorResponseDto> authors = from(author)
+                .where(author.authorName.contains(name))
+                .orderBy(author.authorName.asc())
                 .select(Projections.fields(AuthorResponseDto.class,
-                        qAuthor.authorId,
-                        qAuthor.authorName))
+                        author.authorId,
+                        author.authorName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        // 전체 결과 수를 얻기 위한 쿼리
+        long total = from(author)
+                .where(author.authorName.contains(name))
+                .fetchCount();
+
+        return new PageImpl<>(authors, pageable, total);
     }
 
 

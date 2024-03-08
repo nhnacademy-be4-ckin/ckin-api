@@ -29,6 +29,7 @@ public class BookResponseDto {
     private String bookState;
     private Integer bookSalePrice;
     private String bookReviewRate;
+    private String thumbnail;
     private List<String> authorNames;
     private List<String> categoryNames;
     private List<String> tagNames;
@@ -37,7 +38,8 @@ public class BookResponseDto {
     public BookResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription, String bookPublisher,
                            LocalDate bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
                            Integer bookRegularPrice, Integer bookDiscountRate, String bookState, Integer bookSalePrice,
-                           String bookReviewRate, List<String> authorNames, List<String> categoryNames,
+                           String bookReviewRate, String thumbnail, List<String> authorNames,
+                           List<String> categoryNames,
                            List<String> tagNames) {
         this.bookId = bookId;
         this.bookIsbn = bookIsbn;
@@ -53,6 +55,7 @@ public class BookResponseDto {
         this.bookState = bookState;
         this.bookSalePrice = bookSalePrice;
         this.bookReviewRate = bookReviewRate;
+        this.thumbnail = thumbnail;
         this.authorNames = authorNames;
         this.categoryNames = categoryNames;
         this.tagNames = tagNames;

@@ -1,5 +1,6 @@
 package store.ckin.api.book.service.impl;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,23 +10,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.exception.AuthorNotFoundException;
 import store.ckin.api.author.repository.AuthorRepository;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
+import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
+import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
+import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.book.service.BookService;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;
 import store.ckin.api.category.repository.CategoryRepository;
-import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
-import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
-import store.ckin.api.book.relationship.booktag.entity.BookTag;
+import store.ckin.api.file.entity.File;
+import store.ckin.api.file.repository.FileRepository;
+import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.tag.entity.Tag;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
@@ -43,6 +49,11 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final ObjectStorageService objectStorageService;
+    private final FileRepository fileRepository;
+
+    private static final String FILE_CATEGORY = "book";
+
 
     @Transactional(readOnly = true)
     @Override
@@ -70,7 +81,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void createBook(BookCreateRequestDto requestDto) {
+    public void createBook(BookCreateRequestDto requestDto, MultipartFile file) throws IOException {
         // Book 엔티티 생성
         Book book = Book.builder()
                 .bookIsbn(requestDto.getBookIsbn())
@@ -120,6 +131,12 @@ public class BookServiceImpl implements BookService {
 
         // Book 엔티티 저장 (연관된 BookAuthor 엔티티들도 함께 저장됨)
         bookRepository.save(book);
+        File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
+        File storeFile = uploadFile.toBuilder()
+                .book(book)
+                .build();
+        fileRepository.save(storeFile);
+
     }
 
 
@@ -159,6 +176,18 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findByBookId(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
         return convertToBookResponseDto(book);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
+        return bookRepository.getExtractBookListByBookIds(bookIds);
     }
 
     private void updateAuthors(Book book, Set<Long> authorIds) {
@@ -207,6 +236,7 @@ public class BookServiceImpl implements BookService {
         List<String> tagNames = book.getTags().stream()
                 .map(bookTag -> bookTag.getTag().getTagName())
                 .collect(Collectors.toList());
+        String thumbnailUrl = book.getThumbnail() != null ? book.getThumbnail().getFileUrl() : null;
 
         return BookResponseDto.builder()
                 .bookId(book.getBookId())
@@ -220,7 +250,10 @@ public class BookServiceImpl implements BookService {
                 .bookStock(book.getBookStock())
                 .bookRegularPrice(book.getBookRegularPrice())
                 .bookDiscountRate(book.getBookDiscountRate())
+                .bookSalePrice(book.getBookSalePrice())
+                .bookReviewRate(book.getBookReviewRate())
                 .bookState(book.getBookState())
+                .thumbnail(thumbnailUrl)
                 .authorNames(authorNames)
                 .categoryNames(categoryNames)
                 .tagNames(tagNames)

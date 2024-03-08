@@ -6,5 +6,12 @@ package store.ckin.api.member.exception;
  * @author : jinwoolee
  * @version : 2024. 02. 20.
  */
-public class MemberNotFoundException extends RuntimeException{
+public class MemberNotFoundException extends RuntimeException {
+    public MemberNotFoundException(Long id) {
+        super(String.format("Member not found for this id [%s]", id));
+    }
+
+    public MemberNotFoundException(String email) {
+        super(String.format("Member not found for this email [%s]", email));
+    }
 }

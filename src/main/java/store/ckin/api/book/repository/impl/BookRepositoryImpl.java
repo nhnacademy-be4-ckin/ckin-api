@@ -1,25 +1,27 @@
 package store.ckin.api.book.repository.impl;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.stereotype.Repository;
 import store.ckin.api.author.entity.QAuthor;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
+import store.ckin.api.book.relationship.bookcategory.dto.response.BookCategoryResponseDto;
 import store.ckin.api.book.relationship.bookcategory.entity.QBookCategory;
 import store.ckin.api.book.relationship.booktag.entity.QBookTag;
 import store.ckin.api.book.repository.BookRepositoryCustom;
 import store.ckin.api.category.entity.QCategory;
+import store.ckin.api.file.entity.QFile;
 import store.ckin.api.tag.entity.QTag;
 
 /**
@@ -43,6 +45,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     QTag tag = QTag.tag;
     QBookCategory bookCategory = QBookCategory.bookCategory;
     QBookTag bookTag = QBookTag.bookTag;
+    QFile file = QFile.file;
 
 
     @Override
@@ -53,6 +56,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.thumbnail, file)
                 .where(author.authorName.eq(authorName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -84,6 +88,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.thumbnail, file)
                 .where(book.bookTitle.containsIgnoreCase(bookTitle))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -112,6 +117,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(book.thumbnail, file)
                 .where(bookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -141,6 +147,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.thumbnail, file)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -163,7 +170,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Optional<Book> findByBookId(Long bookId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        Book book = queryFactory
+        Book resultBook = queryFactory
                 .selectFrom(this.book)
                 .leftJoin(this.book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
@@ -171,17 +178,61 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookCategory.category, category).fetchJoin()
                 .leftJoin(this.book.tags, bookTag).fetchJoin()
                 .leftJoin(bookTag.tag, tag).fetchJoin()
+                .leftJoin(book.thumbnail, file)
                 .where(this.book.bookId.eq(bookId))
                 .fetchOne();
 
-        return Optional.ofNullable(book);
+        return Optional.ofNullable(resultBook);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    @Override
+    public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
+
+
+        List<BookExtractionResponseDto> bookInfoList = from(book)
+                .join(book.categories, bookCategory)
+                .where(book.bookId.in(bookIds))
+                .select(Projections.constructor(BookExtractionResponseDto.class,
+                        book.bookId,
+                        book.bookTitle,
+                        book.bookPackaging,
+                        book.bookSalePrice,
+                        book.bookStock))
+                .distinct()
+                .fetch();
+
+
+        List<BookCategoryResponseDto> bookCategoryList = from(bookCategory)
+                .select(Projections.constructor(BookCategoryResponseDto.class,
+                        bookCategory.book.bookId,
+                        bookCategory.category.categoryId))
+                .where(bookCategory.book.bookId.in(bookIds))
+                .fetch();
+
+
+
+        bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategoryDto -> {
+            if (bookInfo.getBookId().equals(bookCategoryDto.getBookId())) {
+                bookInfo.getCategoryIds().add(bookCategoryDto.getCategoryId());
+            }
+        }));
+
+        return bookInfoList;
     }
 
 
     private BookListResponseDto convertToBookListResponseDto(Book book) {
         List<String> authorNames = book.getAuthors().stream()
-                .map(bookAuthor -> bookAuthor.getAuthor().getAuthorName())
+                .map(bookAuthorElement -> bookAuthorElement.getAuthor().getAuthorName())
                 .collect(Collectors.toList());
+
+        String thumbnailUrl = book.getThumbnail() != null ? book.getThumbnail().getFileUrl() : null;
 
         return BookListResponseDto.builder()
                 .bookId(book.getBookId())
@@ -199,6 +250,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .bookSalePrice(book.getBookSalePrice())
                 .bookReviewRate(book.getBookReviewRate())
                 .authorNames(authorNames)
+                .thumbnail(thumbnailUrl) // 썸네일 URL 추가
                 .build();
     }
 }

@@ -5,10 +5,12 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
+import store.ckin.api.file.entity.File;
 
 /**
  * Book Entity.
@@ -78,6 +81,8 @@ public class Book {
     @Column(name = "book_review_rate")
     @Builder.Default
     private String bookReviewRate = "0";
+    @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
+    private File thumbnail;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookAuthor> authors;

@@ -1,8 +1,11 @@
 package store.ckin.api.member.service;
 
-import store.ckin.api.member.domain.MemberInfoRequestDto;
-import store.ckin.api.member.domain.MemberInfoResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 
 /**
  * Member 의 관한 로직을 처리하는 서비스 인터페이스 입니다.
@@ -21,8 +24,28 @@ public interface MemberService {
     /**
      * 로그인하는 Member 의 정보를 조회하는 메서드 입니다.
      *
-     * @param memberInfoRequestDto 로그인 정보 요청 DTO
+     * @param memberAuthRequestDto 로그인 정보 요청 DTO
      * @return LoginResponseDto 로그인 응답 DTO
      */
-    MemberInfoResponseDto getLoginMemberInfo(MemberInfoRequestDto memberInfoRequestDto);
+    MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
+
+    MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
+
+    MemberMyPageResponseDto getMyPageInfo(Long id);
+
+    /**
+     * 회원의 포인트를 조회하는 메서드 입니다.
+     *
+     * @param id 회원 ID
+     * @return 회원 포인트 응답 DTO
+     */
+    MemberPointResponseDto getMemberPoint(Long id);
+
+    /**
+     * 회원의 포인트를 업데이트하는 메서드 입니다.
+     *
+     * @param memberId 회원 ID
+     * @param pointUsage 사용한 포인트
+     */
+    void updatePoint(Long memberId, Integer pointUsage);
 }

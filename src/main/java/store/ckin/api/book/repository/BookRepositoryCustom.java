@@ -1,9 +1,11 @@
 package store.ckin.api.book.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.entity.Book;
 
@@ -25,4 +27,12 @@ public interface BookRepositoryCustom {
     Page<BookListResponseDto> findAllBooks(Pageable pageable);
 
     Optional<Book> findByBookId(Long bookId);
+
+    /**
+     * 도서에서 필요한 정보만 반환하는 메서드입니다.
+     *
+     * @param bookIds 도서 아이디 리스트
+     * @return 도서 추출 정보 응답 DTO 리스트
+     */
+    List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds);
 }

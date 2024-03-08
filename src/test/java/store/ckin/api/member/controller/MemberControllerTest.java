@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.service.MemberService;
 
 /**
@@ -46,7 +46,7 @@ class MemberControllerTest {
         ReflectionTestUtils.setField(dto, "password", "password 123");
         ReflectionTestUtils.setField(dto, "name", "abc");
         ReflectionTestUtils.setField(dto, "contact", "0101111234");
-        ReflectionTestUtils.setField(dto, "birth", LocalDateTime.now());
+        ReflectionTestUtils.setField(dto, "birth", LocalDate.now());
 
         doNothing().when(memberService).createMember(dto);
 

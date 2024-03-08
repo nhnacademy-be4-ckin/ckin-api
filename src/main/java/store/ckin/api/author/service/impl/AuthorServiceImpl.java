@@ -1,6 +1,5 @@
 package store.ckin.api.author.service.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +43,9 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public List<AuthorResponseDto> findAuthorsByName(String name) {
-        return authorRepository.findAuthorsByName(name);
+    public Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable) {
+
+        return authorRepository.findAuthorsByName(name, pageable);
     }
 
     @Override

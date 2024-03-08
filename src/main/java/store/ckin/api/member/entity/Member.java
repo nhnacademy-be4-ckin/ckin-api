@@ -1,8 +1,11 @@
 package store.ckin.api.member.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import store.ckin.api.grade.entity.Grade;
 
 
@@ -26,6 +30,7 @@ import store.ckin.api.grade.entity.Grade;
  */
 @Builder
 @Getter
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -58,8 +63,8 @@ public class Member {
 
     @Id
     @Column(name = "member_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long memberId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")
@@ -78,15 +83,17 @@ public class Member {
     private String contact;
 
     @Column(name = "member_birth")
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     @Column(name = "member_state")
+    @Enumerated(EnumType.STRING)
     private State state;
 
     @Column(name = "member_latest_login_at")
     private LocalDateTime latestLoginAt;
 
     @Column(name = "member_role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "member_point")
@@ -95,4 +102,9 @@ public class Member {
     @Column(name = "member_accumulate_amount")
     @ColumnDefault("0")
     private Integer accumulateAmount;
+
+
+    public void updatePoint(Integer pointUsage) {
+        this.point -= pointUsage;
+    }
 }
