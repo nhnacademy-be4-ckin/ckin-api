@@ -23,11 +23,13 @@ public class SaleWithBookResponseDto {
 
     private Long saleId;
 
+    private String saleNumber;
+
     private String memberEmail;
 
-    private String saleOrderName;
+    private String saleOrdererName;
 
-    private String saleOrderContact;
+    private String saleOrdererContact;
 
     private String saleReceiverName;
 
@@ -45,14 +47,16 @@ public class SaleWithBookResponseDto {
 
     private Integer totalPrice;
 
-    public SaleWithBookResponseDto(Long saleId, String memberEmail, String saleOrderName, String saleOrderContact,
+    public SaleWithBookResponseDto(Long saleId, String saleNumber, String memberEmail, String saleOrderName,
+                                   String saleOrderContact,
                                    String saleReceiverName, String saleReceiverContact, Integer deliveryFee,
                                    LocalDate saleDeliveryDate, String postcode, String address, Integer pointUsage,
                                    Integer totalPrice) {
         this.saleId = saleId;
+        this.saleNumber = saleNumber;
         this.memberEmail = memberEmail;
-        this.saleOrderName = saleOrderName;
-        this.saleOrderContact = saleOrderContact;
+        this.saleOrdererName = saleOrderName;
+        this.saleOrdererContact = saleOrderContact;
         this.saleReceiverName = saleReceiverName;
         this.saleReceiverContact = saleReceiverContact;
         this.deliveryFee = deliveryFee;

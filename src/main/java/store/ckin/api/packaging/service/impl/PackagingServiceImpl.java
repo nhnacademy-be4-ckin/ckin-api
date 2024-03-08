@@ -2,6 +2,7 @@ package store.ckin.api.packaging.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.packaging.dto.request.PackagingCreateRequestDto;
@@ -20,6 +21,7 @@ import store.ckin.api.packaging.service.PackagingService;
  * @version 2024. 02. 20.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PackagingServiceImpl implements PackagingService {
@@ -56,6 +58,9 @@ public class PackagingServiceImpl implements PackagingService {
     @Transactional(readOnly = true)
     @Override
     public PackagingResponseDto getPackagingPolicy(Long id) {
+
+        log.debug("packagingId = {}", id);
+
         return packagingRepository.getPackagingById(id)
                 .orElseThrow(() -> new PackagingNotFoundException(id));
     }
