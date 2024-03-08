@@ -29,10 +29,10 @@ public class SaleCreateRequestDto {
     private Long memberId;
 
     @NotBlank(message = "주문자 이름을 입력해주세요.")
-    private String saleOrderName;
+    private String saleOrdererName;
 
     @NotBlank(message = "주문자 연락처를 입력해주세요.")
-    private String saleOrderContact;
+    private String saleOrdererContact;
 
     @NotBlank(message = "수령자 이름을 입력해주세요.")
     private String saleReceiverName;
@@ -69,8 +69,8 @@ public class SaleCreateRequestDto {
     public SaleCreateNoBookRequestDto toCreateSaleWithoutBookRequestDto() {
         return new SaleCreateNoBookRequestDto(
                 memberId,
-                saleOrderName,
-                saleOrderContact,
+                saleOrdererName,
+                saleOrdererContact,
                 saleReceiverName,
                 saleReceiverContact,
                 deliveryFee,

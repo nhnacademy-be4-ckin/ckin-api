@@ -102,6 +102,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                         .on(sale.member.id.eq(member.id))
                         .select(Projections.constructor(SaleWithBookResponseDto.class,
                                 sale.saleId,
+                                sale.saleNumber,
                                 sale.member.email,
                                 sale.saleOrdererName,
                                 sale.saleOrdererContact,
