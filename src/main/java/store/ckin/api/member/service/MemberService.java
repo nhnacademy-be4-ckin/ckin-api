@@ -1,9 +1,10 @@
 package store.ckin.api.member.service;
 
-import store.ckin.api.member.domain.MemberAuthRequestDto;
-import store.ckin.api.member.domain.MemberAuthResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.MemberPointResponseDto;
 
 /**
@@ -29,6 +30,8 @@ public interface MemberService {
     MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
 
     MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
+
+    MemberMyPageResponseDto getMyPageInfo(Long id);
 
     /**
      * 회원의 포인트를 조회하는 메서드 입니다.

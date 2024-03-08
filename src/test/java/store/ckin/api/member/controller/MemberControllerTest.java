@@ -18,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.service.MemberService;
 
 /**

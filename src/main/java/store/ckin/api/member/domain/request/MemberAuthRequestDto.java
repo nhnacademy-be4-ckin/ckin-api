@@ -1,4 +1,4 @@
-package store.ckin.api.member.domain;
+package store.ckin.api.member.domain.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

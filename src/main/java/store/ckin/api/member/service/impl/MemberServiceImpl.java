@@ -7,10 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
-import store.ckin.api.member.domain.MemberAuthRequestDto;
-import store.ckin.api.member.domain.MemberAuthResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
@@ -77,6 +78,16 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.getMemberInfoDetail(id);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public MemberMyPageResponseDto getMyPageInfo(Long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new MemberNotFoundException(id);
+        }
+
+        return memberRepository.getMyPageInfo(id);
+    }
+  
     /**
      * {@inheritDoc}
      *
@@ -86,7 +97,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     @Override
     public MemberPointResponseDto getMemberPoint(Long id) {
-
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException(id);
         }

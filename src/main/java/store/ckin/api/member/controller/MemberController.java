@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.member.domain.MemberAuthRequestDto;
-import store.ckin.api.member.domain.MemberAuthResponseDto;
-import store.ckin.api.member.domain.MemberCreateRequestDto;
-import store.ckin.api.member.domain.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -71,6 +72,20 @@ public class MemberController {
     public ResponseEntity<MemberInfoDetailResponseDto> getMemberInfoDetail(
             @PathVariable("id") Long id) {
         MemberInfoDetailResponseDto responseDto = memberService.getMemberInfoDetail(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    /**
+     * 마이 페이지 정보를 조회하는 Method 입니다.
+     *
+     * @param id Member ID
+     * @return MemberMyPageResponseDto
+     */
+    @GetMapping("/members/mypage/{memberId}")
+    public ResponseEntity<MemberMyPageResponseDto> getMyPageInfo(
+            @PathVariable("memberId") Long id) {
+        MemberMyPageResponseDto responseDto = memberService.getMyPageInfo(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
