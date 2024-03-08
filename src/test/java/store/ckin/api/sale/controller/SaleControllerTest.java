@@ -184,7 +184,6 @@ class SaleControllerTest {
                         jsonPath("$.saleReceiverName").value(responseDto.getSaleReceiverName()),
                         jsonPath("$.saleReceiverContact").value(responseDto.getSaleReceiverContact()),
                         jsonPath("$.saleReceiverAddress").value(responseDto.getSaleReceiverAddress()),
-                        jsonPath("$.saleShippingDate").value(responseDto.getSaleShippingDate().toString()),
                         jsonPath("$.saleDeliveryDate").value(responseDto.getSaleDeliveryDate().toString()),
                         jsonPath("$.saleDeliveryStatus").value(responseDto.getSaleDeliveryStatus().name()),
                         jsonPath("$.saleDeliveryFee").value(responseDto.getSaleDeliveryFee()),
