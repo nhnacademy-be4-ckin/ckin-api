@@ -53,7 +53,7 @@ class BookSaleServiceImplTest {
         BookSaleCreateRequestDto secondDto = new BookSaleCreateRequestDto();
         ReflectionTestUtils.setField(secondDto, "bookId", 2L);
         ReflectionTestUtils.setField(secondDto, "appliedCouponId", null);
-        ReflectionTestUtils.setField(secondDto, "packagingId", null);
+        ReflectionTestUtils.setField(secondDto, "packagingId", 0L);
         ReflectionTestUtils.setField(secondDto, "quantity", 3);
         ReflectionTestUtils.setField(secondDto, "paymentAmount", 45000);
 
