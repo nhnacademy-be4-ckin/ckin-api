@@ -190,6 +190,20 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getExtractBookListByBookIds(bookIds);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getBookCategoryIdsByBookIds(List<Long> bookIds) {
+        return bookIds.stream()
+                .map(bookId -> bookRepository.findByBookId(bookId)
+                        .orElseThrow(() -> new BookNotFoundException(bookId)))
+                .flatMap(book -> book.getCategories().stream())
+                .map(bookCategory -> bookCategory.getCategory().getCategoryId())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+
     private void updateAuthors(Book book, Set<Long> authorIds) {
         book.getAuthors().clear();
         for (Long authorId : authorIds) {
