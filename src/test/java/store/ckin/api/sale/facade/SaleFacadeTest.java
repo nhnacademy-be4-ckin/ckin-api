@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
@@ -120,7 +121,25 @@ class SaleFacadeTest {
 
         saleFacade.updateSalePaymentPaidStatus(1L);
 
+        verify(bookSaleService, times(1)).updateBookSaleState(1L, BookSale.BookSaleState.COMPLETE);
         verify(saleService, times(1)).updateSalePaymentPaidStatus(1L);
     }
 
+    @Test
+    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
+    void testGetSaleWithBookResponse() {
+
+        saleFacade.getSaleWithBookResponseDto(1L);
+
+        verify(saleService, times(1)).getSaleWithBook(1L);
+    }
+
+    @Test
+    @DisplayName("주문 결제 정보 조회 테스트")
+    void testGetSalePaymentInfo() {
+
+        saleFacade.getSalePaymentInfo("123456");
+
+        verify(saleService, times(1)).getSalePaymentInfo("123456");
+    }
 }
