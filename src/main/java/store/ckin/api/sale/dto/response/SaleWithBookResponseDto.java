@@ -80,4 +80,15 @@ public class SaleWithBookResponseDto {
 
         this.saleTitle = saleTitle + " 외 " + (bookSaleList.size() - 1) + "권";
     }
+
+    public SaleInfoResponseDto extractSaleInfoResponseDto() {
+        return new SaleInfoResponseDto(
+                saleTitle,
+                saleNumber,
+                memberEmail,
+                saleOrdererName,
+                saleOrdererContact,
+                totalPrice
+        );
+    }
 }

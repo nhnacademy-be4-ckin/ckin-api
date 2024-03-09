@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.facade.SaleFacade;
@@ -91,7 +92,18 @@ public class SaleController {
      */
     @GetMapping("/{saleId}/books")
     public ResponseEntity<SaleWithBookResponseDto> getSaleWithBooks(@PathVariable Long saleId) {
-        SaleWithBookResponseDto responseDto = saleFacade.SaleWithBookResponseDto(saleId);
+        SaleWithBookResponseDto responseDto = saleFacade.getSaleWithBookResponseDto(saleId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    /**
+     * 주문 번호로 결제할 주문의 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 200 (OK), 주문 정보
+     */
+    @GetMapping("/{saleNumber}/paymentInfo")
+    public ResponseEntity<SaleInfoResponseDto> getSalePaymentInfo(@PathVariable("saleNumber") String saleNumber) {
+        return ResponseEntity.ok(saleFacade.getSalePaymentInfo(saleNumber));
     }
 }

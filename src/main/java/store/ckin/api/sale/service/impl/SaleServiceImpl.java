@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,12 @@ import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
+import store.ckin.api.sale.exception.SaleNumberNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 import store.ckin.api.sale.service.SaleService;
 
@@ -31,7 +32,6 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 02.
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
@@ -50,8 +50,6 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     public Long createSale(SaleCreateNoBookRequestDto requestDto) {
 
-        log.debug("{} : {}", this.getClass().getName(), requestDto.getAddress());
-
         Optional<Member> member = Optional.empty();
         if (Objects.nonNull(requestDto.getMemberId())) {
             member = memberRepository.findById(requestDto.getMemberId());
@@ -59,30 +57,20 @@ public class SaleServiceImpl implements SaleService {
 
 
         String saleNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-        Sale sale = Sale.builder()
-                .member(member.orElse(null))
-                .saleNumber(saleNumber)
-                .saleOrdererName(requestDto.getSaleOrderName())
-                .saleOrdererContact(requestDto.getSaleOrderContact())
+        Sale sale = Sale.builder().member(member.orElse(null)).saleNumber(saleNumber)
+                .saleOrdererName(requestDto.getSaleOrderName()).saleOrdererContact(requestDto.getSaleOrderContact())
                 .saleReceiverName(requestDto.getSaleReceiverName())
                 .saleReceiverContact(requestDto.getSaleReceiverContact())
                 .saleReceiverAddress(requestDto.getAddress() + " " + requestDto.getDetailAddress())
-                .saleDate(LocalDateTime.now())
-                .saleShippingDate(LocalDateTime.now().plusDays(1))
-                .saleDeliveryDate(requestDto.getSaleDeliveryDate())
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
-                .saleDeliveryFee(requestDto.getDeliveryFee())
-                .salePointUsage(requestDto.getPointUsage())
-                .saleTotalPrice(requestDto.getTotalPrice())
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
-                .saleShippingPostCode(requestDto.getPostcode())
-                .build();
+                .saleDate(LocalDateTime.now()).saleShippingDate(LocalDateTime.now().plusDays(1))
+                .saleDeliveryDate(requestDto.getSaleDeliveryDate()).saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(requestDto.getDeliveryFee()).salePointUsage(requestDto.getPointUsage())
+                .saleTotalPrice(requestDto.getTotalPrice()).salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode(requestDto.getPostcode()).build();
 
-        log.debug("주문 생성: {}", sale);
 
         Sale save = saleRepository.save(sale);
 
-        log.debug("주문 생성 완료: {}", save);
         return save.getSaleId();
     }
 
@@ -96,16 +84,11 @@ public class SaleServiceImpl implements SaleService {
     public PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable) {
         Page<Sale> salePage = saleRepository.findAllByOrderBySaleIdDesc(pageable);
 
-        PageInfo pageInfo = PageInfo.builder()
-                .page(pageable.getPageNumber())
-                .size(pageable.getPageSize())
-                .totalElements((int) salePage.getTotalElements())
-                .totalPages(salePage.getTotalPages())
-                .build();
+        PageInfo pageInfo = PageInfo.builder().page(pageable.getPageNumber()).size(pageable.getPageSize())
+                .totalElements((int) salePage.getTotalElements()).totalPages(salePage.getTotalPages()).build();
 
         List<SaleResponseDto> currentPageSalesResponse =
-                salePage.getContent().stream().map(SaleResponseDto::toDto).collect(
-                        Collectors.toList());
+                salePage.getContent().stream().map(SaleResponseDto::toDto).collect(Collectors.toList());
 
         return new PagedResponse<>(currentPageSalesResponse, pageInfo);
     }
@@ -128,15 +111,25 @@ public class SaleServiceImpl implements SaleService {
         return saleRepository.findBySaleId(saleId);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleId 주문 ID
+     */
     @Override
     @Transactional
     public void updateSalePaymentPaidStatus(Long saleId) {
-        Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+        Sale sale = saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException(saleId));
 
         sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleId 주문 ID
+     * @return 주문 상세 정보와 주문한 책 정보 DTO
+     */
     @Override
     @Transactional(readOnly = true)
     public SaleWithBookResponseDto getSaleWithBook(Long saleId) {
@@ -146,5 +139,24 @@ public class SaleServiceImpl implements SaleService {
         }
 
         return saleRepository.getSaleWithBook(saleId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 결제 정보 DTO
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public SaleInfoResponseDto getSalePaymentInfo(String saleNumber) {
+
+        if (!saleRepository.existsBySaleNumber(saleNumber)) {
+            throw new SaleNumberNotFoundException(saleNumber);
+        }
+
+        Long saleId = saleRepository.getBySaleNumber(saleNumber).getSaleId();
+
+        return saleRepository.getSaleWithBook(saleId).extractSaleInfoResponseDto();
     }
 }

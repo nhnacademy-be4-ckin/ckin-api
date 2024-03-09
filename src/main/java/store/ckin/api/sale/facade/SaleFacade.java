@@ -11,6 +11,7 @@ import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.service.SaleService;
@@ -96,7 +97,19 @@ public class SaleFacade {
      * @param saleId 주문 ID
      * @return 주문 상세 정보와 주문한 책 정보
      */
-    public SaleWithBookResponseDto SaleWithBookResponseDto(Long saleId) {
+    @Transactional(readOnly = true)
+    public SaleWithBookResponseDto getSaleWithBookResponseDto(Long saleId) {
         return saleService.getSaleWithBook(saleId);
+    }
+
+    /**
+     * 주문 번호로 결제할 주문의 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 정보
+     */
+    @Transactional(readOnly = true)
+    public SaleInfoResponseDto getSalePaymentInfo(String saleNumber) {
+        return saleService.getSalePaymentInfo(saleNumber);
     }
 }

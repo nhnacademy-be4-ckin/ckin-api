@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 주문 도서 (리스트) Entity.
@@ -56,6 +57,7 @@ public class BookSale {
     private BookSaleState bookSaleState;
 
     @Embeddable
+    @ToString
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
