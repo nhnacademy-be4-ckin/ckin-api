@@ -112,4 +112,11 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
     }
 
+    @GetMapping("/categories/by-books")
+    public ResponseEntity<List<Long>> getBookCategoryIdsByBookIds(@RequestParam List<Long> bookIds) {
+        List<Long> categoryIds = bookService.getBookCategoryIdsByBookIds(bookIds);
+        return ResponseEntity.ok(categoryIds);
+    }
+
+
 }
