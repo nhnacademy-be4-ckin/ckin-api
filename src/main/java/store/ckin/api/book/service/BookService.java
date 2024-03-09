@@ -1,7 +1,7 @@
 package store.ckin.api.book.service;
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,4 +40,6 @@ public interface BookService {
      * @return 도서 추출 정보 응답 DTO 리스트
      */
     List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds);
+
+    List<Long> getBookCategoryIdsByBookIds(List<Long> bookIds);
 }
