@@ -65,4 +65,6 @@ public interface SaleService {
      * @return 주문 결제 정보 DTO
      */
     SaleInfoResponseDto getSalePaymentInfo(String saleNumber);
+
+    SaleResponseDto getSaleDetailBySaleNumber(String saleNumber);
 }
