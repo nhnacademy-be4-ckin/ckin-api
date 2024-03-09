@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,9 +30,12 @@ import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
+import store.ckin.api.sale.exception.SaleNumberNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 
 /**
@@ -228,4 +232,126 @@ class SaleServiceImplTest {
 
         assertEquals(Sale.PaymentStatus.PAID, sale.getSalePaymentStatus());
     }
+
+    @Test
+    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트 - 실패")
+    void testGetSaleWithBook_Fail() {
+
+        given(saleRepository.existsById(anyLong()))
+                .willReturn(false);
+
+        assertThrows(SaleNotFoundException.class, () -> saleService.getSaleWithBook(1L));
+
+        verify(saleRepository, times(1)).existsById(anyLong());
+        verify(saleRepository, times(0)).getSaleWithBook(anyLong());
+    }
+
+    @Test
+    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트 - 성공")
+    void testGetSaleWithBook_Success() {
+
+        given(saleRepository.existsById(anyLong()))
+                .willReturn(true);
+
+        SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                1L,
+                "ABC1234DEF",
+                "test@test.com",
+                "Tester",
+                "01012341234",
+                "Tester",
+                "01011112222",
+                3000,
+                LocalDate.now().plusDays(1),
+                "12345",
+                "광주광역시 동구 조선대 5길",
+                0,
+                10000
+        );
+
+        given(saleRepository.getSaleWithBook(anyLong()))
+                .willReturn(responseDto);
+
+        SaleWithBookResponseDto saleWithBook = saleService.getSaleWithBook(1L);
+
+        assertAll(
+                () -> assertEquals(saleWithBook.getSaleId(), responseDto.getSaleId()),
+                () -> assertEquals(saleWithBook.getSaleNumber(), responseDto.getSaleNumber()),
+                () -> assertEquals(saleWithBook.getSaleOrdererName(), responseDto.getSaleOrdererName()),
+                () -> assertEquals(saleWithBook.getSaleOrdererContact(), responseDto.getSaleOrdererContact()),
+                () -> assertEquals(saleWithBook.getSaleReceiverName(), responseDto.getSaleReceiverName()),
+                () -> assertEquals(saleWithBook.getSaleReceiverContact(), responseDto.getSaleReceiverContact()),
+                () -> assertEquals(saleWithBook.getDeliveryFee(), responseDto.getDeliveryFee()),
+                () -> assertEquals(saleWithBook.getSaleDeliveryDate(), responseDto.getSaleDeliveryDate()),
+                () -> assertEquals(saleWithBook.getPostcode(), responseDto.getPostcode()),
+                () -> assertEquals(saleWithBook.getAddress(), responseDto.getAddress()),
+                () -> assertEquals(saleWithBook.getPointUsage(), responseDto.getPointUsage()),
+                () -> assertEquals(saleWithBook.getTotalPrice(), responseDto.getTotalPrice())
+        );
+
+        verify(saleRepository, times(1)).existsById(anyLong());
+        verify(saleRepository, times(1)).getSaleWithBook(anyLong());
+    }
+
+    @Test
+    @DisplayName("결제할 주문 정보 조회 테스트 - 실패")
+    void testGetSalePaymentInfo_Fail() {
+
+        given(saleRepository.existsBySaleNumber(anyString()))
+                .willReturn(false);
+
+        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSalePaymentInfo("ABC213"));
+
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
+        verify(saleRepository, times(0)).getBySaleNumber(anyString());
+        verify(saleRepository, times(0)).getSaleWithBook(anyLong());
+    }
+
+    @Test
+    @DisplayName("결제할 주문 정보 조회 테스트 - 성공")
+    void testGetSalePaymentInfo_Success() {
+
+        given(saleRepository.existsBySaleNumber(anyString()))
+                .willReturn(true);
+
+        SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                1L,
+                "ABC1234DEF",
+                "test@test.com",
+                "Tester",
+                "01012341234",
+                "Tester",
+                "01011112222",
+                3000,
+                LocalDate.now().plusDays(1),
+                "12345",
+                "광주광역시 동구 조선대 5길",
+                0,
+                10000
+        );
+
+        given(saleRepository.getBySaleNumber(anyString()))
+                .willReturn(Sale.builder()
+                        .saleId(1L)
+                        .build());
+
+        given(saleRepository.getSaleWithBook(anyLong()))
+                .willReturn(responseDto);
+
+        SaleInfoResponseDto saleInfo = saleService.getSalePaymentInfo("ABC1314");
+
+        assertAll(
+                () -> assertEquals(saleInfo.getSaleTitle(), responseDto.getSaleTitle()),
+                () -> assertEquals(saleInfo.getSaleNumber(), responseDto.getSaleNumber()),
+                () -> assertEquals(saleInfo.getSaleOrdererName(), responseDto.getSaleOrdererName()),
+                () -> assertEquals(saleInfo.getSaleOrdererContact(), responseDto.getSaleOrdererContact()),
+                () -> assertEquals(saleInfo.getTotalPrice(), responseDto.getTotalPrice()
+                )
+        );
+
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
+        verify(saleRepository, times(1)).getBySaleNumber(anyString());
+        verify(saleRepository, times(1)).getSaleWithBook(anyLong());
+    }
+
 }
