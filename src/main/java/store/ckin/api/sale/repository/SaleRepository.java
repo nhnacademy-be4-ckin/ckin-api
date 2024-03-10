@@ -20,4 +20,14 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositor
      * @return 주문 목록
      */
     Page<Sale> findAllByOrderBySaleIdDesc(Pageable pageable);
+
+    /**
+     * 주문 번호로 주문을 조회합니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 존재 여부
+     */
+    boolean existsBySaleNumber(String saleNumber);
+
+    Sale getBySaleNumber(String saleNumber);
 }

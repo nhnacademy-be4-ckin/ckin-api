@@ -93,6 +93,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                                 bookSale.bookSalePaymentAmount))
                         .fetch();
 
+
         SaleWithBookResponseDto responseDto =
                 from(sale)
                         .where(sale.saleId.eq(saleId))
@@ -104,8 +105,8 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                                 sale.member.email,
                                 sale.saleOrdererName,
                                 sale.saleOrdererContact,
-                                sale.saleReceiverContact,
                                 sale.saleReceiverName,
+                                sale.saleReceiverContact,
                                 sale.saleDeliveryFee,
                                 sale.saleDeliveryDate,
                                 sale.saleShippingPostCode,
@@ -118,7 +119,6 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
         for (BookSaleResponseDto bookSaleResponseDto : bookSaleResponseDtoList) {
             responseDto.addBookSale(bookSaleResponseDto);
         }
-
 
         String saleTitle = from(book)
                 .where(book.bookId.eq(bookSaleResponseDtoList.get(0).getBookId()))

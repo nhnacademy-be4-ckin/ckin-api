@@ -2,6 +2,7 @@ package store.ckin.api.sale.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,7 +29,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.facade.SaleFacade;
 
@@ -205,5 +208,83 @@ class SaleControllerTest {
                 .andDo(print());
 
         verify(saleFacade, times(1)).updateSalePaymentPaidStatus(1L);
+    }
+
+    @Test
+    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
+    void testGetSaleWithBooks() throws Exception {
+
+        SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                1L,
+                "ABC1234DEF",
+                "test@test.com",
+                "Tester",
+                "01012341234",
+                "Tester",
+                "01011112222",
+                3000,
+                LocalDate.now().plusDays(1),
+                "12345",
+                "광주광역시 동구 조선대 5길",
+                0,
+                10000
+        );
+
+
+        given(saleFacade.getSaleWithBookResponseDto(anyLong()))
+                .willReturn(responseDto);
+        mockMvc.perform(get("/api/sales/{saleId}/books", 1L))
+
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.saleId").value(responseDto.getSaleId()),
+                        jsonPath("$.saleNumber").value(responseDto.getSaleNumber()),
+                        jsonPath("$.memberEmail").value(responseDto.getMemberEmail()),
+                        jsonPath("$.saleOrdererName").value(responseDto.getSaleOrdererName()),
+                        jsonPath("$.saleOrdererContact").value(responseDto.getSaleOrdererContact()),
+                        jsonPath("$.saleReceiverName").value(responseDto.getSaleReceiverName()),
+                        jsonPath("$.saleReceiverContact").value(responseDto.getSaleReceiverContact()),
+                        jsonPath("$.deliveryFee").value(responseDto.getDeliveryFee()),
+                        jsonPath("$.saleDeliveryDate").value(responseDto.getSaleDeliveryDate().toString()),
+                        jsonPath("$.postcode").value(responseDto.getPostcode()),
+                        jsonPath("$.address").value(responseDto.getAddress()),
+                        jsonPath("$.pointUsage").value(responseDto.getPointUsage()),
+                        jsonPath("$.totalPrice").value(responseDto.getTotalPrice())
+                ).andDo(print());
+
+        verify(saleFacade, times(1)).getSaleWithBookResponseDto(anyLong());
+    }
+
+    @Test
+    @DisplayName("결제할 주문 정보 조회 테스트")
+    void testGetSalePaymentInfo() throws Exception {
+
+        SaleInfoResponseDto responseDto =
+                new SaleInfoResponseDto(
+                        "홍길동전 외 3권",
+                        "ABC1234DEF",
+                        "test@test.com",
+                        "Tester",
+                        "01012341234",
+                        45000
+                );
+
+        given(saleFacade.getSalePaymentInfo(anyString()))
+                .willReturn(responseDto);
+
+        mockMvc.perform(get("/api/sales/{saleNumber}/paymentInfo", "ABC1234DEF"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.saleTitle").value(responseDto.getSaleTitle()),
+                        jsonPath("$.saleNumber").value(responseDto.getSaleNumber()),
+                        jsonPath("$.memberEmail").value(responseDto.getMemberEmail()),
+                        jsonPath("$.saleOrdererName").value(responseDto.getSaleOrdererName()),
+                        jsonPath("$.saleOrdererContact").value(responseDto.getSaleOrdererContact()),
+                        jsonPath("$.totalPrice").value(responseDto.getTotalPrice())
+                ).andDo(print());
+
+        verify(saleFacade, times(1)).getSalePaymentInfo(anyString());
     }
 }
