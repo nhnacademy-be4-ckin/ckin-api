@@ -1,10 +1,16 @@
 package store.ckin.api.review.service;
 
+import org.springframework.web.multipart.MultipartFile;
+import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+
+import java.util.List;
+
 /**
- * {class name}.
+ * ReviewService
  *
- * @author 나국로
- * @version 2024. 03. 01.
+ * @author 이가은
+ * @version 2024. 03. 11.
  */
-public class ReviewService {
+public interface ReviewService {
+    void postReview(ReviewCreateRequestDto createRequestDto, List<MultipartFile> imageList);
 }

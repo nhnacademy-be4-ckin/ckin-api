@@ -3,6 +3,7 @@ package store.ckin.api.review.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.entity.Review;
 
 /**
