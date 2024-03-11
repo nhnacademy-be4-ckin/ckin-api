@@ -32,12 +32,11 @@ public class PaymentFacade {
     @Transactional
     public PaymentSuccessResponseDto createPayment(PaymentRequestDto requestDto) {
 
-
-        SaleResponseDto sale = saleService.getSaleDetailBySaleNumber(requestDto.getSaleNumber());
-
         if (!("DONE".equals(requestDto.getPaymentStatus()))) {
             throw new PaymentNotCompleteException();
         }
+
+        SaleResponseDto sale = saleService.getSaleDetailBySaleNumber(requestDto.getSaleNumber());
 
         if (!Objects.equals(sale.getSaleTotalPrice(), requestDto.getAmount())) {
             throw new PaymentAmountNotCorrectException();

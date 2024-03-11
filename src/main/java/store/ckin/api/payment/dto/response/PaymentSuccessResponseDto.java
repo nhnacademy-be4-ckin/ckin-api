@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 결제 성공 응답 DTO 클래스입니다.
@@ -13,9 +12,8 @@ import lombok.NoArgsConstructor;
  * @version 2024. 03. 11.
  */
 
-@Builder
 @Getter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class PaymentSuccessResponseDto {
 
