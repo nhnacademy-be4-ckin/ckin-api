@@ -34,7 +34,6 @@ public class PaymentController {
      */
     @PostMapping
     public ResponseEntity<PaymentSuccessResponseDto> createPayment(@RequestBody PaymentRequestDto requestDto) {
-        log.info("requestDto = {}", requestDto);
         return ResponseEntity.ok(paymentFacade.createPayment(requestDto));
     }
 }

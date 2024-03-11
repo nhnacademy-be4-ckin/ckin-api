@@ -32,11 +32,8 @@ public class PaymentFacade {
     @Transactional
     public PaymentSuccessResponseDto createPayment(PaymentRequestDto requestDto) {
 
-        log.debug("payment request dto = {}", requestDto);
 
         SaleResponseDto sale = saleService.getSaleDetailBySaleNumber(requestDto.getSaleNumber());
-
-        log.debug("sale response dto = {}", sale);
 
         if (!("DONE".equals(requestDto.getPaymentStatus()))) {
             throw new PaymentNotCompleteException();
