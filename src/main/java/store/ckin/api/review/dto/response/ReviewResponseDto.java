@@ -1,5 +1,7 @@
 package store.ckin.api.review.dto.response;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +17,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewResponseDto {
     private Long reviewId;
-    private String reviewComment;
-    private LocalDateTime createdAt;
-    private String reviewWriter;
+    private String author;
+    private String message;
+    private Integer reviewRate;
+    private String reviewDate;
 
     @Builder
-    public ReviewResponseDto(Long reviewId, String reviewComment, LocalDateTime createdAt, String reviewWriter) {
+    public ReviewResponseDto(Long reviewId, String author, String message, Integer reviewRate, String reviewDate) {
         this.reviewId = reviewId;
-        this.reviewComment = reviewComment;
-        this.createdAt = createdAt;
-        this.reviewWriter = reviewWriter;
+        this.author = author;
+        this.message = message;
+        this.reviewRate = reviewRate;
+        this.reviewDate = reviewDate;
     }
 }

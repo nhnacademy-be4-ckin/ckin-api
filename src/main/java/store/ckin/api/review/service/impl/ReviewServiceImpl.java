@@ -1,6 +1,8 @@
 package store.ckin.api.review.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.entity.Book;
@@ -11,6 +13,7 @@ import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
 import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
@@ -66,5 +69,21 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException();
         }
 
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param pageable 리뷰 페이지
+     * @param bookId   도서 아이디
+     * @return
+     */
+    @Override
+    public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
+        if(!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
+
+        return reviewRepository.getReviewPageList(pageable, bookId);
     }
 }
