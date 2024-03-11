@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 02.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
@@ -159,4 +161,24 @@ public class SaleServiceImpl implements SaleService {
 
         return saleRepository.getSaleWithBook(saleId).extractSaleInfoResponseDto();
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleNumber
+     * @return 주문 조회 응답 DTO
+     */
+    @Override
+    public SaleResponseDto getSaleDetailBySaleNumber(String saleNumber) {
+
+        if (!saleRepository.existsBySaleNumber(saleNumber)) {
+            throw new SaleNumberNotFoundException(saleNumber);
+        }
+
+        SaleResponseDto responseDto = saleRepository.findBySaleNumber(saleNumber);
+
+        log.debug("responseDto = {}", responseDto);
+        return responseDto;
+    }
+
 }

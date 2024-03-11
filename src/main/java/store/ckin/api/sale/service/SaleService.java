@@ -65,4 +65,12 @@ public interface SaleService {
      * @return 주문 결제 정보 DTO
      */
     SaleInfoResponseDto getSalePaymentInfo(String saleNumber);
+
+    /**
+     * 주문 번호로 주문을 조회합니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 상세 정보 DTO
+     */
+    SaleResponseDto getSaleDetailBySaleNumber(String saleNumber);
 }
