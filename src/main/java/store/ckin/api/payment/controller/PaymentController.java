@@ -2,6 +2,7 @@ package store.ckin.api.payment.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +31,10 @@ public class PaymentController {
      * 결제 생성 메서드입니다.
      *
      * @param requestDto 결제 생성 요청 DTO
-     * @return 200 (OK), 결제 성공 응답 DTO
+     * @return 201 (CREATED), 결제 성공 응답 DTO
      */
     @PostMapping
     public ResponseEntity<PaymentSuccessResponseDto> createPayment(@RequestBody PaymentRequestDto requestDto) {
-        return ResponseEntity.ok(paymentFacade.createPayment(requestDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(paymentFacade.createPayment(requestDto));
     }
 }
