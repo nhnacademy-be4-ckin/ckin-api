@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 03. 07.
  */
 
-@Slf4j
 @DataJpaTest
 class SaleRepositoryTest {
 
@@ -261,7 +259,7 @@ class SaleRepositoryTest {
         Sale savedSale = saleRepository.save(sale);
 
 
-        BookSale.Pk pk = new BookSale.Pk(1L, 1L);
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
 
         bookSale = BookSale.builder()
                 .pk(pk)
@@ -273,6 +271,8 @@ class SaleRepositoryTest {
                 .build();
 
         entityManager.persist(bookSale);
+
+        entityManager.flush();
 
         SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleId());
 
@@ -290,6 +290,50 @@ class SaleRepositoryTest {
                 () -> assertEquals(actual.getDeliveryFee(), savedSale.getSaleDeliveryFee()),
                 () -> assertEquals(actual.getPointUsage(), savedSale.getSalePointUsage()),
                 () -> assertEquals(actual.getTotalPrice(), savedSale.getSaleTotalPrice())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 조회 테스트")
+    void testFindBySaleNumber() {
+        Sale sale = Sale.builder()
+                .member(member)
+                .saleNumber(saleNumber)
+                .saleOrdererName("정승조")
+                .saleOrdererContact("01012341234")
+                .saleReceiverName("정승조")
+                .saleReceiverContact("01012341234")
+                .saleReceiverAddress("광주광역시 동구 조선대 5길 IT 융합대학")
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now())
+                .saleDeliveryDate(LocalDate.now().plusDays(2))
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(3000)
+                .salePointUsage(1000)
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode("123456")
+                .build();
+
+        Sale savedSale = saleRepository.save(sale);
+
+        SaleResponseDto actual = saleRepository.findBySaleNumber(savedSale.getSaleNumber());
+
+        assertAll(
+                () -> assertEquals(actual.getSaleId(), savedSale.getSaleId()),
+                () -> assertEquals(actual.getSaleNumber(), savedSale.getSaleNumber()),
+                () -> assertEquals(actual.getSaleOrdererName(), savedSale.getSaleOrdererName()),
+                () -> assertEquals(actual.getSaleOrdererContact(), savedSale.getSaleOrdererContact()),
+                () -> assertEquals(actual.getSaleReceiverName(), savedSale.getSaleReceiverName()),
+                () -> assertEquals(actual.getSaleReceiverContact(), savedSale.getSaleReceiverContact()),
+                () -> assertEquals(actual.getSaleReceiverAddress(), savedSale.getSaleReceiverAddress()),
+                () -> assertEquals(actual.getSaleDate(), savedSale.getSaleDate()),
+                () -> assertEquals(actual.getSaleShippingDate(), savedSale.getSaleShippingDate()),
+                () -> assertEquals(actual.getSaleDeliveryDate(), savedSale.getSaleDeliveryDate()),
+                () -> assertEquals(actual.getSaleDeliveryStatus(), savedSale.getSaleDeliveryStatus()),
+                () -> assertEquals(actual.getSaleDeliveryFee(), savedSale.getSaleDeliveryFee()),
+                () -> assertEquals(actual.getSalePointUsage(), savedSale.getSalePointUsage()),
+                () -> assertEquals(actual.getSalePaymentStatus(), savedSale.getSalePaymentStatus()),
+                () -> assertEquals(actual.getSaleShippingPostCode(), savedSale.getSaleShippingPostCode())
         );
     }
 }

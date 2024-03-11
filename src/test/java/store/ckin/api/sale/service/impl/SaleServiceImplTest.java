@@ -354,4 +354,48 @@ class SaleServiceImplTest {
         verify(saleRepository, times(1)).getSaleWithBook(anyLong());
     }
 
+    @Test
+    @DisplayName("주문 번호로 주문 조회 테스트 - 실패(존재하지 않는 주문 번호)")
+    void testGetSaleDetailBySaleNumber_Fail() {
+
+        given(saleRepository.existsBySaleNumber(anyString()))
+                .willReturn(false);
+
+        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleDetailBySaleNumber("123456"));
+
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
+        verify(saleRepository, times(0)).findBySaleNumber(anyString());
+    }
+
+    @Test
+    @DisplayName("주분 번호로 주문 조회 테스트 - 성공")
+    void testGetSaleDetailBySaleNumber_Success() {
+
+        given(saleRepository.existsBySaleNumber(anyString()))
+                .willReturn(true);
+
+        given(saleRepository.findBySaleNumber(anyString()))
+                .willReturn(SaleResponseDto.toDto(sale));
+
+        SaleResponseDto saleDetail = saleService.getSaleDetailBySaleNumber("12345213");
+
+        assertAll(
+                () -> assertEquals(saleDetail.getSaleId(), sale.getSaleId()),
+                () -> assertEquals(saleDetail.getSaleNumber(), sale.getSaleNumber()),
+                () -> assertEquals(saleDetail.getSaleOrdererName(), sale.getSaleOrdererName()),
+                () -> assertEquals(saleDetail.getSaleOrdererContact(), sale.getSaleOrdererContact()),
+                () -> assertEquals(saleDetail.getSaleReceiverName(), sale.getSaleReceiverName()),
+                () -> assertEquals(saleDetail.getSaleReceiverContact(), sale.getSaleReceiverContact()),
+                () -> assertEquals(saleDetail.getSaleReceiverAddress(), sale.getSaleReceiverAddress()),
+                () -> assertNotNull(saleDetail.getSaleDeliveryDate()),
+                () -> assertEquals(saleDetail.getSaleDeliveryStatus(), sale.getSaleDeliveryStatus()),
+                () -> assertEquals(saleDetail.getSaleDeliveryFee(), sale.getSaleDeliveryFee()),
+                () -> assertEquals(saleDetail.getSalePointUsage(), sale.getSalePointUsage()),
+                () -> assertEquals(saleDetail.getSaleTotalPrice(), sale.getSaleTotalPrice()),
+                () -> assertEquals(saleDetail.getSalePaymentStatus(), sale.getSalePaymentStatus()),
+                () -> assertEquals(saleDetail.getSaleShippingPostCode(), sale.getSaleShippingPostCode())
+        );
+
+    }
+
 }
