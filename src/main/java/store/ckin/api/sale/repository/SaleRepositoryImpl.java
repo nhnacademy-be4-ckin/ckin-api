@@ -129,4 +129,43 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
 
         return responseDto;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 응답 DTO
+     */
+    @Override
+    public SaleResponseDto findBySaleNumber(String saleNumber) {
+
+        QSale sale = QSale.sale;
+        QMember member = QMember.member;
+
+        return from(sale)
+                .where(sale.saleNumber.eq(saleNumber))
+                .leftJoin(sale.member, member)
+                .on(sale.member.eq(member))
+                .select(Projections.constructor(SaleResponseDto.class,
+                        sale.saleId,
+                        sale.member.email,
+                        sale.saleNumber,
+                        sale.saleOrdererName,
+                        sale.saleOrdererContact,
+                        sale.saleReceiverName,
+                        sale.saleReceiverContact,
+                        sale.saleReceiverAddress,
+                        sale.saleDate,
+                        sale.saleShippingDate,
+                        sale.saleDeliveryDate,
+                        sale.saleDeliveryStatus,
+                        sale.saleDeliveryFee,
+                        sale.salePointUsage,
+                        sale.saleTotalPrice,
+                        sale.salePaymentStatus,
+                        sale.saleShippingPostCode))
+                .fetchOne();
+
+    }
+
 }

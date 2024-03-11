@@ -12,7 +12,7 @@ import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 
 /**
- * {class name}.
+ * 결제 서비스 구현 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 03. 09.
@@ -38,9 +38,10 @@ public class PaymentServiceImpl implements PaymentService {
                 Payment.builder()
                         .sale(sale)
                         .paymentKey(requestDto.getPaymentKey())
-                        .paymentStatus("DONE")
+                        .paymentStatus(requestDto.getPaymentStatus())
                         .requestedAt(requestDto.getRequestedAt())
                         .approvedAt(requestDto.getApprovedAt())
+                        .receipt(requestDto.getReceiptUrl())
                         .build();
 
         paymentRepository.save(payment);

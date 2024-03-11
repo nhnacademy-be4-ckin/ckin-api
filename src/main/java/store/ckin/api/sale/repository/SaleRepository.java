@@ -29,5 +29,11 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositor
      */
     boolean existsBySaleNumber(String saleNumber);
 
+    /**
+     * 주문 번호로 주문을 조회합니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문
+     */
     Sale getBySaleNumber(String saleNumber);
 }
