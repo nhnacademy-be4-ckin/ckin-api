@@ -2,6 +2,7 @@ package store.ckin.api.sale.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,11 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.member.entity.Member;
 
 /**
@@ -56,8 +59,11 @@ public class Sale {
     private Long saleId;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
+
+    @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
+    private Set<BookSale> bookSales;
 
     @Column(name = "sale_number")
     private String saleNumber;
@@ -107,14 +113,16 @@ public class Sale {
     private String saleShippingPostCode;
 
     @Builder
-    public Sale(Long saleId, Member member, String saleNumber, String saleOrdererName, String saleOrdererContact,
-                String saleReceiverName, String saleReceiverContact, String saleReceiverAddress, LocalDateTime saleDate,
-                LocalDateTime saleShippingDate, LocalDate saleDeliveryDate, DeliveryStatus saleDeliveryStatus,
-                Integer saleDeliveryFee, Integer salePointUsage, Integer saleTotalPrice,
+    public Sale(Long saleId, Member member, Set<BookSale> bookSales, String saleNumber, String saleOrdererName,
+                String saleOrdererContact, String saleReceiverName, String saleReceiverContact,
+                String saleReceiverAddress,
+                LocalDateTime saleDate, LocalDateTime saleShippingDate, LocalDate saleDeliveryDate,
+                DeliveryStatus saleDeliveryStatus, Integer saleDeliveryFee, Integer salePointUsage,
+                Integer saleTotalPrice,
                 PaymentStatus salePaymentStatus, String saleShippingPostCode) {
-
         this.saleId = saleId;
         this.member = member;
+        this.bookSales = bookSales;
         this.saleNumber = saleNumber;
         this.saleOrdererName = saleOrdererName;
         this.saleOrdererContact = saleOrdererContact;
@@ -131,7 +139,6 @@ public class Sale {
         this.salePaymentStatus = salePaymentStatus;
         this.saleShippingPostCode = saleShippingPostCode;
     }
-
 
     public void updatePaymentStatus(PaymentStatus paymentStatus) {
         this.salePaymentStatus = paymentStatus;

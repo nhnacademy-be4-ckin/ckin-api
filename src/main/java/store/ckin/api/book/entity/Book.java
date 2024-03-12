@@ -20,6 +20,7 @@ import lombok.ToString;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
+import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.file.entity.File;
 
 /**
@@ -84,6 +85,7 @@ public class Book {
     @Column(name = "book_review_rate")
     @Builder.Default
     private String bookReviewRate = "0";
+
     @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
     private File thumbnail;
 
@@ -95,5 +97,8 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookTag> tags;
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    private Set<BookSale> sales;
 
 }

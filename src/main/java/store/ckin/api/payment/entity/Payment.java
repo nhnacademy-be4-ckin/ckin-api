@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +26,7 @@ import store.ckin.api.sale.entity.Sale;
 @Getter
 @Entity
 @Table(name = "Payment")
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Payment {
 
     @Id
@@ -57,4 +54,15 @@ public class Payment {
     private String receipt;
 
 
+    @Builder
+    public Payment(Long paymentId, Sale sale, String paymentKey, String paymentStatus, LocalDateTime requestedAt,
+                   LocalDateTime approvedAt, String receipt) {
+        this.paymentId = paymentId;
+        this.sale = sale;
+        this.paymentKey = paymentKey;
+        this.paymentStatus = paymentStatus;
+        this.requestedAt = requestedAt;
+        this.approvedAt = approvedAt;
+        this.receipt = receipt;
+    }
 }

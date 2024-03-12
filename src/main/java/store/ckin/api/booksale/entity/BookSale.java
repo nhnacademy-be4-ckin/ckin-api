@@ -7,6 +7,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,6 +19,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import store.ckin.api.book.entity.Book;
+import store.ckin.api.sale.entity.Sale;
 
 /**
  * 주문 도서 (리스트) Entity.
@@ -36,6 +42,16 @@ public class BookSale {
 
     @EmbeddedId
     private Pk pk;
+
+    @MapsId("saleId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
+
+    @MapsId("bookId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
     @Column(name = "coupon_id")
     private Long couponId;
@@ -72,9 +88,12 @@ public class BookSale {
     }
 
     @Builder
-    public BookSale(Pk pk, Long couponId, Integer bookSaleQuantity, Integer bookSalePackagingPrice,
+    public BookSale(Pk pk, Sale sale, Book book, Long couponId, Integer bookSaleQuantity,
+                    Integer bookSalePackagingPrice,
                     String bookSalePackagingType, Integer bookSalePaymentAmount, BookSaleState bookSaleState) {
         this.pk = pk;
+        this.sale = sale;
+        this.book = book;
         this.couponId = couponId;
         this.bookSaleQuantity = bookSaleQuantity;
         this.bookSalePackagingPrice = bookSalePackagingPrice;
