@@ -15,11 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import store.ckin.api.book.entity.Book;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.repository.BookSaleRepository;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.service.PackagingService;
+import store.ckin.api.sale.entity.Sale;
 
 /**
  * 주문 도서 서비스 테스트.
@@ -75,11 +77,37 @@ class BookSaleServiceImplTest {
     @DisplayName("주문 도서 상태 변경 테스트")
     void testUpdateBookSaleState() {
 
+        Sale firstSale = Sale.builder().saleId(1L).build();
+        Sale secondSale = Sale.builder().saleId(2L).build();
+
+        Book firstBook = Book.builder().bookId(1L).build();
+        Book secondBook = Book.builder().bookId(2L).build();
+
         BookSale.Pk firstPk = new BookSale.Pk(1L, 1L);
-        BookSale firstBookSale = new BookSale(firstPk, 1L, 1, 3000, "선물용 포장", 10000, BookSale.BookSaleState.ORDER);
+        BookSale firstBookSale =
+                new BookSale(
+                        firstPk,
+                        firstSale,
+                        firstBook,
+                        1L,
+                        3,
+                        3000,
+                        "선물용 포장",
+                        10000,
+                        BookSale.BookSaleState.ORDER);
 
         BookSale.Pk secondPk = new BookSale.Pk(1L, 3L);
-        BookSale secondBookSale = new BookSale(secondPk, null, 3, 0, null, 50000, BookSale.BookSaleState.ORDER);
+        BookSale secondBookSale =
+                new BookSale(
+                        secondPk,
+                        secondSale,
+                        secondBook,
+                        null,
+                        1,
+                        3000,
+                        "리본 포장",
+                        15000,
+                        BookSale.BookSaleState.ORDER);
 
         List<BookSale> bookSaleList = List.of(firstBookSale, secondBookSale);
 
