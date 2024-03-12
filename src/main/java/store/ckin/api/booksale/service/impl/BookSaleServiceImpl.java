@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.repository.BookSaleRepository;
 import store.ckin.api.booksale.service.BookSaleService;
@@ -63,5 +64,10 @@ public class BookSaleServiceImpl implements BookSaleService {
     public void updateBookSaleState(Long saleId, BookSale.BookSaleState state) {
         bookSaleRepository.findAllByPkSaleId(saleId)
                 .forEach(bookSale -> bookSale.updateBookSaleState(state));
+    }
+
+    @Override
+    public List<BookAndBookSaleResponseDto> getBookSaleDetail(Long saleId) {
+        return bookSaleRepository.getBookSaleDetailBySaleId(saleId);
     }
 }

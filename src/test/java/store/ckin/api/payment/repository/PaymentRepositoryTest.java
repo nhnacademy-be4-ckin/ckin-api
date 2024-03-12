@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.entity.Payment;
 import store.ckin.api.sale.entity.Sale;
 
@@ -134,6 +135,34 @@ class PaymentRepositoryTest {
                 () -> assertNotNull(actual.getRequestedAt()),
                 () -> assertNotNull(actual.getApprovedAt()),
                 () -> assertEquals(actual.getReceipt(), payment.getReceipt())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 ID로 결제 조회 테스트")
+    void testGetPaymentBySaleId() {
+        Payment payment = Payment.builder()
+                .sale(sale)
+                .paymentKey("12343214")
+                .paymentStatus("DONE")
+                .requestedAt(LocalDateTime.now().minusMinutes(10))
+                .approvedAt(LocalDateTime.now())
+                .receipt("https://test.com")
+                .build();
+
+        entityManager.persist(payment);
+        entityManager.flush();
+
+        PaymentResponseDto actual = paymentRepository.getPaymentBySaleId(sale.getSaleId());
+
+        assertAll(
+                () -> assertNotNull(actual.getPaymentId()),
+                () -> assertEquals(actual.getSaleId(), sale.getSaleId()),
+                () -> assertEquals(actual.getPaymentKey(), payment.getPaymentKey()),
+                () -> assertEquals(actual.getPaymentStatus(), payment.getPaymentStatus()),
+                () -> assertNotNull(actual.getRequestedAt()),
+                () -> assertNotNull(actual.getApprovedAt()),
+                () -> assertEquals(actual.getReceiptUrl(), payment.getReceipt())
         );
     }
 }

@@ -1,11 +1,15 @@
 package store.ckin.api.sale.facade;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +21,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
+import store.ckin.api.payment.dto.response.PaymentResponseDto;
+import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
+import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -44,6 +54,9 @@ class SaleFacadeTest {
 
     @Mock
     MemberService memberService;
+
+    @Mock
+    PaymentService paymentService;
 
     @BeforeEach
     void setUp() {
@@ -110,7 +123,66 @@ class SaleFacadeTest {
     @DisplayName("주문 상세 정보 조회 테스트")
     void testGetSaleDetail() {
 
-        saleFacade.getSaleDetail(1L);
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "testimg.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+        given(bookSaleService.getBookSaleDetail(anyLong()))
+                .willReturn(List.of(bookSale));
+
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleDetail(anyLong()))
+                .willReturn(sale);
+
+
+        PaymentResponseDto payment =
+                new PaymentResponseDto(
+                        1L,
+                        3L,
+                        "12421312",
+                        "DONE",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusMinutes(10),
+                        "test.com"
+                );
+
+        given(paymentService.getPayment(anyLong()))
+                .willReturn(payment);
+
+        SaleDetailResponseDto saleDetail = saleFacade.getSaleDetail(1L);
+
+        assertAll(
+                () -> assertEquals(saleDetail.getSaleResponseDto(), sale),
+                () -> assertEquals(saleDetail.getBooksaleList().get(0), bookSale),
+                () -> assertEquals(saleDetail.getPaymentResponseDto(), payment));
 
         verify(saleService, times(1)).getSaleDetail(1L);
     }

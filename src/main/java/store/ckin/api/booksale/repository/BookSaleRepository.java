@@ -11,7 +11,7 @@ import store.ckin.api.booksale.entity.BookSale;
  * @version 2024. 03. 02.
  */
 
-public interface BookSaleRepository extends JpaRepository<BookSale, BookSale.Pk> {
+public interface BookSaleRepository extends JpaRepository<BookSale, BookSale.Pk>, BookSaleRepositoryCustom {
 
     List<BookSale> findAllByPkSaleId(Long saleId);
 }

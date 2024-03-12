@@ -263,6 +263,8 @@ class SaleRepositoryTest {
 
         bookSale = BookSale.builder()
                 .pk(pk)
+                .book(book)
+                .sale(sale)
                 .couponId(1L)
                 .bookSalePackagingType("A 포장")
                 .bookSalePackagingPrice(1000)

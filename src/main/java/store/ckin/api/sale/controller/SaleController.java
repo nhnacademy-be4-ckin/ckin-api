@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -66,7 +67,7 @@ public class SaleController {
      * @return 주문 상세 정보 DTO
      */
     @GetMapping("/{saleId}")
-    public ResponseEntity<SaleResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
+    public ResponseEntity<SaleDetailResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
 
         return ResponseEntity.ok(saleFacade.getSaleDetail(saleId));
     }
