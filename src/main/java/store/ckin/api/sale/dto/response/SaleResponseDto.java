@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.ToString;
 import store.ckin.api.sale.entity.Sale;
 
 /**
@@ -15,7 +15,7 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 03. 03.
  */
 
-@Slf4j
+@ToString
 @Getter
 @AllArgsConstructor
 public class SaleResponseDto {

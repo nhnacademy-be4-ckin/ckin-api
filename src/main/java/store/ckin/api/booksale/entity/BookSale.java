@@ -29,6 +29,7 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 02. 27.
  */
 
+@ToString
 @Getter
 @Entity
 @Table(name = "BookSale")
