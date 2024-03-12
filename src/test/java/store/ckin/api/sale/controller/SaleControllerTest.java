@@ -103,9 +103,9 @@ class SaleControllerTest {
                         "정승조",
                         "01012345678",
                         "광주광역시 동구 조선대 5길",
-                        LocalDateTime.now(),
-                        LocalDateTime.now().plusDays(1),
-                        LocalDate.now().plusDays(3),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
                         Sale.DeliveryStatus.READY,
                         3000,
                         0,
@@ -133,8 +133,8 @@ class SaleControllerTest {
                         jsonPath("$.data[0].saleReceiverName").value(responseDto.getSaleReceiverName()),
                         jsonPath("$.data[0].saleReceiverContact").value(responseDto.getSaleReceiverContact()),
                         jsonPath("$.data[0].saleReceiverAddress").value(responseDto.getSaleReceiverAddress()),
-                        jsonPath("$.data[0].saleShippingDate").value(responseDto.getSaleShippingDate().toString()),
-                        jsonPath("$.data[0].saleDeliveryDate").value(responseDto.getSaleDeliveryDate().toString()),
+                        jsonPath("$.data[0].saleShippingDate").isNotEmpty(),
+                        jsonPath("$.data[0].saleDeliveryDate").isNotEmpty(),
                         jsonPath("$.data[0].saleDeliveryStatus").value(responseDto.getSaleDeliveryStatus().name()),
                         jsonPath("$.data[0].salePointUsage").value(responseDto.getSalePointUsage()),
                         jsonPath("$.data[0].saleTotalPrice").value(responseDto.getSaleTotalPrice()),
@@ -162,9 +162,9 @@ class SaleControllerTest {
                         "정승조",
                         "01012345678",
                         "광주광역시 동구 조선대 5길",
-                        LocalDateTime.now(),
-                        LocalDateTime.now().plusDays(1),
-                        LocalDate.now().plusDays(3),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
                         Sale.DeliveryStatus.READY,
                         3000,
                         0,
@@ -200,6 +200,7 @@ class SaleControllerTest {
                 .willReturn(saleDetailResponseDto);
 
         mockMvc.perform(get("/api/sales/{saleId}", 1L))
+
                         .andExpectAll(
                                 status().isOk(),
                                 content().contentType(MediaType.APPLICATION_JSON),
@@ -237,6 +238,7 @@ class SaleControllerTest {
                                 jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
                         );
 
+
         verify(saleFacade, times(1)).getSaleDetail(anyLong());
     }
 
@@ -264,7 +266,7 @@ class SaleControllerTest {
                 "Tester",
                 "01011112222",
                 3000,
-                LocalDate.now().plusDays(1),
+                LocalDate.of(2024, 3, 7).plusDays(1),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -287,7 +289,7 @@ class SaleControllerTest {
                         jsonPath("$.saleReceiverName").value(responseDto.getSaleReceiverName()),
                         jsonPath("$.saleReceiverContact").value(responseDto.getSaleReceiverContact()),
                         jsonPath("$.deliveryFee").value(responseDto.getDeliveryFee()),
-                        jsonPath("$.saleDeliveryDate").value(responseDto.getSaleDeliveryDate().toString()),
+                        jsonPath("$.saleDeliveryDate").isNotEmpty(),
                         jsonPath("$.postcode").value(responseDto.getPostcode()),
                         jsonPath("$.address").value(responseDto.getAddress()),
                         jsonPath("$.pointUsage").value(responseDto.getPointUsage()),

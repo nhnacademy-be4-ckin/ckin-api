@@ -1,7 +1,7 @@
 package store.ckin.api.author.exception;
 
 /**
- * {class name}.
+ * AuthorNotFoundException 클래스.
  *
  * @author 나국로
  * @version 2024. 02. 16.
