@@ -2,6 +2,7 @@ package store.ckin.api.sale.dto.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import store.ckin.api.sale.entity.Sale;
@@ -52,9 +53,10 @@ public class SaleResponseDto {
     private String saleShippingPostCode;
 
     public static SaleResponseDto toDto(Sale sale) {
+
         return new SaleResponseDto(
                 sale.getSaleId(),
-                sale.getMember().getEmail(),
+                Objects.nonNull(sale.getMember()) ? sale.getMember().getEmail() : "비회원",
                 sale.getSaleNumber(),
                 sale.getSaleOrdererName(),
                 sale.getSaleOrdererContact(),
