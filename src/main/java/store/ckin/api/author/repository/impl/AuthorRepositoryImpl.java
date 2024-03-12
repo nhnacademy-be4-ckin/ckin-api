@@ -25,7 +25,9 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
     public AuthorRepositoryImpl() {
         super(Author.class);
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable) {
         QAuthor author = QAuthor.author;

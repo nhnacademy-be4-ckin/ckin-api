@@ -47,7 +47,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     QBookTag bookTag = QBookTag.bookTag;
     QFile file = QFile.file;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -80,6 +82,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -108,7 +113,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -138,7 +145,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -165,7 +174,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Book> findByBookId(Long bookId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
