@@ -27,7 +27,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private static final int DEFAULT_CATEGORY_PRIORITY = 1;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CategoryResponseDto createCategory(CategoryCreateRequestDto categoryCreateRequestDto) {
@@ -54,6 +56,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryResponseDto> findSubcategories(Long parentId) {
         List<Category> subcategories = categoryRepository.findByParentCategory_CategoryId(parentId);
@@ -62,6 +67,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryResponseDto> findTopCategories() {
         List<Category> topCategories = categoryRepository.findByParentCategoryIsNull();
@@ -70,6 +78,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CategoryResponseDto updateCategory(Long categoryId, CategoryUpdateRequestDto categoryUpdateDto) {
@@ -85,7 +96,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void deleteCategory(Long categoryId) {
@@ -94,7 +107,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryRepository.deleteById(categoryId);
     }
-
 
 
 }
