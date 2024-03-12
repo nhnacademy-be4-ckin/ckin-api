@@ -42,4 +42,8 @@ public interface BookService {
     List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds);
 
     List<Long> getBookCategoryIdsByBookIds(List<Long> bookIds);
+
+    void updateBookThumbnail(Long bookId, MultipartFile newThumbnail) throws IOException;
 }
+
+

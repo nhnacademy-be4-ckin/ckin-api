@@ -110,7 +110,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         }
 
         // UUID를 추가하여 저장될 파일 이름 생성
-        String fileId = UUID.randomUUID() + "-" + fileNameWithoutExtension;
+        String fileId = UUID.randomUUID().toString();
 
 
         String fileUrl = String.format("%s/%s/%s/%s%s",

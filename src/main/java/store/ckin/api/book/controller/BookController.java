@@ -117,6 +117,12 @@ public class BookController {
         List<Long> categoryIds = bookService.getBookCategoryIdsByBookIds(bookIds);
         return ResponseEntity.ok(categoryIds);
     }
+    @PutMapping("/thumbnail/{bookId}")
+    public ResponseEntity<Void> updateBookThumbnail(@PathVariable Long bookId,
+                                                    @RequestPart("thumbnail") MultipartFile thumbnail) throws IOException {
+        bookService.updateBookThumbnail(bookId, thumbnail);
+        return ResponseEntity.ok().build();
+    }
 
 
 }

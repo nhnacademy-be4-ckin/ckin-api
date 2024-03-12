@@ -170,6 +170,23 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(updatedBook);
     }
 
+    @Override
+    @Transactional
+    public void updateBookThumbnail(Long bookId, MultipartFile file) throws IOException {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+
+        File thumbnailFile = book.getThumbnail();
+        File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
+
+        File updateThumbnailFile = thumbnailFile.toBuilder()
+                .fileOriginName(uploadFile.getFileOriginName())
+                .fileUrl(uploadFile.getFileUrl())
+                .build();
+        fileRepository.save(updateThumbnailFile);
+    }
+
+
     @Transactional(readOnly = true)
     @Override
     public BookResponseDto findBookById(Long bookId) {
