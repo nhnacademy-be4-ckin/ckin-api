@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
 import store.ckin.api.book.repository.BookRepository;
+import store.ckin.api.file.entity.File;
+import store.ckin.api.file.repository.FileRepository;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
@@ -34,14 +37,16 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepository memberRepository;
     private final BookRepository bookRepository;
     private final ObjectStorageService objectStorageService;
+    private final FileRepository fileRepository;
 
     /**
      * 리뷰 업로드를 구현하는 메소드 입니다.
      *
      * @param createRequestDto 도서 아이디, 리뷰 점수, 리뷰 코멘트를 담고 있는 DTO 입니다.
-     * @param imageList 리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
+     * @param imageList        리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
      */
     @Override
+    @Transactional
     public void postReview(ReviewCreateRequestDto createRequestDto, List<MultipartFile> imageList) {
         Optional<Member> member = memberRepository.findById(createRequestDto.getMemberId());
 
@@ -55,15 +60,19 @@ public class ReviewServiceImpl implements ReviewService {
             throw new BookNotFoundException(createRequestDto.getBookId());
         }
 
-        reviewRepository.save(Review.builder()
+        Review review = reviewRepository.save(Review.builder()
                 .member(member.get())
                 .book(book.get())
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
+
         try {
             for (MultipartFile file : imageList) {
-                objectStorageService.saveFile(file, "review");
+                File reviewFile = objectStorageService.saveFile(file, "review");
+                fileRepository.save(reviewFile.toBuilder()
+                        .review(review)
+                        .build());
             }
         } catch (Exception e) {
             throw new RuntimeException();
@@ -79,8 +88,9 @@ public class ReviewServiceImpl implements ReviewService {
      * @return
      */
     @Override
+    @Transactional(readOnly = true)
     public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
-        if(!bookRepository.existsById(bookId)) {
+        if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
         }
 

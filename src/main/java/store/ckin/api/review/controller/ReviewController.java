@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +35,13 @@ public class ReviewController {
      * @param imageList        리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
      */
     @PostMapping
-    public void postReview(@RequestPart ReviewCreateRequestDto createRequestDto,
+    public ResponseEntity<Void> postReview(@RequestPart ReviewCreateRequestDto createRequestDto,
                            @RequestPart(value = "imageList", required = false) List<MultipartFile> imageList) {
 
         reviewService.postReview(createRequestDto, imageList);
+        //TODO: point 적립
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
