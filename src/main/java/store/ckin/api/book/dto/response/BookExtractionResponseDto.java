@@ -20,6 +20,8 @@ public class BookExtractionResponseDto {
 
     private Long bookId;
 
+    private String bookImageUrl;
+
     private String bookTitle;
 
     private Boolean bookPackaging;
@@ -30,9 +32,10 @@ public class BookExtractionResponseDto {
 
     private List<Long> categoryIds;
 
-    public BookExtractionResponseDto(Long bookId, String bookTitle, Boolean bookPackaging, Integer bookSalePrice,
-                                     Integer bookStock) {
+    public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
+                                     Integer bookSalePrice, Integer bookStock) {
         this.bookId = bookId;
+        this.bookImageUrl = bookImageUrl;
         this.bookTitle = bookTitle;
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;
@@ -41,9 +44,10 @@ public class BookExtractionResponseDto {
     }
 
     @Builder
-    public BookExtractionResponseDto(Long bookId, String bookTitle, Boolean bookPackaging, Integer bookSalePrice,
-                                     Integer bookStock, List<Long> categoryIds) {
+    public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
+                                     Integer bookSalePrice, Integer bookStock, List<Long> categoryIds) {
         this.bookId = bookId;
+        this.bookImageUrl = bookImageUrl;
         this.bookTitle = bookTitle;
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;

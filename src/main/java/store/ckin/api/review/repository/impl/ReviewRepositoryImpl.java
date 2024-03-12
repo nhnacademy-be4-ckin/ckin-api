@@ -1,6 +1,8 @@
 package store.ckin.api.review.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,7 +67,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     }
 
     @Override
-    public Page<ReviewResponseDto> findReviewsByBookWithPagination(Long bookId, Pageable pageable) {
+    public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
         List<Review> reviews = queryFactory
@@ -92,13 +94,13 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     }
 
 
-
     private ReviewResponseDto convertToReviewResponseDto(Review review) {
         return new ReviewResponseDto(
                 review.getReviewId(),
+                "***" + review.getMember().getEmail().substring(3),
                 review.getReviewComment(),
-                review.getCreatedAt(),
-                review.getMember() != null ? review.getMember().getName() : null);
+                review.getReviewRate(),
+                review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
 

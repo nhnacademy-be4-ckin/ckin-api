@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
@@ -27,6 +28,8 @@ import store.ckin.api.file.entity.File;
  * @author 나국로
  * @version 2024. 02. 26.
  */
+
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor

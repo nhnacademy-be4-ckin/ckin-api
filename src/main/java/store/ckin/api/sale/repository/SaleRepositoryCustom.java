@@ -29,4 +29,13 @@ public interface SaleRepositoryCustom {
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
     SaleWithBookResponseDto getSaleWithBook(Long saleId);
+
+
+    /**
+     * 주문 번호로 주문을 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 응답 DTO
+     */
+    SaleResponseDto findBySaleNumber(String saleNumber);
 }

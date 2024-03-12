@@ -54,31 +54,45 @@ public class BookServiceImpl implements BookService {
 
     private static final String FILE_CATEGORY = "book";
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         return bookRepository.findByAuthorName(authorName, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     @Override
     public Page<BookListResponseDto> findByBookTitle(String bookTitle, Pageable pageable) {
         return bookRepository.findByBookTitleContaining(bookTitle, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         return bookRepository.findByCategoryId(categoryId, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         return bookRepository.findAllBooks(pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void createBook(BookCreateRequestDto requestDto, MultipartFile file) throws IOException {
@@ -139,7 +153,9 @@ public class BookServiceImpl implements BookService {
 
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void updateBook(Long bookId, BookModifyRequestDto requestDto) {
@@ -170,6 +186,28 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(updatedBook);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void updateBookThumbnail(Long bookId, MultipartFile file) throws IOException {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+
+        File thumbnailFile = book.getThumbnail();
+        File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
+
+        File updateThumbnailFile = thumbnailFile.toBuilder()
+                .fileOriginName(uploadFile.getFileOriginName())
+                .fileUrl(uploadFile.getFileUrl())
+                .build();
+        fileRepository.save(updateThumbnailFile);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     @Override
     public BookResponseDto findBookById(Long bookId) {
@@ -189,6 +227,23 @@ public class BookServiceImpl implements BookService {
     public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
         return bookRepository.getExtractBookListByBookIds(bookIds);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getBookCategoryIdsByBookIds(List<Long> bookIds) {
+        return bookIds.stream()
+                .map(bookId -> bookRepository.findByBookId(bookId)
+                        .orElseThrow(() -> new BookNotFoundException(bookId)))
+                .flatMap(book -> book.getCategories().stream())
+                .map(bookCategory -> bookCategory.getCategory().getCategoryId())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
 
     private void updateAuthors(Book book, Set<Long> authorIds) {
         book.getAuthors().clear();
