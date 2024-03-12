@@ -43,6 +43,7 @@ public class PaymentFacade {
         }
 
         paymentService.createPayment(sale.getSaleId(), requestDto);
+        saleService.updateSalePaymentPaidStatus(sale.getSaleId());
 
         return PaymentSuccessResponseDto.builder()
                 .saleNumber(sale.getSaleNumber())
