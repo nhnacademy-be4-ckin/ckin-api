@@ -1,6 +1,7 @@
 package store.ckin.api.review.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.Optional;
  * @version 2024. 03. 11.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
@@ -59,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (book.isEmpty()) {
             throw new BookNotFoundException(createRequestDto.getBookId());
         }
-
+        book.get().setBookReviewRate(createRequestDto.getReviewRate());
         Review review = reviewRepository.save(Review.builder()
                 .member(member.get())
                 .book(book.get())

@@ -23,17 +23,6 @@ public class ReviewResponseDto {
     private List<String> filePath;
 
     @Builder
-    public ReviewResponseDto(Long reviewId, String author, String message, Integer reviewRate,
-                             String reviewDate, List<String> filePath) {
-        this.reviewId = reviewId;
-        this.author = author;
-        this.message = message;
-        this.reviewRate = reviewRate;
-        this.reviewDate = reviewDate;
-        this.filePath = filePath;
-    }
-
-    @Builder
     public ReviewResponseDto(Long reviewId, String author, String message, Integer reviewRate, String reviewDate) {
         this.reviewId = reviewId;
         this.author = author;
