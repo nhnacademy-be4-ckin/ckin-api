@@ -1,10 +1,12 @@
 package store.ckin.api.book.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
@@ -37,6 +41,7 @@ import store.ckin.api.file.entity.File;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "Book")
+@EntityListeners(AuditingEntityListener.class)
 public class Book {
 
     @Id
@@ -86,6 +91,10 @@ public class Book {
     @Builder.Default
     private String bookReviewRate = "0";
 
+    @LastModifiedDate
+    @Column(name = "modification_time", nullable = false)
+    private LocalDateTime modifiedAt = LocalDateTime.now();
+
     @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
     private File thumbnail;
 
@@ -100,5 +109,4 @@ public class Book {
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<BookSale> sales;
-
 }
