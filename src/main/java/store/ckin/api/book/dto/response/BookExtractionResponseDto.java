@@ -1,11 +1,12 @@
 package store.ckin.api.book.dto.response;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 도서 추출 정보 응답 DTO 클래스입니다.
@@ -20,6 +21,8 @@ public class BookExtractionResponseDto {
 
     private Long bookId;
 
+    private String bookImageUrl;
+
     private String bookTitle;
 
     private Boolean bookPackaging;
@@ -30,9 +33,10 @@ public class BookExtractionResponseDto {
 
     private List<Long> categoryIds;
 
-    public BookExtractionResponseDto(Long bookId, String bookTitle, Boolean bookPackaging, Integer bookSalePrice,
-                                     Integer bookStock) {
+    public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
+                                     Integer bookSalePrice, Integer bookStock) {
         this.bookId = bookId;
+        this.bookImageUrl = bookImageUrl;
         this.bookTitle = bookTitle;
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;
@@ -41,9 +45,10 @@ public class BookExtractionResponseDto {
     }
 
     @Builder
-    public BookExtractionResponseDto(Long bookId, String bookTitle, Boolean bookPackaging, Integer bookSalePrice,
-                                     Integer bookStock, List<Long> categoryIds) {
+    public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
+                                     Integer bookSalePrice, Integer bookStock, List<Long> categoryIds) {
         this.bookId = bookId;
+        this.bookImageUrl = bookImageUrl;
         this.bookTitle = bookTitle;
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;

@@ -1,11 +1,8 @@
 package store.ckin.api.pointpolicy.dto.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import lombok.Getter;
+
+import javax.validation.constraints.*;
 
 /**
  * 포인트 정책 생성 요청 DTO.

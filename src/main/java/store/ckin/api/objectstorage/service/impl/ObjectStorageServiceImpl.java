@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -110,7 +111,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         }
 
         // UUID를 추가하여 저장될 파일 이름 생성
-        String fileId = UUID.randomUUID() + "-" + fileNameWithoutExtension;
+        String fileId = UUID.randomUUID().toString();
 
 
         String fileUrl = String.format("%s/%s/%s/%s%s",

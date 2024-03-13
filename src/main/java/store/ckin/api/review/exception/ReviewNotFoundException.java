@@ -6,5 +6,5 @@ package store.ckin.api.review.exception;
  * @author 나국로
  * @version 2024. 03. 01.
  */
-public class ReviewNotFoundException extends RuntimeException{
+public class ReviewNotFoundException extends RuntimeException {
 }

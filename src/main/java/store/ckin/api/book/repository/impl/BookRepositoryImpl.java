@@ -2,10 +2,6 @@ package store.ckin.api.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +19,11 @@ import store.ckin.api.book.repository.BookRepositoryCustom;
 import store.ckin.api.category.entity.QCategory;
 import store.ckin.api.file.entity.QFile;
 import store.ckin.api.tag.entity.QTag;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * BookRepository의 구현클래스.
@@ -47,7 +48,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     QBookTag bookTag = QBookTag.bookTag;
     QFile file = QFile.file;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -80,6 +83,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -108,7 +114,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -138,7 +146,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -165,7 +175,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(bookResponseDtos, pageable, total);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Book> findByBookId(Long bookId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
@@ -195,11 +207,14 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
 
 
-        List<BookExtractionResponseDto> bookInfoList = from(book)
+        List<BookExtractionResponseDto> bookInfoList
+                = from(book)
                 .join(book.categories, bookCategory)
+                .join(book.thumbnail, file)
                 .where(book.bookId.in(bookIds))
                 .select(Projections.constructor(BookExtractionResponseDto.class,
                         book.bookId,
+                        file.fileUrl,
                         book.bookTitle,
                         book.bookPackaging,
                         book.bookSalePrice,
@@ -214,7 +229,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                         bookCategory.category.categoryId))
                 .where(bookCategory.book.bookId.in(bookIds))
                 .fetch();
-
 
 
         bookInfoList.forEach(bookInfo -> bookCategoryList.forEach(bookCategoryDto -> {

@@ -1,24 +1,21 @@
 package store.ckin.api.sale.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.facade.SaleFacade;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 주문 컨트롤러 입니다.
@@ -65,7 +62,7 @@ public class SaleController {
      * @return 주문 상세 정보 DTO
      */
     @GetMapping("/{saleId}")
-    public ResponseEntity<SaleResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
+    public ResponseEntity<SaleDetailResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
 
         return ResponseEntity.ok(saleFacade.getSaleDetail(saleId));
     }
@@ -91,7 +88,18 @@ public class SaleController {
      */
     @GetMapping("/{saleId}/books")
     public ResponseEntity<SaleWithBookResponseDto> getSaleWithBooks(@PathVariable Long saleId) {
-        SaleWithBookResponseDto responseDto = saleFacade.SaleWithBookResponseDto(saleId);
+        SaleWithBookResponseDto responseDto = saleFacade.getSaleWithBookResponseDto(saleId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    /**
+     * 주문 번호로 결제할 주문의 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 200 (OK), 주문 정보
+     */
+    @GetMapping("/{saleNumber}/paymentInfo")
+    public ResponseEntity<SaleInfoResponseDto> getSalePaymentInfo(@PathVariable("saleNumber") String saleNumber) {
+        return ResponseEntity.ok(saleFacade.getSalePaymentInfo(saleNumber));
     }
 }

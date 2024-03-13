@@ -1,8 +1,10 @@
 package store.ckin.api.pointpolicy.repository;
 
 import com.querydsl.core.types.Projections;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;

@@ -1,15 +1,17 @@
 package store.ckin.api.booksale.service.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.repository.BookSaleRepository;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
 import store.ckin.api.packaging.service.PackagingService;
+
+import java.util.List;
 
 /**
  * 주문 도서 (리스트) 서비스 구현 클래스입니다.
@@ -63,5 +65,10 @@ public class BookSaleServiceImpl implements BookSaleService {
     public void updateBookSaleState(Long saleId, BookSale.BookSaleState state) {
         bookSaleRepository.findAllByPkSaleId(saleId)
                 .forEach(bookSale -> bookSale.updateBookSaleState(state));
+    }
+
+    @Override
+    public List<BookAndBookSaleResponseDto> getBookSaleDetail(Long saleId) {
+        return bookSaleRepository.getBookSaleDetailBySaleId(saleId);
     }
 }

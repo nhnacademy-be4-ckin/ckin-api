@@ -28,7 +28,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<AuthorResponseDto> findAllAuthors(Pageable pageable) {
         Pageable sortedByAuthorName =
@@ -41,13 +43,18 @@ public class AuthorServiceImpl implements AuthorService {
                 .build());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<AuthorResponseDto> findAuthorsByName(String name, Pageable pageable) {
 
         return authorRepository.findAuthorsByName(name, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public AuthorResponseDto createAuthor(AuthorCreateRequestDto authorCreateRequestDto) {
@@ -62,7 +69,9 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AuthorResponseDto findAuthorById(Long authorId) {
         Author author = authorRepository.findById(authorId)
@@ -73,7 +82,9 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto) {
@@ -91,13 +102,17 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void deleteAuthor(Long authorId) {
         authorRepository.findById(authorId).ifPresentOrElse(
                 author -> authorRepository.deleteById(authorId),
-                () -> { throw new AuthorNotFoundException(authorId); }
+                () -> {
+                    throw new AuthorNotFoundException(authorId);
+                }
         );
     }
 

@@ -1,8 +1,9 @@
 package store.ckin.api.tag.dto.request;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import lombok.Getter;
 
 /**
  * 태그 업데이트 요청 Dto

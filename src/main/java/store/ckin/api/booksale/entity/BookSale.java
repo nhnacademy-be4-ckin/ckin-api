@@ -1,19 +1,11 @@
 package store.ckin.api.booksale.entity;
 
+import lombok.*;
+import store.ckin.api.book.entity.Book;
+import store.ckin.api.sale.entity.Sale;
+
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 주문 도서 (리스트) Entity.
@@ -22,6 +14,7 @@ import lombok.NoArgsConstructor;
  * @version 2024. 02. 27.
  */
 
+@ToString
 @Getter
 @Entity
 @Table(name = "BookSale")
@@ -35,6 +28,16 @@ public class BookSale {
 
     @EmbeddedId
     private Pk pk;
+
+    @MapsId("saleId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
+
+    @MapsId("bookId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
     @Column(name = "coupon_id")
     private Long couponId;
@@ -56,6 +59,7 @@ public class BookSale {
     private BookSaleState bookSaleState;
 
     @Embeddable
+    @ToString
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -70,9 +74,12 @@ public class BookSale {
     }
 
     @Builder
-    public BookSale(Pk pk, Long couponId, Integer bookSaleQuantity, Integer bookSalePackagingPrice,
+    public BookSale(Pk pk, Sale sale, Book book, Long couponId, Integer bookSaleQuantity,
+                    Integer bookSalePackagingPrice,
                     String bookSalePackagingType, Integer bookSalePaymentAmount, BookSaleState bookSaleState) {
         this.pk = pk;
+        this.sale = sale;
+        this.book = book;
         this.couponId = couponId;
         this.bookSaleQuantity = bookSaleQuantity;
         this.bookSalePackagingPrice = bookSalePackagingPrice;

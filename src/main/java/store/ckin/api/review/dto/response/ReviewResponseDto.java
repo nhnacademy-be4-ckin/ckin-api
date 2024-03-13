@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * ReviewResponseDto 리뷰 응답 dto.
  *
@@ -18,6 +20,7 @@ public class ReviewResponseDto {
     private String message;
     private Integer reviewRate;
     private String reviewDate;
+    private List<String> filePath;
 
     @Builder
     public ReviewResponseDto(Long reviewId, String author, String message, Integer reviewRate, String reviewDate) {
@@ -26,5 +29,9 @@ public class ReviewResponseDto {
         this.message = message;
         this.reviewRate = reviewRate;
         this.reviewDate = reviewDate;
+    }
+
+    public void setFilePath(List<String> filePath) {
+        this.filePath = filePath;
     }
 }

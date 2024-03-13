@@ -1,22 +1,16 @@
 package store.ckin.api.category.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.service.CategoryService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * CategoryController 클래스.
@@ -33,10 +27,10 @@ public class CategoryController {
 
 
     /**
-     * Create category response entity.
+     * 새로운 카테고리를 생성합니다.
      *
-     * @param categoryCreateRequestDto the category create request dto
-     * @return the response entity
+     * @param categoryCreateRequestDto 카테고리 생성 요청 DTO
+     * @return 생성 성공시 상태 코드 201과 함께 ResponseEntity 반환
      */
     @PostMapping
     public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequestDto categoryCreateRequestDto) {
@@ -47,9 +41,9 @@ public class CategoryController {
 
 
     /**
-     * Gets top categories.
+     * 최상위 카테고리 목록을 조회합니다.
      *
-     * @return the top categories
+     * @return 최상위 카테고리 목록이 담긴 ResponseEntity 객체
      */
     @GetMapping("/top")
     public ResponseEntity<List<CategoryResponseDto>> getTopCategories() {
@@ -59,10 +53,10 @@ public class CategoryController {
 
 
     /**
-     * Gets subcategories.
+     * 지정된 부모 ID를 가진 하위 카테고리 목록을 조회합니다.
      *
-     * @param parentId the parent id
-     * @return the subcategories
+     * @param parentId 부모 카테고리 ID
+     * @return 하위 카테고리 목록이 담긴 ResponseEntity 객체
      */
     @GetMapping("/{parentId}/subcategories")
     public ResponseEntity<List<CategoryResponseDto>> getSubcategories(@PathVariable Long parentId) {
@@ -71,11 +65,11 @@ public class CategoryController {
     }
 
     /**
-     * Update category response entity.
+     * 지정된 ID의 카테고리를 업데이트합니다.
      *
-     * @param categoryId               the category id
-     * @param categoryUpdateRequestDto the category update request dto
-     * @return the response entity
+     * @param categoryId               카테고리 ID
+     * @param categoryUpdateRequestDto 카테고리 업데이트 요청 DTO
+     * @return 업데이트 성공시 상태 코드 200과 함께 ResponseEntity 반환
      */
     @PutMapping("/{categoryId}")
     public ResponseEntity<Void> updateCategory(@PathVariable Long categoryId,
@@ -85,10 +79,10 @@ public class CategoryController {
     }
 
     /**
-     * Delete category response entity.
+     * 지정된 ID의 카테고리를 삭제합니다.
      *
-     * @param categoryId the category id
-     * @return the response entity
+     * @param categoryId 카테고리 ID
+     * @return 삭제 성공시 상태 코드 200과 함께 ResponseEntity 반환
      */
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {

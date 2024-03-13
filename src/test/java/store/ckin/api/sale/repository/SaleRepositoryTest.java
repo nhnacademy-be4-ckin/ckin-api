@@ -15,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
+import store.ckin.api.book.entity.Book;
+import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 
 /**
@@ -41,6 +44,10 @@ class SaleRepositoryTest {
     Member member;
 
     String saleNumber;
+
+    BookSale bookSale;
+
+    Book book;
 
     @BeforeEach
     void setUp() {
@@ -68,6 +75,20 @@ class SaleRepositoryTest {
                 .build();
 
         entityManager.persist(member);
+
+        book = Book.builder()
+                .bookIsbn("1234567890123")
+                .bookDescription("테스트 책입니다.")
+                .bookTitle("테스트 책")
+                .bookPublisher("테스트 출판사")
+                .bookPublicationDate(LocalDate.of(2024, 3, 7))
+                .bookStock(10)
+                .bookRegularPrice(10000)
+                .bookDiscountRate(0)
+                .bookSalePrice(10000)
+                .build();
+
+        entityManager.persist(book);
 
         entityManager.flush();
 
@@ -194,6 +215,110 @@ class SaleRepositoryTest {
         Sale savedSale = saleRepository.save(sale);
 
         SaleResponseDto actual = saleRepository.findBySaleId(savedSale.getSaleId());
+
+        assertAll(
+                () -> assertEquals(actual.getSaleId(), savedSale.getSaleId()),
+                () -> assertEquals(actual.getSaleNumber(), savedSale.getSaleNumber()),
+                () -> assertEquals(actual.getSaleOrdererName(), savedSale.getSaleOrdererName()),
+                () -> assertEquals(actual.getSaleOrdererContact(), savedSale.getSaleOrdererContact()),
+                () -> assertEquals(actual.getSaleReceiverName(), savedSale.getSaleReceiverName()),
+                () -> assertEquals(actual.getSaleReceiverContact(), savedSale.getSaleReceiverContact()),
+                () -> assertEquals(actual.getSaleReceiverAddress(), savedSale.getSaleReceiverAddress()),
+                () -> assertEquals(actual.getSaleDate(), savedSale.getSaleDate()),
+                () -> assertEquals(actual.getSaleShippingDate(), savedSale.getSaleShippingDate()),
+                () -> assertEquals(actual.getSaleDeliveryDate(), savedSale.getSaleDeliveryDate()),
+                () -> assertEquals(actual.getSaleDeliveryStatus(), savedSale.getSaleDeliveryStatus()),
+                () -> assertEquals(actual.getSaleDeliveryFee(), savedSale.getSaleDeliveryFee()),
+                () -> assertEquals(actual.getSalePointUsage(), savedSale.getSalePointUsage()),
+                () -> assertEquals(actual.getSalePaymentStatus(), savedSale.getSalePaymentStatus()),
+                () -> assertEquals(actual.getSaleShippingPostCode(), savedSale.getSaleShippingPostCode())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
+    void testGetSaleWithBook() {
+        Sale sale = Sale.builder()
+                .member(member)
+                .saleNumber(saleNumber)
+                .saleOrdererName("정승조")
+                .saleOrdererContact("01012341234")
+                .saleReceiverName("정승조")
+                .saleReceiverContact("01012341234")
+                .saleReceiverAddress("광주광역시 동구 조선대 5길 IT 융합대학")
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now())
+                .saleDeliveryDate(LocalDate.now().plusDays(2))
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(3000)
+                .salePointUsage(1000)
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode("123456")
+                .build();
+
+        Sale savedSale = saleRepository.save(sale);
+
+
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
+
+        bookSale = BookSale.builder()
+                .pk(pk)
+                .book(book)
+                .sale(sale)
+                .couponId(1L)
+                .bookSalePackagingType("A 포장")
+                .bookSalePackagingPrice(1000)
+                .bookSaleQuantity(1)
+                .bookSalePaymentAmount(10000)
+                .build();
+
+        entityManager.persist(bookSale);
+
+        entityManager.flush();
+
+        SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleId());
+
+
+        assertAll(
+                () -> assertEquals(actual.getSaleTitle(), book.getBookTitle()),
+                () -> assertEquals(actual.getSaleId(), savedSale.getSaleId()),
+                () -> assertEquals(actual.getSaleNumber(), savedSale.getSaleNumber()),
+                () -> assertEquals(actual.getSaleOrdererName(), savedSale.getSaleOrdererName()),
+                () -> assertEquals(actual.getSaleOrdererContact(), savedSale.getSaleOrdererContact()),
+                () -> assertEquals(actual.getSaleReceiverName(), savedSale.getSaleReceiverName()),
+                () -> assertEquals(actual.getSaleReceiverContact(), savedSale.getSaleReceiverContact()),
+                () -> assertEquals(actual.getAddress(), savedSale.getSaleReceiverAddress()),
+                () -> assertEquals(actual.getSaleDeliveryDate(), savedSale.getSaleDeliveryDate()),
+                () -> assertEquals(actual.getDeliveryFee(), savedSale.getSaleDeliveryFee()),
+                () -> assertEquals(actual.getPointUsage(), savedSale.getSalePointUsage()),
+                () -> assertEquals(actual.getTotalPrice(), savedSale.getSaleTotalPrice())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 조회 테스트")
+    void testFindBySaleNumber() {
+        Sale sale = Sale.builder()
+                .member(member)
+                .saleNumber(saleNumber)
+                .saleOrdererName("정승조")
+                .saleOrdererContact("01012341234")
+                .saleReceiverName("정승조")
+                .saleReceiverContact("01012341234")
+                .saleReceiverAddress("광주광역시 동구 조선대 5길 IT 융합대학")
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now())
+                .saleDeliveryDate(LocalDate.now().plusDays(2))
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(3000)
+                .salePointUsage(1000)
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode("123456")
+                .build();
+
+        Sale savedSale = saleRepository.save(sale);
+
+        SaleResponseDto actual = saleRepository.findBySaleNumber(savedSale.getSaleNumber());
 
         assertAll(
                 () -> assertEquals(actual.getSaleId(), savedSale.getSaleId()),

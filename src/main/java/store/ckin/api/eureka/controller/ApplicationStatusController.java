@@ -44,7 +44,7 @@ public class ApplicationStatusController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public void stopStatus(){
+    public void stopStatus() {
         applicationInfoManager.setInstanceStatus(InstanceInfo.InstanceStatus.DOWN);
         applicationStatus.stopService();
     }
