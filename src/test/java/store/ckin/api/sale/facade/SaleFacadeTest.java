@@ -3,6 +3,7 @@ package store.ckin.api.sale.facade;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
@@ -30,6 +31,7 @@ import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
+import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.service.SaleService;
 
@@ -100,6 +102,29 @@ class SaleFacadeTest {
 
         ReflectionTestUtils.setField(requestDto, "bookSaleList", bookSaleList);
 
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.createSale(any()))
+                .willReturn(sale);
 
         // when
         saleFacade.createSale(requestDto);
@@ -198,12 +223,34 @@ class SaleFacadeTest {
     }
 
     @Test
-    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
+    @DisplayName("주문 번호로 주문 상세 정보와 주문한 책 정보 조회 테스트")
     void testGetSaleWithBookResponse() {
 
-        saleFacade.getSaleWithBookResponseDto(1L);
+        SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                1L,
+                "ABC1234DEF",
+                "test@test.com",
+                "Tester",
+                "01012341234",
+                "Tester",
+                "01011112222",
+                3000,
+                LocalDate.of(2024, 3, 7).plusDays(1),
+                "12345",
+                "광주광역시 동구 조선대 5길",
+                0,
+                10000
+        );
 
-        verify(saleService, times(1)).getSaleWithBook(1L);
+
+        given(saleService.getSaleWithBook(anyString()))
+                .willReturn(responseDto);
+
+        SaleWithBookResponseDto actual = saleFacade.getSaleWithBookResponseDto("flskajvlkc12312");
+
+
+        assertEquals(responseDto, actual);
+        verify(saleService, times(1)).getSaleWithBook("flskajvlkc12312");
     }
 
     @Test

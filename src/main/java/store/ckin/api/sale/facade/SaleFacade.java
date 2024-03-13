@@ -48,20 +48,20 @@ public class SaleFacade {
      * @return 생성된 주문 ID
      */
     @Transactional
-    public Long createSale(SaleCreateRequestDto requestDto) {
+    public String createSale(SaleCreateRequestDto requestDto) {
 
         SaleCreateNoBookRequestDto saleInfo =
                 requestDto.toCreateSaleWithoutBookRequestDto();
 
-        Long saleId = saleService.createSale(saleInfo);
+        SaleResponseDto sale = saleService.createSale(saleInfo);
 
-        bookSaleService.createBookSale(saleId, requestDto.getBookSaleList());
+        bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
             memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
         }
 
-        return saleId;
+        return sale.getSaleNumber();
     }
 
     /**
@@ -105,14 +105,14 @@ public class SaleFacade {
     }
 
     /**
-     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     * 주문 번호로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호 (UUID)
      * @return 주문 상세 정보와 주문한 책 정보
      */
     @Transactional(readOnly = true)
-    public SaleWithBookResponseDto getSaleWithBookResponseDto(Long saleId) {
-        return saleService.getSaleWithBook(saleId);
+    public SaleWithBookResponseDto getSaleWithBookResponseDto(String saleNumber) {
+        return saleService.getSaleWithBook(saleNumber);
     }
 
     /**
