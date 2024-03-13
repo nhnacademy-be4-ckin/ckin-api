@@ -276,7 +276,7 @@ class SaleRepositoryTest {
 
         entityManager.flush();
 
-        SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleId());
+        SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleNumber());
 
 
         assertAll(
