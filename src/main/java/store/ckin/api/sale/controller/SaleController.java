@@ -54,8 +54,7 @@ public class SaleController {
      * @return 주문 DTO 리스트
      */
     @GetMapping
-    public ResponseEntity<PagedResponse<List<SaleResponseDto>>> getSales(
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<PagedResponse<List<SaleResponseDto>>> getSales(@PageableDefault Pageable pageable) {
         return ResponseEntity.ok(saleFacade.getSales(pageable));
     }
 

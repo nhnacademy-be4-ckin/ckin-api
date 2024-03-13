@@ -134,27 +134,6 @@ class SaleServiceImplTest {
         given(saleRepository.save(any()))
                 .willReturn(sale);
 
-        // when
-        SaleResponseDto saleResponseDto = new SaleResponseDto(
-                1L,
-                "test@test.com",
-                "1424321",
-                "정승조",
-                "01012345678",
-                "정승조",
-                "01012345678",
-                "광주광역시 동구 조선대 5길 ",
-                LocalDateTime.of(2024, 3, 7, 12, 0, 0),
-                LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
-                LocalDate.of(2024, 3, 7).plusDays(3),
-                Sale.DeliveryStatus.READY,
-                3000,
-                0,
-                10000,
-                Sale.PaymentStatus.WAITING,
-                "123456"
-        );
-
         SaleResponseDto saleDto = saleService.createSale(requestDto);
 
         // then
