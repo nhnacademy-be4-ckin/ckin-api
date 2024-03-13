@@ -22,6 +22,7 @@ import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -66,18 +67,18 @@ public class ReviewServiceImpl implements ReviewService {
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
-
-        try {
-            for (MultipartFile file : imageList) {
-                File reviewFile = objectStorageService.saveFile(file, "review");
-                fileRepository.save(reviewFile.toBuilder()
-                        .review(review)
-                        .build());
+        if(Objects.nonNull(imageList)) {
+            try {
+                for (MultipartFile file : imageList) {
+                    File reviewFile = objectStorageService.saveFile(file, "review");
+                    fileRepository.save(reviewFile.toBuilder()
+                            .review(review)
+                            .build());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException();
             }
-        } catch (Exception e) {
-            throw new RuntimeException();
         }
-
     }
 
     /**
