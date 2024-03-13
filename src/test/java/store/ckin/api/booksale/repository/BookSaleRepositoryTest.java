@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.category.entity.Category;
+import store.ckin.api.file.entity.File;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.tag.entity.Tag;
 
@@ -28,6 +30,7 @@ import store.ckin.api.tag.entity.Tag;
  * @version 2024. 03. 07.
  */
 
+@Slf4j
 @DataJpaTest
 class BookSaleRepositoryTest {
 
@@ -46,6 +49,8 @@ class BookSaleRepositoryTest {
     Category category;
 
     Tag tag;
+
+    File file;
 
     @BeforeEach
     void setUp() {
@@ -90,6 +95,18 @@ class BookSaleRepositoryTest {
 
         sale = Sale.builder()
                 .build();
+
+        file = File.builder()
+                .fileId("file1")
+                .fileCategory("review")
+                .fileExtension("png")
+                .fileOriginName("ckinFile")
+                .book(book)
+                .review(null)
+                .fileUrl("http://url/fileida")
+                .build();
+
+        entityManager.persist(file);
 
         entityManager.flush();
     }
@@ -145,6 +162,29 @@ class BookSaleRepositoryTest {
 
         assertNotNull(bookSaleRepository.findAllByPkSaleId(save.getSale().getSaleId()));
         assertEquals(1, bookSaleRepository.findAllByPkSaleId(save.getSale().getSaleId()).size());
+    }
+
+    @Test
+    @DisplayName("주문 ID를 통한 주문 도서 조회")
+    void testGetBookSaleDetailBySaleId() {
+
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
+        BookSale bookSale = BookSale.builder()
+                .pk(pk)
+                .book(book)
+                .sale(sale)
+                .couponId(1L)
+                .bookSaleQuantity(30)
+                .bookSalePackagingPrice(3000)
+                .bookSalePackagingType("꽃무늬 포장")
+                .bookSalePaymentAmount(8000)
+                .bookSaleState(BookSale.BookSaleState.ORDER)
+                .build();
+
+        BookSale save = bookSaleRepository.save(bookSale);
+
+        assertNotNull(bookSaleRepository.getBookSaleDetailBySaleId(save.getSale().getSaleId()));
+        assertEquals(1, bookSaleRepository.getBookSaleDetailBySaleId(save.getSale().getSaleId()).size());
     }
 
 }

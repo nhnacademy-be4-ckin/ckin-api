@@ -47,6 +47,9 @@ public class BookSaleServiceImpl implements BookSaleService {
 
         for (BookSaleCreateRequestDto bookSaleDto : bookSaleList) {
 
+            Book book = bookRepository.findById(bookSaleDto.getBookId())
+                    .orElseThrow(() -> new BookNotFoundException(bookSaleDto.getBookId()));
+
             PackagingResponseDto packagingPolicy;
             if (bookSaleDto.getPackagingId() > 0) {
                 packagingPolicy = packagingService.getPackagingPolicy(bookSaleDto.getPackagingId());
@@ -55,9 +58,6 @@ public class BookSaleServiceImpl implements BookSaleService {
                         .packagingPrice(0)
                         .build();
             }
-
-            Book book = bookRepository.findById(bookSaleDto.getBookId())
-                    .orElseThrow(() -> new BookNotFoundException(bookSaleDto.getBookId()));
 
             BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
 
