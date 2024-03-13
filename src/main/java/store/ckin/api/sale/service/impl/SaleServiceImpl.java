@@ -59,16 +59,24 @@ public class SaleServiceImpl implements SaleService {
 
 
         String saleNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-        Sale sale = Sale.builder().member(member.orElse(null)).saleNumber(saleNumber)
-                .saleOrdererName(requestDto.getSaleOrderName()).saleOrdererContact(requestDto.getSaleOrderContact())
+        Sale sale = Sale.builder()
+                .member(member.orElse(null))
+                .saleNumber(saleNumber)
+                .saleOrdererName(requestDto.getSaleOrderName())
+                .saleOrdererContact(requestDto.getSaleOrderContact())
                 .saleReceiverName(requestDto.getSaleReceiverName())
                 .saleReceiverContact(requestDto.getSaleReceiverContact())
                 .saleReceiverAddress(requestDto.getAddress() + " " + requestDto.getDetailAddress())
-                .saleDate(LocalDateTime.now()).saleShippingDate(LocalDateTime.now().plusDays(1))
-                .saleDeliveryDate(requestDto.getSaleDeliveryDate()).saleDeliveryStatus(Sale.DeliveryStatus.READY)
-                .saleDeliveryFee(requestDto.getDeliveryFee()).salePointUsage(requestDto.getPointUsage())
-                .saleTotalPrice(requestDto.getTotalPrice()).salePaymentStatus(Sale.PaymentStatus.WAITING)
-                .saleShippingPostCode(requestDto.getPostcode()).build();
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now().plusDays(1))
+                .saleDeliveryDate(requestDto.getSaleDeliveryDate())
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(requestDto.getDeliveryFee())
+                .salePointUsage(requestDto.getPointUsage())
+                .saleTotalPrice(requestDto.getTotalPrice())
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode(requestDto.getPostcode())
+                .build();
 
 
         Sale save = saleRepository.save(sale);
