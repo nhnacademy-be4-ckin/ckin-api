@@ -331,11 +331,6 @@ class SaleServiceImplTest {
                 10000
         );
 
-        given(saleRepository.getBySaleNumber(anyString()))
-                .willReturn(Sale.builder()
-                        .saleId(1L)
-                        .build());
-
         given(saleRepository.getSaleWithBook(anyString()))
                 .willReturn(responseDto);
 
@@ -351,7 +346,6 @@ class SaleServiceImplTest {
         );
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
-        verify(saleRepository, times(1)).getBySaleNumber(anyString());
         verify(saleRepository, times(1)).getSaleWithBook(anyString());
     }
 
