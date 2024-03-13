@@ -1,20 +1,13 @@
 package store.ckin.api.payment.entity;
 
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.ckin.api.sale.entity.Sale;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * 결제 엔티티 클래스입니다.

@@ -1,11 +1,12 @@
 package store.ckin.api.book.dto.response;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 도서 추출 정보 응답 DTO 클래스입니다.

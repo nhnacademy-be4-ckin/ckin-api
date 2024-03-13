@@ -1,10 +1,11 @@
 package store.ckin.api.packaging.dto.request;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import lombok.Getter;
 
 /**
  * 포장 정책 생성 요청 DTO.

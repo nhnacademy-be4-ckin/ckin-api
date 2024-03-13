@@ -1,12 +1,13 @@
 package store.ckin.api.booksale.repository;
 
 import com.querydsl.core.types.Projections;
-import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.entity.QBookSale;
 import store.ckin.api.file.entity.QFile;
+
+import java.util.List;
 
 /**
  * 도서 주문 리스트 Querydsl 레포지토리 클래스입니다.

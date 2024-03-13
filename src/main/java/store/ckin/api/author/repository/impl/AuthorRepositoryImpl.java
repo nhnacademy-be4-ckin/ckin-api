@@ -1,7 +1,6 @@
 package store.ckin.api.author.repository.impl;
 
 import com.querydsl.core.types.Projections;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +9,8 @@ import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.author.repository.AuthorRepositoryCustom;
+
+import java.util.List;
 
 /**
  * AuthorRepositoryImpl.
@@ -25,6 +26,7 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
     public AuthorRepositoryImpl() {
         super(Author.class);
     }
+
     /**
      * {@inheritDoc}
      */

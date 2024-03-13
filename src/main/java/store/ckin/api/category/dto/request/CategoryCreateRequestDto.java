@@ -1,9 +1,10 @@
 package store.ckin.api.category.dto.request;
 
-import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * CategoryCreateRequestDto.

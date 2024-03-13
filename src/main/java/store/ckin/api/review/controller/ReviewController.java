@@ -36,7 +36,7 @@ public class ReviewController {
      */
     @PostMapping
     public ResponseEntity<Void> postReview(@RequestPart ReviewCreateRequestDto createRequestDto,
-                           @RequestPart(value = "imageList", required = false) List<MultipartFile> imageList) {
+                                           @RequestPart(value = "imageList", required = false) List<MultipartFile> imageList) {
 
         reviewService.postReview(createRequestDto, imageList);
         //TODO: point 적립
@@ -53,7 +53,7 @@ public class ReviewController {
      */
     @GetMapping("{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewPageList(@PageableDefault(page = 0, size = 5) Pageable pageable,
-                                                     @PathVariable("bookId") Long bookId) {
+                                                                     @PathVariable("bookId") Long bookId) {
         Page<ReviewResponseDto> content = reviewService.getReviewPageList(pageable, bookId);
 
         return ResponseEntity.ok().body(content);

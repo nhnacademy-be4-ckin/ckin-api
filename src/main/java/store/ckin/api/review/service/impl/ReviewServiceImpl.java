@@ -93,7 +93,10 @@ public class ReviewServiceImpl implements ReviewService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
         }
-
-        return reviewRepository.getReviewPageList(pageable, bookId);
+        Page<ReviewResponseDto> reviewPage = reviewRepository.getReviewPageList(pageable, bookId);
+        reviewPage.stream().forEach(reviewResponseDto -> {
+            reviewResponseDto.setFilePath(fileRepository.findFilePathByReviewId(reviewResponseDto.getReviewId()));
+        });
+        return reviewPage;
     }
 }

@@ -1,6 +1,5 @@
 package store.ckin.api.pointpolicy.service.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +11,8 @@ import store.ckin.api.pointpolicy.exception.PointPolicyAlreadyExistsException;
 import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
 import store.ckin.api.pointpolicy.repository.PointPolicyRepository;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
+
+import java.util.List;
 
 /**
  * 포인트 정책을 관리하는 서비스 구현 클래스입니다.

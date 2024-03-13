@@ -1,25 +1,18 @@
 package store.ckin.api.author.controller;
 
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import store.ckin.api.author.dto.request.AuthorCreateRequestDto;
 import store.ckin.api.author.dto.request.AuthorModifyRequestDto;
 import store.ckin.api.author.dto.response.AuthorResponseDto;
 import store.ckin.api.author.service.AuthorService;
+
+import javax.validation.Valid;
 
 /**
  * AuthorController.
@@ -50,7 +43,7 @@ public class AuthorController {
     /**
      * 이름으로 작가를 검색하고 페이징된 결과를 반환합니다.
      *
-     * @param name 작가의 이름
+     * @param name     작가의 이름
      * @param pageable 페이징 정보
      * @return 이름으로 검색된 작가 목록에 대한 ResponseEntity 객체
      */
@@ -90,7 +83,7 @@ public class AuthorController {
     /**
      * 주어진 ID를 가진 작가의 정보를 수정하고 결과를 반환합니다.
      *
-     * @param authorId 작가 ID
+     * @param authorId               작가 ID
      * @param authorModifyRequestDto 작가 수정 요청 DTO
      * @return 수정된 작가에 대한 ResponseEntity 객체
      */

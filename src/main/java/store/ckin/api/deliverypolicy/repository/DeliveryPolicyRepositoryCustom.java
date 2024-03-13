@@ -2,6 +2,7 @@ package store.ckin.api.deliverypolicy.repository;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;

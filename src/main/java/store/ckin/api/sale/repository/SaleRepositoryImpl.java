@@ -1,7 +1,6 @@
 package store.ckin.api.sale.repository;
 
 import com.querydsl.core.types.Projections;
-import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
@@ -11,6 +10,8 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.QSale;
 import store.ckin.api.sale.entity.Sale;
+
+import java.util.List;
 
 /**
  * 주문 Repository Querydsl 구현 클래스입니다.
