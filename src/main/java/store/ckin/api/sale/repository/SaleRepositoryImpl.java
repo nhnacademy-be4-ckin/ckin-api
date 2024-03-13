@@ -69,7 +69,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
     @Override
-    public SaleWithBookResponseDto getSaleWithBook(Long saleId) {
+    public SaleWithBookResponseDto getSaleWithBook(String saleNumber) {
 
         QSale sale = QSale.sale;
 
@@ -82,7 +82,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
 
         List<BookSaleResponseDto> bookSaleResponseDtoList =
                 from(bookSale)
-                        .where(bookSale.pk.saleId.eq(saleId))
+                        .where(bookSale.sale.saleNumber.eq(saleNumber))
                         .select(Projections.constructor(BookSaleResponseDto.class,
                                 bookSale.pk.saleId,
                                 bookSale.pk.bookId,
@@ -96,7 +96,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
 
         SaleWithBookResponseDto responseDto =
                 from(sale)
-                        .where(sale.saleId.eq(saleId))
+                        .where(sale.saleNumber.eq(saleNumber))
                         .leftJoin(sale.member, member)
                         .on(sale.member.id.eq(member.id))
                         .select(Projections.constructor(SaleWithBookResponseDto.class,

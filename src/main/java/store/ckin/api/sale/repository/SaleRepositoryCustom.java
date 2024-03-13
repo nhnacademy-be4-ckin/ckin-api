@@ -28,7 +28,7 @@ public interface SaleRepositoryCustom {
      * @param saleId 주문 ID
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
-    SaleWithBookResponseDto getSaleWithBook(Long saleId);
+    SaleWithBookResponseDto getSaleWithBook(String saleNumber);
 
 
     /**
