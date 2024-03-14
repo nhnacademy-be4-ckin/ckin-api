@@ -86,6 +86,7 @@ class SaleRepositoryTest {
                 .bookRegularPrice(10000)
                 .bookDiscountRate(0)
                 .bookSalePrice(10000)
+                .modifiedAt(LocalDateTime.now())
                 .build();
 
         entityManager.persist(book);

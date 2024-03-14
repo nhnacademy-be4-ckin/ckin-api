@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -76,6 +77,7 @@ class BookSaleRepositoryTest {
                 .bookPublisher("테스트 출판사")
                 .bookPublicationDate(LocalDate.now())
                 .bookRegularPrice(10000)
+                .modifiedAt(LocalDateTime.now())
                 .build();
 
         entityManager.persist(book);
