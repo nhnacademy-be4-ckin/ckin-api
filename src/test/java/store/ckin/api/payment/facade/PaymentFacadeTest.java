@@ -83,7 +83,7 @@ class PaymentFacadeTest {
                 () -> paymentFacade.createPayment(failPayment)
         );
 
-        verify(saleService, times(0)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(0)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(0)).createPayment(anyLong(), any());
     }
 
@@ -112,7 +112,7 @@ class PaymentFacadeTest {
                         "123456"
                 );
 
-        given(saleService.getSaleDetailBySaleNumber(anyString()))
+        given(saleService.getSaleBySaleNumber(anyString()))
                 .willReturn(saleResponseDto);
 
         Assertions.assertThrows(
@@ -120,7 +120,7 @@ class PaymentFacadeTest {
                 () -> paymentFacade.createPayment(successPayment)
         );
 
-        verify(saleService, times(1)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(0)).createPayment(anyLong(), any());
     }
 
@@ -149,12 +149,12 @@ class PaymentFacadeTest {
                         "123456"
                 );
 
-        given(saleService.getSaleDetailBySaleNumber(anyString()))
+        given(saleService.getSaleBySaleNumber(anyString()))
                 .willReturn(saleResponseDto);
 
         paymentFacade.createPayment(successPayment);
 
-        verify(saleService, times(1)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(1)).createPayment(anyLong(), any());
     }
 }

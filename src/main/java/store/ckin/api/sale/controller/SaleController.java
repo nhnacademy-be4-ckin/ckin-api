@@ -38,9 +38,9 @@ public class SaleController {
      * @return 주문 번호
      */
     @PostMapping
-    public ResponseEntity<Long> createSale(@Valid @RequestBody SaleCreateRequestDto requestDto) {
-        Long saleId = saleFacade.createSale(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saleId);
+    public ResponseEntity<String> createSale(@Valid @RequestBody SaleCreateRequestDto requestDto) {
+        String saleNumber = saleFacade.createSale(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saleNumber);
     }
 
     /**
@@ -49,8 +49,7 @@ public class SaleController {
      * @return 주문 DTO 리스트
      */
     @GetMapping
-    public ResponseEntity<PagedResponse<List<SaleResponseDto>>> getSales(
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<PagedResponse<List<SaleResponseDto>>> getSales(@PageableDefault Pageable pageable) {
         return ResponseEntity.ok(saleFacade.getSales(pageable));
     }
 
@@ -81,14 +80,14 @@ public class SaleController {
     }
 
     /**
-     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     * 주문 번호로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호 (UUID)
      * @return 200 (OK), 주문 상세 정보와 주문한 책 정보
      */
-    @GetMapping("/{saleId}/books")
-    public ResponseEntity<SaleWithBookResponseDto> getSaleWithBooks(@PathVariable Long saleId) {
-        SaleWithBookResponseDto responseDto = saleFacade.getSaleWithBookResponseDto(saleId);
+    @GetMapping("/{saleNumber}/books")
+    public ResponseEntity<SaleWithBookResponseDto> getSaleWithBooks(@PathVariable String saleNumber) {
+        SaleWithBookResponseDto responseDto = saleFacade.getSaleWithBookResponseDto(saleNumber);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -101,5 +100,11 @@ public class SaleController {
     @GetMapping("/{saleNumber}/paymentInfo")
     public ResponseEntity<SaleInfoResponseDto> getSalePaymentInfo(@PathVariable("saleNumber") String saleNumber) {
         return ResponseEntity.ok(saleFacade.getSalePaymentInfo(saleNumber));
+    }
+
+    @GetMapping("/guest/{saleNumber}")
+    public ResponseEntity<SaleDetailResponseDto> getSaleDetailBySaleNumber(
+            @PathVariable("saleNumber") String saleNumber) {
+        return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber));
     }
 }

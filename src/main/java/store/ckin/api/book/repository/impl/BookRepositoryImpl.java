@@ -54,16 +54,24 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.authors, bookAuthor)
+                .join(bookAuthor.author, author)
+                .where(author.authorName.eq(authorName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
-                .where(author.authorName.eq(authorName))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
+
 
         Long total = Optional.ofNullable(queryFactory
                         .select(book.count())
@@ -90,15 +98,24 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .where(book.bookTitle.containsIgnoreCase(bookTitle))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
-                .where(book.bookTitle.containsIgnoreCase(bookTitle))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
+
+
 
         Long total = Optional.ofNullable(queryFactory
                         .select(book.count())
@@ -121,14 +138,26 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        List<Book> books = queryFactory
-                .selectFrom(book)
-                .leftJoin(book.authors, bookAuthor).fetchJoin()
-                .leftJoin(book.categories, bookCategory).fetchJoin()
-                .leftJoin(book.thumbnail, file)
+// 먼저 페이징된 ID를 가져옵니다.
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.categories, bookCategory)
                 .where(bookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
@@ -153,13 +182,20 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
-                .leftJoin(book.thumbnail, file)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
