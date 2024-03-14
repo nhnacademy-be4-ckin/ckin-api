@@ -109,6 +109,19 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(categoryId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCategoryName(Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+        return category.getCategoryName();
+
+    }
+
 
 }
 

@@ -89,4 +89,17 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 카테고리 이름을 가져옵니다.
+     *
+     * @param categoryId
+     * @return 카테고리 이름
+     */
+    @GetMapping("/get/{categoryId}")
+    public ResponseEntity<String> getCategoryName(@PathVariable("categoryId") Long categoryId) {
+        String categoryName = categoryService.getCategoryName(categoryId);
+
+        return ResponseEntity.ok().body(categoryName);
+    }
 }
