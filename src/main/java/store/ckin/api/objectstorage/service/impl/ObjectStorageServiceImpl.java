@@ -66,7 +66,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         String identityUrl = keyManager.keyStore(properties.getIdentity()) + "/tokens";
 
         if (Objects.isNull(tokenId)
-                || expires.minusMinutes(1).isAfter(LocalDateTime.now())) {
+                    || expires.minusMinutes(1).isBefore(LocalDateTime.now())) {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
