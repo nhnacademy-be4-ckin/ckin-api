@@ -2,6 +2,7 @@ package store.ckin.api.sale.facade;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -33,6 +34,7 @@ import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -106,6 +108,7 @@ class SaleFacadeTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -167,6 +170,7 @@ class SaleFacadeTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -238,6 +242,7 @@ class SaleFacadeTest {
                 "01011112222",
                 3000,
                 LocalDate.of(2024, 3, 7).plusDays(1),
+                LocalDateTime.of(2024, 3, 7, 12, 0),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -262,5 +267,78 @@ class SaleFacadeTest {
         saleFacade.getSalePaymentInfo("123456");
 
         verify(saleService, times(1)).getSalePaymentInfo("123456");
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 상세 조회 테스트 - 실패 (주문자 전화번호와 넘겨받은 전화번호가 다른 경우)")
+    void testGetSaleDetailBySaleNumber_Fail_Contact_Different() {
+
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        assertThrows(SaleOrdererContactNotMatchException.class,
+                () -> saleFacade.getSaleDetailBySaleNumber("1234", "010111111111"));
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 상세 조회 테스트 - 성공")
+    void testGetSaleDetailBySaleNumber_Success() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        SaleDetailResponseDto actual = saleFacade.getSaleDetailBySaleNumber("1234", "01012345678");
+
+        assertEquals(sale, actual.getSaleResponseDto());
+    }
+
+    @Test
+    @DisplayName("회원 ID로 회원의 모든 주문 내역 조회")
+    void testGetSalesByMemberId() {
+        saleFacade.getSalesByMemberId(1L, Pageable.ofSize(10));
+        verify(saleService, times(1)).getSalesByMemberId(1L, Pageable.ofSize(10));
     }
 }

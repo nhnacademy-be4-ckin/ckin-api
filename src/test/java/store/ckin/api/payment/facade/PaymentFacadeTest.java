@@ -94,6 +94,7 @@ class PaymentFacadeTest {
         SaleResponseDto saleResponseDto =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -131,6 +132,7 @@ class PaymentFacadeTest {
         SaleResponseDto saleResponseDto =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",

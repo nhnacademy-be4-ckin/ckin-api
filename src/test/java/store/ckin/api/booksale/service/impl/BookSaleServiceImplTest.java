@@ -1,5 +1,6 @@
 package store.ckin.api.booksale.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +23,7 @@ import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
 import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.repository.BookSaleRepository;
 import store.ckin.api.packaging.dto.response.PackagingResponseDto;
@@ -211,5 +213,40 @@ class BookSaleServiceImplTest {
 
         assertEquals(BookSale.BookSaleState.COMPLETE, firstBookSale.getBookSaleState());
         assertEquals(BookSale.BookSaleState.COMPLETE, secondBookSale.getBookSaleState());
+    }
+
+    @Test
+    @DisplayName("주문 ID로 주문 도서 상세 정보 조회 테스트")
+    void testGetBookSaleDetail() {
+
+        BookAndBookSaleResponseDto responseDto =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "test.com",
+                        "테스트 책",
+                        3,
+                        1L,
+                        "A포장",
+                        3000,
+                        15000
+                );
+
+        List<BookAndBookSaleResponseDto> responseDtoList = List.of(responseDto);
+
+        given(bookSaleRepository.getBookSaleDetailBySaleId(anyLong()))
+                .willReturn(responseDtoList);
+
+        List<BookAndBookSaleResponseDto> bookSaleDetail = bookSaleService.getBookSaleDetail(1L);
+
+        assertAll(
+                () -> assertEquals(responseDto.getBookId(), bookSaleDetail.get(0).getBookId()),
+                () -> assertEquals(responseDto.getFileUrl(), bookSaleDetail.get(0).getFileUrl()),
+                () -> assertEquals(responseDto.getBookTitle(), bookSaleDetail.get(0).getBookTitle()),
+                () -> assertEquals(responseDto.getQuantity(), bookSaleDetail.get(0).getQuantity()),
+                () -> assertEquals(responseDto.getCouponId(), bookSaleDetail.get(0).getCouponId()),
+                () -> assertEquals(responseDto.getPackagingType(), bookSaleDetail.get(0).getPackagingType()),
+                () -> assertEquals(responseDto.getPackagingPrice(), bookSaleDetail.get(0).getPackagingPrice()),
+                () -> assertEquals(responseDto.getPaymentAmount(), bookSaleDetail.get(0).getPaymentAmount())
+        );
     }
 }

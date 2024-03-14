@@ -15,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.booksale.entity.BookSale;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
@@ -344,5 +348,55 @@ class SaleRepositoryTest {
                 () -> assertEquals(actual.getSalePaymentStatus(), savedSale.getSalePaymentStatus()),
                 () -> assertEquals(actual.getSaleShippingPostCode(), savedSale.getSaleShippingPostCode())
         );
+    }
+
+    @Test
+    @DisplayName("회원 ID로 회원의 주문 조회 테스트")
+    void testFindAllByMemberId() {
+
+        Sale sale = Sale.builder()
+                .member(member)
+                .saleNumber(saleNumber)
+                .saleTitle("테스트 책")
+                .saleOrdererName("정승조")
+                .saleOrdererContact("01012341234")
+                .saleReceiverName("정승조")
+                .saleReceiverContact("01012341234")
+                .saleReceiverAddress("광주광역시 동구 조선대 5길 IT 융합대학")
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now())
+                .saleDeliveryDate(LocalDate.now().plusDays(2))
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(3000)
+                .salePointUsage(1000)
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode("123456")
+                .build();
+
+        entityManager.persist(sale);
+
+        entityManager.flush();
+
+        PagedResponse<List<SaleInfoResponseDto>> pagedResponse =
+                saleRepository.findAllByMemberId(member.getId(), Pageable.ofSize(10));
+
+        SaleInfoResponseDto actual = pagedResponse.getData().get(0);
+        PageInfo pageInfo = pagedResponse.getPageInfo();
+
+        assertAll(
+                () -> assertEquals(sale.getSaleTitle(), actual.getSaleTitle()),
+                () -> assertEquals(sale.getSaleNumber(), actual.getSaleNumber()),
+                () -> assertEquals(sale.getMember().getEmail(), actual.getMemberEmail()),
+                () -> assertEquals(sale.getSaleOrdererName(), actual.getSaleOrdererName()),
+                () -> assertEquals(sale.getSaleOrdererContact(), actual.getSaleOrdererContact()),
+                () -> assertEquals(sale.getSaleTotalPrice(), actual.getTotalPrice()),
+                () -> assertEquals(sale.getSaleDate(), actual.getSaleDate()),
+                () -> assertEquals(0, pageInfo.getPage()),
+                () -> assertEquals(10, pageInfo.getSize()),
+                () -> assertEquals(1, pageInfo.getTotalElements()),
+                () -> assertEquals(1, pageInfo.getTotalPages())
+        );
+
+
     }
 }
