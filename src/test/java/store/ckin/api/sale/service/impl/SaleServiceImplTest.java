@@ -356,7 +356,7 @@ class SaleServiceImplTest {
         given(saleRepository.existsBySaleNumber(anyString()))
                 .willReturn(false);
 
-        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleDetailBySaleNumber("123456"));
+        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleBySaleNumber("123456"));
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
         verify(saleRepository, times(0)).findBySaleNumber(anyString());
@@ -372,7 +372,7 @@ class SaleServiceImplTest {
         given(saleRepository.findBySaleNumber(anyString()))
                 .willReturn(SaleResponseDto.toDto(sale));
 
-        SaleResponseDto saleDetail = saleService.getSaleDetailBySaleNumber("12345213");
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber("12345213");
 
         assertAll(
                 () -> assertEquals(saleDetail.getSaleId(), sale.getSaleId()),

@@ -177,7 +177,7 @@ public class SaleServiceImpl implements SaleService {
      * @return 주문 조회 응답 DTO
      */
     @Override
-    public SaleResponseDto getSaleDetailBySaleNumber(String saleNumber) {
+    public SaleResponseDto getSaleBySaleNumber(String saleNumber) {
 
         if (!saleRepository.existsBySaleNumber(saleNumber)) {
             throw new SaleNumberNotFoundException(saleNumber);
@@ -188,5 +188,4 @@ public class SaleServiceImpl implements SaleService {
         log.debug("responseDto = {}", responseDto);
         return responseDto;
     }
-
 }

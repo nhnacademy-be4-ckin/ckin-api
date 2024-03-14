@@ -92,7 +92,7 @@ public class Book {
     private String bookReviewRate = "0";
 
     @LastModifiedDate
-    @Column(name = "modification_time", nullable = false)
+    @Column(name = "modification_time")
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
     @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)

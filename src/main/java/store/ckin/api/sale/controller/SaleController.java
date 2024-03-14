@@ -106,4 +106,10 @@ public class SaleController {
     public ResponseEntity<SaleInfoResponseDto> getSalePaymentInfo(@PathVariable("saleNumber") String saleNumber) {
         return ResponseEntity.ok(saleFacade.getSalePaymentInfo(saleNumber));
     }
+
+    @GetMapping("/guest/{saleNumber}")
+    public ResponseEntity<SaleDetailResponseDto> getSaleDetailBySaleNumber(
+            @PathVariable("saleNumber") String saleNumber) {
+        return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber));
+    }
 }
