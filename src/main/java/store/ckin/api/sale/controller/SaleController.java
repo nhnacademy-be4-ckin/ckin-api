@@ -115,10 +115,19 @@ public class SaleController {
      * @return 200 (OK), 주문 상세 정보
      */
     @GetMapping("/guest")
-    public ResponseEntity<SaleDetailResponseDto> getSaleDetailBySaleNumber(
+    public ResponseEntity<SaleDetailResponseDto> getGuestSaleDetailBySaleNumber(
             @RequestParam("saleNumber") String saleNumber,
             @RequestParam("ordererContact") String ordererContact) {
-        return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber, ordererContact));
+        return ResponseEntity.ok(saleFacade.getGuestSaleDetailBySaleNumber(saleNumber, ordererContact));
+    }
+
+    @GetMapping("/member")
+    public ResponseEntity<SaleDetailResponseDto> getMemberSaleDetailBySaleNumber(
+            @RequestParam("saleNumber") String saleNumber,
+            @RequestParam("memberId") Long memberId) {
+
+
+        return ResponseEntity.ok(saleFacade.getMemberSaleDetailBySaleNumber(saleNumber, memberId));
     }
 
     /**
