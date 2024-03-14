@@ -299,7 +299,7 @@ class SaleFacadeTest {
                 .willReturn(sale);
 
         assertThrows(SaleOrdererContactNotMatchException.class,
-                () -> saleFacade.getSaleDetailBySaleNumber("1234", "010111111111"));
+                () -> saleFacade.getGuestSaleDetailBySaleNumber("1234", "010111111111"));
     }
 
     @Test
@@ -330,7 +330,7 @@ class SaleFacadeTest {
         given(saleService.getSaleBySaleNumber(anyString()))
                 .willReturn(sale);
 
-        SaleDetailResponseDto actual = saleFacade.getSaleDetailBySaleNumber("1234", "01012345678");
+        SaleDetailResponseDto actual = saleFacade.getGuestSaleDetailBySaleNumber("1234", "01012345678");
 
         assertEquals(sale, actual.getSaleResponseDto());
     }

@@ -388,7 +388,7 @@ class SaleControllerTest {
         SaleDetailResponseDto responseDto =
                 new SaleDetailResponseDto(List.of(bookSale), sale, payment);
 
-        given(saleFacade.getSaleDetailBySaleNumber(anyString(), anyString()))
+        given(saleFacade.getGuestSaleDetailBySaleNumber(anyString(), anyString()))
                 .willReturn(responseDto);
 
         mockMvc.perform(get("/api/sales/guest")
