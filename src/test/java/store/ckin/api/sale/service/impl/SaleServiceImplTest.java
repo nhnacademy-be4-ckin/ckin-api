@@ -113,6 +113,7 @@ class SaleServiceImplTest {
         // given
         SaleCreateNoBookRequestDto requestDto = new SaleCreateNoBookRequestDto(
                 1L,
+                "홍길동전",
                 "정승조",
                 "01012345678",
                 "정승조",
@@ -255,6 +256,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -316,6 +318,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",

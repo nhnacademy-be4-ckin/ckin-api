@@ -87,6 +87,7 @@ class SaleFacadeTest {
 
         SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
                 1L,
+                "테스트 책",
                 "정승조",
                 "01012345678",
                 "정승조",
@@ -227,6 +228,7 @@ class SaleFacadeTest {
     void testGetSaleWithBookResponse() {
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
