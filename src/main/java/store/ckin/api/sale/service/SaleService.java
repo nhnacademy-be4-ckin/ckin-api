@@ -23,7 +23,7 @@ public interface SaleService {
      * @param requestDto 주문 생성 요청 DTO
      * @return 생성된 주문 ID
      */
-    Long createSale(SaleCreateNoBookRequestDto requestDto);
+    SaleResponseDto createSale(SaleCreateNoBookRequestDto requestDto);
 
 
     /**
@@ -54,10 +54,10 @@ public interface SaleService {
     /**
      * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호 (UUID)
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
-    SaleWithBookResponseDto getSaleWithBook(Long saleId);
+    SaleWithBookResponseDto getSaleWithBook(String saleNumber);
 
     /**
      * 주문 결제 정보를 조회하는 메서드입니다.
@@ -71,7 +71,8 @@ public interface SaleService {
      * 주문 번호로 주문을 조회합니다.
      *
      * @param saleNumber 주문 번호 (UUID)
-     * @return 주문 상세 정보 DTO
+     * @return 주문 정보 DTO
      */
-    SaleResponseDto getSaleDetailBySaleNumber(String saleNumber);
+    SaleResponseDto getSaleBySaleNumber(String saleNumber);
+
 }

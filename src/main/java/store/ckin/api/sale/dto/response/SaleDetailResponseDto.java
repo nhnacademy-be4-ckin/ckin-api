@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SaleDetailResponseDto {
 
-    private List<BookAndBookSaleResponseDto> booksaleList;
+    private List<BookAndBookSaleResponseDto> bookSaleList;
 
     private SaleResponseDto saleResponseDto;
 

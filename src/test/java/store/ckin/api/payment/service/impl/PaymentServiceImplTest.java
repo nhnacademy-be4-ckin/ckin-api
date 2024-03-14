@@ -87,4 +87,29 @@ class PaymentServiceImplTest {
         verify(paymentRepository, times(1)).save(any());
     }
 
+    @Test
+    @DisplayName("주문 ID로 결제 조회 테스트 - 실패 (존재하지 않는 주문)")
+    void testGetPayment_Fail_SaleNotFound() {
+        given(saleRepository.existsById(anyLong()))
+                .willReturn(false);
+
+        Assertions.assertThrows(
+                SaleNotFoundException.class,
+                () -> paymentService.getPayment(1L));
+
+        verify(saleRepository, times(1)).existsById(anyLong());
+        verify(paymentRepository, times(0)).getPaymentBySaleId(anyLong());
+    }
+
+    @Test
+    @DisplayName("주문 ID로 결제 조회 테스트 - 성공")
+    void testGetPayment_Success() {
+        given(saleRepository.existsById(anyLong()))
+                .willReturn(true);
+
+        paymentService.getPayment(1L);
+
+        verify(saleRepository, times(1)).existsById(anyLong());
+        verify(paymentRepository, times(1)).getPaymentBySaleId(anyLong());
+    }
 }

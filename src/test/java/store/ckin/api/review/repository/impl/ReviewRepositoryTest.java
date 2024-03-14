@@ -73,6 +73,7 @@ class ReviewRepositoryTest {
                 .bookDiscountRate(10)
                 .bookSalePrice(18000)
                 .bookReviewRate("4.3")
+                .modifiedAt(LocalDateTime.now())
                 .build();
 
         testEntityManager.persist(book);

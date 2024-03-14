@@ -1,6 +1,8 @@
 package store.ckin.api.book.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
@@ -9,6 +11,7 @@ import store.ckin.api.file.entity.File;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -25,6 +28,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "Book")
+@EntityListeners(AuditingEntityListener.class)
 public class Book {
 
     @Id
@@ -73,6 +77,10 @@ public class Book {
     @Column(name = "book_review_rate")
     @Builder.Default
     private String bookReviewRate = "0";
+
+    @LastModifiedDate
+    @Column(name = "modification_time")
+    private LocalDateTime modifiedAt = LocalDateTime.now();
 
     @OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
     private File thumbnail;

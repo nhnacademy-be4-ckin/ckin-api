@@ -35,6 +35,7 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
+import store.ckin.api.sale.exception.SaleNotFoundExceptionBySaleNumber;
 import store.ckin.api.sale.exception.SaleNumberNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 
@@ -133,11 +134,10 @@ class SaleServiceImplTest {
         given(saleRepository.save(any()))
                 .willReturn(sale);
 
-        // when
-        Long saleId = saleService.createSale(requestDto);
+        SaleResponseDto saleDto = saleService.createSale(requestDto);
 
         // then
-        assertNotNull(saleId);
+        assertNotNull(saleDto);
         verify(memberRepository, times(1)).findById(anyLong());
     }
 
@@ -237,20 +237,21 @@ class SaleServiceImplTest {
     @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트 - 실패")
     void testGetSaleWithBook_Fail() {
 
-        given(saleRepository.existsById(anyLong()))
+        given(saleRepository.existsBySaleNumber(anyString()))
                 .willReturn(false);
 
-        assertThrows(SaleNotFoundException.class, () -> saleService.getSaleWithBook(1L));
+        assertThrows(SaleNotFoundExceptionBySaleNumber.class,
+                () -> saleService.getSaleWithBook("123vas"));
 
-        verify(saleRepository, times(1)).existsById(anyLong());
-        verify(saleRepository, times(0)).getSaleWithBook(anyLong());
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
+        verify(saleRepository, times(0)).getSaleWithBook(anyString());
     }
 
     @Test
     @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트 - 성공")
     void testGetSaleWithBook_Success() {
 
-        given(saleRepository.existsById(anyLong()))
+        given(saleRepository.existsBySaleNumber(anyString()))
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
@@ -269,10 +270,10 @@ class SaleServiceImplTest {
                 10000
         );
 
-        given(saleRepository.getSaleWithBook(anyLong()))
+        given(saleRepository.getSaleWithBook(anyString()))
                 .willReturn(responseDto);
 
-        SaleWithBookResponseDto saleWithBook = saleService.getSaleWithBook(1L);
+        SaleWithBookResponseDto saleWithBook = saleService.getSaleWithBook("123abc");
 
         assertAll(
                 () -> assertEquals(saleWithBook.getSaleId(), responseDto.getSaleId()),
@@ -289,8 +290,8 @@ class SaleServiceImplTest {
                 () -> assertEquals(saleWithBook.getTotalPrice(), responseDto.getTotalPrice())
         );
 
-        verify(saleRepository, times(1)).existsById(anyLong());
-        verify(saleRepository, times(1)).getSaleWithBook(anyLong());
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
+        verify(saleRepository, times(1)).getSaleWithBook(anyString());
     }
 
     @Test
@@ -304,7 +305,7 @@ class SaleServiceImplTest {
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
         verify(saleRepository, times(0)).getBySaleNumber(anyString());
-        verify(saleRepository, times(0)).getSaleWithBook(anyLong());
+        verify(saleRepository, times(0)).getSaleWithBook(anyString());
     }
 
     @Test
@@ -330,15 +331,10 @@ class SaleServiceImplTest {
                 10000
         );
 
-        given(saleRepository.getBySaleNumber(anyString()))
-                .willReturn(Sale.builder()
-                        .saleId(1L)
-                        .build());
-
-        given(saleRepository.getSaleWithBook(anyLong()))
+        given(saleRepository.getSaleWithBook(anyString()))
                 .willReturn(responseDto);
 
-        SaleInfoResponseDto saleInfo = saleService.getSalePaymentInfo("ABC1314");
+        SaleInfoResponseDto saleInfo = saleService.getSalePaymentInfo("ABC1234DEF");
 
         assertAll(
                 () -> assertEquals(saleInfo.getSaleTitle(), responseDto.getSaleTitle()),
@@ -350,8 +346,7 @@ class SaleServiceImplTest {
         );
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
-        verify(saleRepository, times(1)).getBySaleNumber(anyString());
-        verify(saleRepository, times(1)).getSaleWithBook(anyLong());
+        verify(saleRepository, times(1)).getSaleWithBook(anyString());
     }
 
     @Test
@@ -361,7 +356,7 @@ class SaleServiceImplTest {
         given(saleRepository.existsBySaleNumber(anyString()))
                 .willReturn(false);
 
-        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleDetailBySaleNumber("123456"));
+        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleBySaleNumber("123456"));
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
         verify(saleRepository, times(0)).findBySaleNumber(anyString());
@@ -377,7 +372,7 @@ class SaleServiceImplTest {
         given(saleRepository.findBySaleNumber(anyString()))
                 .willReturn(SaleResponseDto.toDto(sale));
 
-        SaleResponseDto saleDetail = saleService.getSaleDetailBySaleNumber("12345213");
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber("12345213");
 
         assertAll(
                 () -> assertEquals(saleDetail.getSaleId(), sale.getSaleId()),

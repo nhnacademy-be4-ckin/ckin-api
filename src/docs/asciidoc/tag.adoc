@@ -1,0 +1,108 @@
+== 태그
+
+=== 태그 생성
+
+==== Request
+
+include::{snippets}/tag/saveTag/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/saveTag/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/tag/saveTag/success/request-fields.adoc[]
+
+===== 태그 생성 실패 - 검증 실패
+
+==== Request
+
+include::{snippets}/tag/saveTag/validation-failed/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/saveTag/validation-failed/http-response.adoc[]
+
+===== 태그 생성 실패 - 이미 존재하는 태그
+
+==== Request
+
+include::{snippets}/tag/saveTag/already-exist/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/saveTag/already-exist/http-response.adoc[]
+
+=== 전체 태그 조회
+
+==== Request
+
+include::{snippets}/tag/getTagList/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/getTagList/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/tag/getTagList/success/request-parameters.adoc[]
+
+=== 태그 수정
+
+==== Request
+
+include::{snippets}/tag/updateTag/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/updateTag/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/tag/updateTag/success/request-fields.adoc[]
+
+===== 태그 수정 실패 - 검증 실패
+
+==== Request
+
+include::{snippets}/tag/updateTag/validation-failed/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/updateTag/validation-failed/http-response.adoc[]
+
+=== 태그 삭제
+
+==== Request
+
+include::{snippets}/tag/deleteTag/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/deleteTag/success/http-response.adoc[]
+
+==== Request Field
+
+include::{snippets}/tag/deleteTag/success/request-fields.adoc[]
+
+===== 태그 삭제 실패 - 존재하지 않는 태그
+
+==== Request
+
+include::{snippets}/tag/deleteTag/not-found/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/deleteTag/not-found/http-response.adoc[]
+
+===== 태그 삭제 실패 - 검증 실패
+
+==== Request
+
+include::{snippets}/tag/deleteTag/validation-failed/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/tag/deleteTag/validation-failed/http-response.adoc[]
+
