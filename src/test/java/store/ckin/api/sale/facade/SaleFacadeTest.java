@@ -206,7 +206,7 @@ class SaleFacadeTest {
 
         assertAll(
                 () -> assertEquals(saleDetail.getSaleResponseDto(), sale),
-                () -> assertEquals(saleDetail.getBooksaleList().get(0), bookSale),
+                () -> assertEquals(saleDetail.getBookSaleList().get(0), bookSale),
                 () -> assertEquals(saleDetail.getPaymentResponseDto(), payment));
 
         verify(saleService, times(1)).getSaleDetail(1L);
