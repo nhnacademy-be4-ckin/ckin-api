@@ -132,6 +132,7 @@ public class SaleFacade {
      * @param ordererContact 주문자 연락처
      * @return 주문 상세 정보 DTO
      */
+    @Transactional(readOnly = true)
     public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber, String ordererContact) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
@@ -152,6 +153,7 @@ public class SaleFacade {
      * @param pageable 페이지 정보
      * @return 페이징 처리된 주문 응답 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
         return saleService.getSalesByMemberId(memberId, pageable);
     }

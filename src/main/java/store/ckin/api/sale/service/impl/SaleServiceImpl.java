@@ -59,7 +59,6 @@ public class SaleServiceImpl implements SaleService {
         }
 
 
-
         String saleNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
         Sale sale = Sale.builder()
                 .member(member.orElse(null))
@@ -196,6 +195,13 @@ public class SaleServiceImpl implements SaleService {
         return responseDto;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 페이징 처리된 주문 응답 DTO 리스트
+     */
     @Transactional(readOnly = true)
     @Override
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {

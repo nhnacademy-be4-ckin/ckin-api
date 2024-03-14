@@ -164,6 +164,13 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 주문 응답 DTO 리스트
+     */
     @Override
     public PagedResponse<List<SaleInfoResponseDto>> findAllByMemberId(Long memberId, Pageable pageable) {
 
