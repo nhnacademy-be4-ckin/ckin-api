@@ -46,6 +46,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,
                         sale.saleOrdererName,
@@ -109,6 +110,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                                 sale.saleReceiverContact,
                                 sale.saleDeliveryFee,
                                 sale.saleDeliveryDate,
+                                sale.saleDate,
                                 sale.saleShippingPostCode,
                                 sale.saleReceiverAddress,
                                 sale.salePointUsage,
@@ -141,6 +143,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,
                         sale.saleOrdererName,
@@ -174,7 +177,8 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                         sale.member.email,
                         sale.saleOrdererName,
                         sale.saleOrdererContact,
-                        sale.saleTotalPrice))
+                        sale.saleTotalPrice,
+                        sale.saleDate))
                 .orderBy(sale.saleId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

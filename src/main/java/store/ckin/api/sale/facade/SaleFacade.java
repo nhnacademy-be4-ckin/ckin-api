@@ -18,6 +18,7 @@ import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -127,12 +128,18 @@ public class SaleFacade {
     /**
      * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
      *
-     * @param saleNumber 주문 번호 (UUID)
+     * @param saleNumber     주문 번호 (UUID)
+     * @param ordererContact 주문자 연락처
      * @return 주문 상세 정보 DTO
      */
-    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber) {
+    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber, String ordererContact) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
+
+        if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
+            throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
+        }
+
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
         PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
         return new SaleDetailResponseDto(bookSale, saleDetail, payment);

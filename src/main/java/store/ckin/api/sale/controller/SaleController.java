@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
@@ -113,12 +114,20 @@ public class SaleController {
      * @param saleNumber 주문 번호
      * @return 200 (OK), 주문 상세 정보
      */
-    @GetMapping("/guest/{saleNumber}")
+    @GetMapping("/guest")
     public ResponseEntity<SaleDetailResponseDto> getSaleDetailBySaleNumber(
-            @PathVariable("saleNumber") String saleNumber) {
-        return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber));
+            @RequestParam("saleNumber") String saleNumber,
+            @RequestParam("ordererContact") String ordererContact) {
+        return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber, ordererContact));
     }
 
+    /**
+     * 회원의 모든 주문을 조회하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 200 (OK), 회원의 주문 응답 DTO 리스트
+     */
     @GetMapping("/member/{memberId}")
     public ResponseEntity<PagedResponse<List<SaleInfoResponseDto>>> getSalesByMemberId(
             @PathVariable Long memberId,
