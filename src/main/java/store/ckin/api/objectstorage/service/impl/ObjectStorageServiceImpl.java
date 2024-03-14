@@ -84,7 +84,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
                     response.getBody()).getAccess().getToken().getId();
             expires = Objects.requireNonNull(
                     response.getBody()).getAccess().getToken().getExpires();
-            log.info("Token expires at: {}", expires);
         }
 
         return tokenId;
