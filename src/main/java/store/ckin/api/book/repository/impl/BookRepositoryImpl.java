@@ -68,6 +68,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
                 .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
 
@@ -110,6 +111,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
                 .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
 
@@ -154,6 +156,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookCategory.category, category).fetchJoin()
                 .leftJoin(book.thumbnail, file).fetchJoin()
                 .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
@@ -191,6 +194,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file).fetchJoin()
                 .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
