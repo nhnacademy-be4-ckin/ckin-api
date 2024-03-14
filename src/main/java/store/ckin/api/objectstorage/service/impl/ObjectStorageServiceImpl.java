@@ -102,12 +102,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
         String fileExtension = getContentTypeFromFileName(originalFileName);
 
-        // 확장자를 제외한 파일 이름 추출
-        String fileNameWithoutExtension = originalFileName;
-        int posImage = originalFileName.lastIndexOf(".");
-        if (posImage > 0) {
-            fileNameWithoutExtension = originalFileName.substring(0, posImage);
-        }
 
         // UUID를 추가하여 저장될 파일 이름 생성
         String fileId = UUID.randomUUID().toString();
