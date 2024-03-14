@@ -17,7 +17,7 @@ import store.ckin.api.payment.dto.response.PaymentResponseDto;
 @AllArgsConstructor
 public class SaleDetailResponseDto {
 
-    private List<BookAndBookSaleResponseDto> booksaleList;
+    private List<BookAndBookSaleResponseDto> bookSaleList;
 
     private SaleResponseDto saleResponseDto;
 

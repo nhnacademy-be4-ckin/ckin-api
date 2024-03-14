@@ -70,7 +70,8 @@ public interface SaleService {
      * 주문 번호로 주문을 조회합니다.
      *
      * @param saleNumber 주문 번호 (UUID)
-     * @return 주문 상세 정보 DTO
+     * @return 주문 정보 DTO
      */
-    SaleResponseDto getSaleDetailBySaleNumber(String saleNumber);
+    SaleResponseDto getSaleBySaleNumber(String saleNumber);
+
 }

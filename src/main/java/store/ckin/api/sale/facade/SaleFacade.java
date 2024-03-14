@@ -85,6 +85,9 @@ public class SaleFacade {
     public SaleDetailResponseDto getSaleDetail(Long saleId) {
 
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleId);
+
+        log.info("bookSale = {}", bookSale);
+
         SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
         PaymentResponseDto payment = paymentService.getPayment(saleId);
 
@@ -124,5 +127,19 @@ public class SaleFacade {
     @Transactional(readOnly = true)
     public SaleInfoResponseDto getSalePaymentInfo(String saleNumber) {
         return saleService.getSalePaymentInfo(saleNumber);
+    }
+
+    /**
+     * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     * @return 주문 상세 정보 DTO
+     */
+    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber) {
+
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
+        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
+        PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
+        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
     }
 }
