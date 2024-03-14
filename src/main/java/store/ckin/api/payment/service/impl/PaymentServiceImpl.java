@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
+import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.entity.Payment;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.payment.service.PaymentService;
@@ -45,5 +46,15 @@ public class PaymentServiceImpl implements PaymentService {
                         .build();
 
         paymentRepository.save(payment);
+    }
+
+    @Override
+    public PaymentResponseDto getPayment(Long saleId) {
+
+        if (!saleRepository.existsById(saleId)) {
+            throw new SaleNotFoundException(saleId);
+        }
+
+        return paymentRepository.getPaymentBySaleId(saleId);
     }
 }

@@ -2,15 +2,20 @@ package store.ckin.api.sale.facade;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
+import store.ckin.api.payment.dto.response.PaymentResponseDto;
+import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -23,6 +28,7 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 02.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SaleFacade {
@@ -33,6 +39,7 @@ public class SaleFacade {
 
     private final MemberService memberService;
 
+    private final PaymentService paymentService;
 
     /**
      * 주문을 생성하는 메서드입니다.
@@ -41,20 +48,20 @@ public class SaleFacade {
      * @return 생성된 주문 ID
      */
     @Transactional
-    public Long createSale(SaleCreateRequestDto requestDto) {
+    public String createSale(SaleCreateRequestDto requestDto) {
 
         SaleCreateNoBookRequestDto saleInfo =
                 requestDto.toCreateSaleWithoutBookRequestDto();
 
-        Long saleId = saleService.createSale(saleInfo);
+        SaleResponseDto sale = saleService.createSale(saleInfo);
 
-        bookSaleService.createBookSale(saleId, requestDto.getBookSaleList());
+        bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
             memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
         }
 
-        return saleId;
+        return sale.getSaleNumber();
     }
 
     /**
@@ -75,8 +82,14 @@ public class SaleFacade {
      * @return 주문 상세 정보 DTO
      */
     @Transactional(readOnly = true)
-    public SaleResponseDto getSaleDetail(Long saleId) {
-        return saleService.getSaleDetail(saleId);
+    public SaleDetailResponseDto getSaleDetail(Long saleId) {
+
+        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleId);
+        SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
+        PaymentResponseDto payment = paymentService.getPayment(saleId);
+
+
+        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
     }
 
     /**
@@ -92,14 +105,14 @@ public class SaleFacade {
     }
 
     /**
-     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     * 주문 번호로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호 (UUID)
      * @return 주문 상세 정보와 주문한 책 정보
      */
     @Transactional(readOnly = true)
-    public SaleWithBookResponseDto getSaleWithBookResponseDto(Long saleId) {
-        return saleService.getSaleWithBook(saleId);
+    public SaleWithBookResponseDto getSaleWithBookResponseDto(String saleNumber) {
+        return saleService.getSaleWithBook(saleNumber);
     }
 
     /**

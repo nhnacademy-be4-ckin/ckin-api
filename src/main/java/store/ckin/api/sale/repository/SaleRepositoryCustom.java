@@ -23,12 +23,12 @@ public interface SaleRepositoryCustom {
     SaleResponseDto findBySaleId(Long saleId);
 
     /**
-     * 주문 ID로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
+     * 주문 번호로 주문 상세 정보와 주문한 책 정보를 조회하는 메서드입니다.
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
-    SaleWithBookResponseDto getSaleWithBook(Long saleId);
+    SaleWithBookResponseDto getSaleWithBook(String saleNumber);
 
 
     /**

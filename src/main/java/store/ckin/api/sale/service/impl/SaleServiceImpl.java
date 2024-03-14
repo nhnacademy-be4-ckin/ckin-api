@@ -22,6 +22,7 @@ import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
+import store.ckin.api.sale.exception.SaleNotFoundExceptionBySaleNumber;
 import store.ckin.api.sale.exception.SaleNumberNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
 import store.ckin.api.sale.service.SaleService;
@@ -50,7 +51,7 @@ public class SaleServiceImpl implements SaleService {
      */
     @Override
     @Transactional
-    public Long createSale(SaleCreateNoBookRequestDto requestDto) {
+    public SaleResponseDto createSale(SaleCreateNoBookRequestDto requestDto) {
 
         Optional<Member> member = Optional.empty();
         if (Objects.nonNull(requestDto.getMemberId())) {
@@ -59,21 +60,28 @@ public class SaleServiceImpl implements SaleService {
 
 
         String saleNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-        Sale sale = Sale.builder().member(member.orElse(null)).saleNumber(saleNumber)
-                .saleOrdererName(requestDto.getSaleOrderName()).saleOrdererContact(requestDto.getSaleOrderContact())
+        Sale sale = Sale.builder()
+                .member(member.orElse(null))
+                .saleNumber(saleNumber)
+                .saleOrdererName(requestDto.getSaleOrderName())
+                .saleOrdererContact(requestDto.getSaleOrderContact())
                 .saleReceiverName(requestDto.getSaleReceiverName())
                 .saleReceiverContact(requestDto.getSaleReceiverContact())
                 .saleReceiverAddress(requestDto.getAddress() + " " + requestDto.getDetailAddress())
-                .saleDate(LocalDateTime.now()).saleShippingDate(LocalDateTime.now().plusDays(1))
-                .saleDeliveryDate(requestDto.getSaleDeliveryDate()).saleDeliveryStatus(Sale.DeliveryStatus.READY)
-                .saleDeliveryFee(requestDto.getDeliveryFee()).salePointUsage(requestDto.getPointUsage())
-                .saleTotalPrice(requestDto.getTotalPrice()).salePaymentStatus(Sale.PaymentStatus.WAITING)
-                .saleShippingPostCode(requestDto.getPostcode()).build();
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now().plusDays(1))
+                .saleDeliveryDate(requestDto.getSaleDeliveryDate())
+                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryFee(requestDto.getDeliveryFee())
+                .salePointUsage(requestDto.getPointUsage())
+                .saleTotalPrice(requestDto.getTotalPrice())
+                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .saleShippingPostCode(requestDto.getPostcode())
+                .build();
 
 
-        Sale save = saleRepository.save(sale);
-
-        return save.getSaleId();
+        Sale savedSale = saleRepository.save(sale);
+        return SaleResponseDto.toDto(savedSale);
     }
 
     /**
@@ -126,21 +134,22 @@ public class SaleServiceImpl implements SaleService {
         sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
     }
 
+
     /**
      * {@inheritDoc}
      *
-     * @param saleId 주문 ID
+     * @param saleNumber 주문 번호 (UUID)
      * @return 주문 상세 정보와 주문한 책 정보 DTO
      */
     @Override
     @Transactional(readOnly = true)
-    public SaleWithBookResponseDto getSaleWithBook(Long saleId) {
+    public SaleWithBookResponseDto getSaleWithBook(String saleNumber) {
 
-        if (!saleRepository.existsById(saleId)) {
-            throw new SaleNotFoundException(saleId);
+        if (!saleRepository.existsBySaleNumber(saleNumber)) {
+            throw new SaleNotFoundExceptionBySaleNumber(saleNumber);
         }
 
-        return saleRepository.getSaleWithBook(saleId);
+        return saleRepository.getSaleWithBook(saleNumber);
     }
 
     /**
@@ -157,9 +166,8 @@ public class SaleServiceImpl implements SaleService {
             throw new SaleNumberNotFoundException(saleNumber);
         }
 
-        Long saleId = saleRepository.getBySaleNumber(saleNumber).getSaleId();
 
-        return saleRepository.getSaleWithBook(saleId).extractSaleInfoResponseDto();
+        return saleRepository.getSaleWithBook(saleNumber).extractSaleInfoResponseDto();
     }
 
     /**

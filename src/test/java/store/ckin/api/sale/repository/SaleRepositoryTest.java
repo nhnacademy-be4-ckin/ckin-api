@@ -263,6 +263,8 @@ class SaleRepositoryTest {
 
         bookSale = BookSale.builder()
                 .pk(pk)
+                .book(book)
+                .sale(sale)
                 .couponId(1L)
                 .bookSalePackagingType("A 포장")
                 .bookSalePackagingPrice(1000)
@@ -274,7 +276,7 @@ class SaleRepositoryTest {
 
         entityManager.flush();
 
-        SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleId());
+        SaleWithBookResponseDto actual = saleRepository.getSaleWithBook(savedSale.getSaleNumber());
 
 
         assertAll(

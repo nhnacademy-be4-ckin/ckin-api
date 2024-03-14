@@ -26,9 +26,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
+import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -58,7 +61,7 @@ class SaleControllerTest {
     void testCreateSale() throws Exception {
 
         given(saleFacade.createSale(any(SaleCreateRequestDto.class)))
-                .willReturn(1L);
+                .willReturn("12314");
 
         SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
                 1L,
@@ -81,7 +84,7 @@ class SaleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("1"))
+                .andExpect(content().json("12314"))
                 .andDo(print());
 
         verify(saleFacade, times(1)).createSale(any());
@@ -149,7 +152,7 @@ class SaleControllerTest {
     @Test
     @DisplayName("주문 상세 조회 테스트")
     void testGetSaleDetail() throws Exception {
-        SaleResponseDto responseDto =
+        SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
                         "test@test.com",
@@ -170,29 +173,71 @@ class SaleControllerTest {
                         "123456"
                 );
 
+        PaymentResponseDto payment = new PaymentResponseDto(
+                1L,
+                1L,
+                "1232321",
+                "1234",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "test.com");
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "testimg.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+        SaleDetailResponseDto saleDetailResponseDto =
+                new SaleDetailResponseDto(List.of(bookSale), sale, payment);
+
         given(saleFacade.getSaleDetail(anyLong()))
-                .willReturn(responseDto);
+                .willReturn(saleDetailResponseDto);
 
         mockMvc.perform(get("/api/sales/{saleId}", 1L))
+
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.saleId").value(responseDto.getSaleId()),
-                        jsonPath("$.memberEmail").value(responseDto.getMemberEmail()),
-                        jsonPath("$.saleNumber").value(responseDto.getSaleNumber()),
-                        jsonPath("$.saleOrdererName").value(responseDto.getSaleOrdererName()),
-                        jsonPath("$.saleOrdererContact").value(responseDto.getSaleOrdererContact()),
-                        jsonPath("$.saleReceiverName").value(responseDto.getSaleReceiverName()),
-                        jsonPath("$.saleReceiverContact").value(responseDto.getSaleReceiverContact()),
-                        jsonPath("$.saleReceiverAddress").value(responseDto.getSaleReceiverAddress()),
-                        jsonPath("$.saleDeliveryDate").isNotEmpty(),
-                        jsonPath("$.saleDeliveryStatus").value(responseDto.getSaleDeliveryStatus().name()),
-                        jsonPath("$.saleDeliveryFee").value(responseDto.getSaleDeliveryFee()),
-                        jsonPath("$.salePointUsage").value(responseDto.getSalePointUsage()),
-                        jsonPath("$.saleTotalPrice").value(responseDto.getSaleTotalPrice()),
-                        jsonPath("$.salePaymentStatus").value(responseDto.getSalePaymentStatus().name()),
-                        jsonPath("$.saleShippingPostCode").value(responseDto.getSaleShippingPostCode())
-                ).andDo(print());
+                        jsonPath("$.booksaleList[0].bookId").value(bookSale.getBookId()),
+                        jsonPath("$.booksaleList[0].fileUrl").value(bookSale.getFileUrl()),
+                        jsonPath("$.booksaleList[0].bookTitle").value(bookSale.getBookTitle()),
+                        jsonPath("$.booksaleList[0].quantity").value(bookSale.getQuantity()),
+                        jsonPath("$.booksaleList[0].couponId").value(bookSale.getCouponId()),
+                        jsonPath("$.booksaleList[0].packagingType").value(bookSale.getPackagingType()),
+                        jsonPath("$.booksaleList[0].packagingPrice").value(bookSale.getPackagingPrice()),
+                        jsonPath("$.booksaleList[0].paymentAmount").value(bookSale.getPaymentAmount()),
+                        jsonPath("$.saleResponseDto.saleId").value(sale.getSaleId()),
+                        jsonPath("$.saleResponseDto.memberEmail").value(sale.getMemberEmail()),
+                        jsonPath("$.saleResponseDto.saleNumber").value(sale.getSaleNumber()),
+                        jsonPath("$.saleResponseDto.saleOrdererName").value(sale.getSaleOrdererName()),
+                        jsonPath("$.saleResponseDto.saleOrdererContact").value(sale.getSaleOrdererContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverName").value(sale.getSaleReceiverName()),
+                        jsonPath("$.saleResponseDto.saleReceiverContact").value(sale.getSaleReceiverContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverAddress").value(sale.getSaleReceiverAddress()),
+                        jsonPath("$.saleResponseDto.saleDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleShippingDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryStatus").value(sale.getSaleDeliveryStatus().name()),
+                        jsonPath("$.saleResponseDto.saleDeliveryFee").value(sale.getSaleDeliveryFee()),
+                        jsonPath("$.saleResponseDto.salePointUsage").value(sale.getSalePointUsage()),
+                        jsonPath("$.saleResponseDto.saleTotalPrice").value(sale.getSaleTotalPrice()),
+                        jsonPath("$.saleResponseDto.salePaymentStatus").value(sale.getSalePaymentStatus().name()),
+                        jsonPath("$.saleResponseDto.saleShippingPostCode").value(sale.getSaleShippingPostCode()),
+                        jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
+                        jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
+                        jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
+                        jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
+                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
+                );
+
 
         verify(saleFacade, times(1)).getSaleDetail(anyLong());
     }
@@ -229,10 +274,9 @@ class SaleControllerTest {
         );
 
 
-        given(saleFacade.getSaleWithBookResponseDto(anyLong()))
+        given(saleFacade.getSaleWithBookResponseDto(anyString()))
                 .willReturn(responseDto);
-        mockMvc.perform(get("/api/sales/{saleId}/books", 1L))
-
+        mockMvc.perform(get("/api/sales/{saleNumber}/books", "ABC1234DEF"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -251,7 +295,7 @@ class SaleControllerTest {
                         jsonPath("$.totalPrice").value(responseDto.getTotalPrice())
                 ).andDo(print());
 
-        verify(saleFacade, times(1)).getSaleWithBookResponseDto(anyLong());
+        verify(saleFacade, times(1)).getSaleWithBookResponseDto(anyString());
     }
 
     @Test

@@ -9,6 +9,6 @@ import store.ckin.api.payment.entity.Payment;
  * @author 정승조
  * @version 2024. 03. 09.
  */
-public interface PaymentRepository extends JpaRepository<Payment, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long>, PaymentRepositoryCustom {
 
 }

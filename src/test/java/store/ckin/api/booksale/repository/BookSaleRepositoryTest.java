@@ -2,12 +2,26 @@ package store.ckin.api.booksale.repository;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import store.ckin.api.author.entity.Author;
+import store.ckin.api.book.entity.Book;
+import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
+import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
+import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.booksale.entity.BookSale;
+import store.ckin.api.category.entity.Category;
+import store.ckin.api.file.entity.File;
+import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.tag.entity.Tag;
 
 /**
  * 주문 도서 레포지토리 테스트.
@@ -16,20 +30,96 @@ import store.ckin.api.booksale.entity.BookSale;
  * @version 2024. 03. 07.
  */
 
+@Slf4j
 @DataJpaTest
 class BookSaleRepositoryTest {
 
     @Autowired
     BookSaleRepository bookSaleRepository;
 
+    @Autowired
+    TestEntityManager entityManager;
+
+    Book book;
+
+    Sale sale;
+
+    Author author;
+
+    Category category;
+
+    Tag tag;
+
+    File file;
+
+    @BeforeEach
+    void setUp() {
+
+        author = Author.builder()
+                .authorName("테스트 작가")
+                .build();
+        entityManager.persist(author);
+
+        tag = Tag.builder().tagName("테스트 태그").build();
+        entityManager.persist(tag);
+
+        category = Category.builder()
+                .categoryName("테스트 카테고리")
+                .categoryPriority(1)
+                .build();
+        entityManager.persist(category);
+
+
+        book = Book.builder()
+                .bookTitle("테스트 책 제목")
+                .bookDescription("테스트 책 설명")
+                .bookPublisher("테스트 출판사")
+                .bookPublicationDate(LocalDate.now())
+                .bookRegularPrice(10000)
+                .build();
+
+        entityManager.persist(book);
+
+        BookAuthor bookAuthor =
+                new BookAuthor(new BookAuthor.PK(book.getBookId(), author.getAuthorId()), book, author);
+
+        entityManager.persist(bookAuthor);
+
+        BookTag bookTag = new BookTag(new BookTag.PK(book.getBookId(), tag.getTagId()), book, tag);
+        entityManager.persist(bookTag);
+
+        BookCategory bookCategory =
+                new BookCategory(new BookCategory.PK(book.getBookId(), category.getCategoryId()), book, category);
+
+        entityManager.persist(bookCategory);
+
+        sale = Sale.builder()
+                .build();
+
+        file = File.builder()
+                .fileId("file1")
+                .fileCategory("review")
+                .fileExtension("png")
+                .fileOriginName("ckinFile")
+                .book(book)
+                .review(null)
+                .fileUrl("http://url/fileida")
+                .build();
+
+        entityManager.persist(file);
+
+        entityManager.flush();
+    }
 
     @Test
     @DisplayName("주문 도서 저장 테스트")
     void testSaveBookSale() {
 
-        BookSale.Pk pk = new BookSale.Pk(1L, 1L);
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
         BookSale bookSale = BookSale.builder()
                 .pk(pk)
+                .book(book)
+                .sale(sale)
                 .couponId(1L)
                 .bookSaleQuantity(30)
                 .bookSalePackagingPrice(3000)
@@ -55,46 +145,46 @@ class BookSaleRepositoryTest {
     @DisplayName("주문 ID를 통한 주문 도서 조회 테스트")
     void testFindAllByPkSaleId() {
 
-            BookSale.Pk pk = new BookSale.Pk(1L, 1L);
-            BookSale bookSale = BookSale.builder()
-                    .pk(pk)
-                    .couponId(1L)
-                    .bookSaleQuantity(30)
-                    .bookSalePackagingPrice(3000)
-                    .bookSalePackagingType("꽃무늬 포장")
-                    .bookSalePaymentAmount(8000)
-                    .bookSaleState(BookSale.BookSaleState.ORDER)
-                    .build();
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
+        BookSale bookSale = BookSale.builder()
+                .pk(pk)
+                .book(book)
+                .sale(sale)
+                .couponId(1L)
+                .bookSaleQuantity(30)
+                .bookSalePackagingPrice(3000)
+                .bookSalePackagingType("꽃무늬 포장")
+                .bookSalePaymentAmount(8000)
+                .bookSaleState(BookSale.BookSaleState.ORDER)
+                .build();
 
-            bookSaleRepository.save(bookSale);
+        BookSale save = bookSaleRepository.save(bookSale);
 
-            BookSale.Pk pk2 = new BookSale.Pk(1L, 2L);
-            BookSale bookSale2 = BookSale.builder()
-                    .pk(pk2)
-                    .couponId(1L)
-                    .bookSaleQuantity(30)
-                    .bookSalePackagingPrice(3000)
-                    .bookSalePackagingType("꽃무늬 포장")
-                    .bookSalePaymentAmount(8000)
-                    .bookSaleState(BookSale.BookSaleState.ORDER)
-                    .build();
+        assertNotNull(bookSaleRepository.findAllByPkSaleId(save.getSale().getSaleId()));
+        assertEquals(1, bookSaleRepository.findAllByPkSaleId(save.getSale().getSaleId()).size());
+    }
 
-            bookSaleRepository.save(bookSale2);
+    @Test
+    @DisplayName("주문 ID를 통한 주문 도서 조회")
+    void testGetBookSaleDetailBySaleId() {
 
-            BookSale.Pk pk3 = new BookSale.Pk(2L, 1L);
-            BookSale bookSale3 = BookSale.builder()
-                    .pk(pk3)
-                    .couponId(1L)
-                    .bookSaleQuantity(30)
-                    .bookSalePackagingPrice(3000)
-                    .bookSalePackagingType("꽃무늬 포장")
-                    .bookSalePaymentAmount(8000)
-                    .bookSaleState(BookSale.BookSaleState.ORDER)
-                    .build();
+        BookSale.Pk pk = new BookSale.Pk(sale.getSaleId(), book.getBookId());
+        BookSale bookSale = BookSale.builder()
+                .pk(pk)
+                .book(book)
+                .sale(sale)
+                .couponId(1L)
+                .bookSaleQuantity(30)
+                .bookSalePackagingPrice(3000)
+                .bookSalePackagingType("꽃무늬 포장")
+                .bookSalePaymentAmount(8000)
+                .bookSaleState(BookSale.BookSaleState.ORDER)
+                .build();
 
-            bookSaleRepository.save(bookSale3);
+        BookSale save = bookSaleRepository.save(bookSale);
 
-            assertEquals(2, bookSaleRepository.findAllByPkSaleId(1L).size());
+        assertNotNull(bookSaleRepository.getBookSaleDetailBySaleId(save.getSale().getSaleId()));
+        assertEquals(1, bookSaleRepository.getBookSaleDetailBySaleId(save.getSale().getSaleId()).size());
     }
 
 }

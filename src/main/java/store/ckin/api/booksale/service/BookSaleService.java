@@ -2,6 +2,7 @@ package store.ckin.api.booksale.service;
 
 import java.util.List;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
+import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 
 /**
@@ -27,4 +28,12 @@ public interface BookSaleService {
      * @param state  주문 도서 상태
      */
     void updateBookSaleState(Long saleId, BookSale.BookSaleState state);
+
+    /**
+     * 주문 ID를 통해 주문한 도서에 대한 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     * @return 주문 도서 상세 정보 응답 DTO 리스트
+     */
+    List<BookAndBookSaleResponseDto> getBookSaleDetail(Long saleId);
 }
