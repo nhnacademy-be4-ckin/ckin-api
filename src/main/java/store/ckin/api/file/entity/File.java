@@ -1,13 +1,5 @@
 package store.ckin.api.file.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +7,9 @@ import lombok.NoArgsConstructor;
 import store.ckin.api.adit.Auditable;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.review.entity.Review;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * File 업로드를 위한 엔티티 클래스.

@@ -1,7 +1,5 @@
 package store.ckin.api.book.service;
 
-import java.io.IOException;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +8,9 @@ import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * BookService 인터페이스.
@@ -23,7 +24,7 @@ public interface BookService {
      * 작가 이름으로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param authorName 작가 이름
-     * @param pageable 페이징 정보
+     * @param pageable   페이징 정보
      * @return 작가 이름으로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable);
@@ -32,7 +33,7 @@ public interface BookService {
      * 도서 제목으로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param bookTitle 도서 제목
-     * @param pageable 페이징 정보
+     * @param pageable  페이징 정보
      * @return 도서 제목으로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByBookTitle(String bookTitle, Pageable pageable);
@@ -41,7 +42,7 @@ public interface BookService {
      * 카테고리 ID로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param categoryId 카테고리 ID
-     * @param pageable 페이징 정보
+     * @param pageable   페이징 정보
      * @return 카테고리 ID로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable);
@@ -58,7 +59,7 @@ public interface BookService {
      * 새로운 도서를 생성합니다.
      *
      * @param requestDto 도서 생성 요청 DTO
-     * @param file 도서 썸네일 이미지 파일
+     * @param file       도서 썸네일 이미지 파일
      * @throws IOException 파일 처리 중 발생하는 예외
      */
     void createBook(BookCreateRequestDto requestDto, MultipartFile file) throws IOException;
@@ -66,7 +67,7 @@ public interface BookService {
     /**
      * 주어진 ID의 도서 정보를 수정합니다.
      *
-     * @param bookId 도서 ID
+     * @param bookId     도서 ID
      * @param requestDto 도서 수정 요청 DTO
      */
     void updateBook(Long bookId, BookModifyRequestDto requestDto);
@@ -98,7 +99,7 @@ public interface BookService {
     /**
      * 주어진 ID의 도서 썸네일을 업데이트합니다.
      *
-     * @param bookId 도서 ID
+     * @param bookId       도서 ID
      * @param newThumbnail 새 도서 썸네일 이미지 파일
      * @throws IOException 파일 처리 중 발생하는 예외
      */

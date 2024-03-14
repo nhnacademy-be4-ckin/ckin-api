@@ -1,6 +1,7 @@
 package store.ckin.api.review.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,6 +33,7 @@ import java.util.Optional;
  * @version 2024. 03. 11.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
@@ -59,25 +62,25 @@ public class ReviewServiceImpl implements ReviewService {
         if (book.isEmpty()) {
             throw new BookNotFoundException(createRequestDto.getBookId());
         }
-
+        book.get().setBookReviewRate(createRequestDto.getReviewRate());
         Review review = reviewRepository.save(Review.builder()
                 .member(member.get())
                 .book(book.get())
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
-
-        try {
-            for (MultipartFile file : imageList) {
-                File reviewFile = objectStorageService.saveFile(file, "review");
-                fileRepository.save(reviewFile.toBuilder()
-                        .review(review)
-                        .build());
+        if(Objects.nonNull(imageList)) {
+            try {
+                for (MultipartFile file : imageList) {
+                    File reviewFile = objectStorageService.saveFile(file, "review");
+                    fileRepository.save(reviewFile.toBuilder()
+                            .review(review)
+                            .build());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException();
             }
-        } catch (Exception e) {
-            throw new RuntimeException();
         }
-
     }
 
     /**
@@ -93,7 +96,10 @@ public class ReviewServiceImpl implements ReviewService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
         }
-
-        return reviewRepository.getReviewPageList(pageable, bookId);
+        Page<ReviewResponseDto> reviewPage = reviewRepository.getReviewPageList(pageable, bookId);
+        reviewPage.stream().forEach(reviewResponseDto -> {
+            reviewResponseDto.setFilePath(fileRepository.findFilePathByReviewId(reviewResponseDto.getReviewId()));
+        });
+        return reviewPage;
     }
 }

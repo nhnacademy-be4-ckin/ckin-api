@@ -1,20 +1,11 @@
 package store.ckin.api.tag.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import store.ckin.api.common.dto.ErrorResponse;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
@@ -24,6 +15,9 @@ import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.exception.TagNameAlreadyExistException;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.TagService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 태그 요청을 받는 컨트롤러 클래스
@@ -50,6 +44,7 @@ public class TagController {
 
     /**
      * 태그를 저장하는 컨트롤러 메서드
+     *
      * @param tagCreateRequestDto 태그 생성 요청 Dto
      * @return 성공시 CREATED, 태그 이름 이미 존재할 시 BAD_REQUEST, Validation Fail 시 BAD_REQUEST
      */
@@ -61,6 +56,7 @@ public class TagController {
 
     /**
      * 태그를 수정하는 컨트롤러 메서드
+     *
      * @param tagUpdateRequestDto 태그 수정 요청 Dto
      * @return 성공 시 Ok, 존재하지 않는 태그 수정 요청시 NOT_FOUND
      */
@@ -72,6 +68,7 @@ public class TagController {
 
     /**
      * 태그를 삭제하는 컨트롤러 메서드
+     *
      * @param tagDeleteRequestDto 태그 삭제 요청 Dto
      * @return 성공 시 Ok, 존재하지 않는 태그 삭제 요청시 NOT_FOUND
      */
@@ -99,6 +96,7 @@ public class TagController {
 
     /**
      * 존재하지 않는 태그 아이디일 때 발생하는 TagNotFoundException 핸들링 메서드
+     *
      * @param e 태그 아이디가 존재하지 않을 때 발생
      * @return NOT_FOUND 상태와 코드, 메세지를 담은 JSON 응답
      */

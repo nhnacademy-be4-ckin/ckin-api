@@ -1,24 +1,6 @@
 package store.ckin.api.book.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
@@ -26,6 +8,11 @@ import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
 import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.file.entity.File;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Book Entity.
@@ -109,4 +96,8 @@ public class Book {
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<BookSale> sales;
+
+    public void setBookReviewRate(Integer reviewRate) {
+        this.bookReviewRate = String.valueOf(Integer.parseInt(this.bookReviewRate) + reviewRate);
+    }
 }

@@ -1,22 +1,16 @@
 package store.ckin.api.category.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.service.CategoryService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * CategoryController 클래스.
@@ -73,7 +67,7 @@ public class CategoryController {
     /**
      * 지정된 ID의 카테고리를 업데이트합니다.
      *
-     * @param categoryId 카테고리 ID
+     * @param categoryId               카테고리 ID
      * @param categoryUpdateRequestDto 카테고리 업데이트 요청 DTO
      * @return 업데이트 성공시 상태 코드 200과 함께 ResponseEntity 반환
      */

@@ -1,12 +1,8 @@
 package store.ckin.api.tag.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.common.domain.PageInfo;
@@ -20,6 +16,10 @@ import store.ckin.api.tag.exception.TagNameAlreadyExistException;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
 import store.ckin.api.tag.service.TagService;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 태그 서비스 구현 클래스
@@ -50,7 +50,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public void createTag(TagCreateRequestDto tagCreateRequestDto) {
-        if(tagRepository.existsByTagName(tagCreateRequestDto.getTagName())) {
+        if (tagRepository.existsByTagName(tagCreateRequestDto.getTagName())) {
             throw new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
         } else {
             Tag tag = Tag.builder()
@@ -63,7 +63,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public void updateTag(TagUpdateRequestDto tagUpdateRequestDto) {
         Optional<Tag> tagWrapped = tagRepository.findById(tagUpdateRequestDto.getTagId());
-        if(tagWrapped.isPresent()) {
+        if (tagWrapped.isPresent()) {
             Tag tag = tagWrapped.get();
             tag.updateTagName(tagUpdateRequestDto.getTagName());
         } else {
@@ -73,7 +73,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     public void deleteTag(TagDeleteRequestDto tagDeleteRequestDto) {
-        if(tagRepository.existsById(tagDeleteRequestDto.getTagId())) {
+        if (tagRepository.existsById(tagDeleteRequestDto.getTagId())) {
             tagRepository.deleteById(tagDeleteRequestDto.getTagId());
         } else {
             throw new TagNotFoundException(tagDeleteRequestDto.getTagId());

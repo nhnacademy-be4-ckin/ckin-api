@@ -2,6 +2,7 @@ package store.ckin.api.pointpolicy.repository;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 

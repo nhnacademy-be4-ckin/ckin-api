@@ -1,23 +1,24 @@
 package store.ckin.api.member.service.impl;
 
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
+
+import java.time.LocalDateTime;
 
 /**
  * MemberService interface 의 구현체 입니다.
@@ -87,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
 
         return memberRepository.getMyPageInfo(id);
     }
-  
+
     /**
      * {@inheritDoc}
      *

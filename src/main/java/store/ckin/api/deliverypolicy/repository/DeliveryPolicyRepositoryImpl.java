@@ -1,8 +1,10 @@
 package store.ckin.api.deliverypolicy.repository;
 
 import com.querydsl.core.types.Projections;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.deliverypolicy.dto.response.DeliveryPolicyResponseDto;
 import store.ckin.api.deliverypolicy.entity.DeliveryPolicy;

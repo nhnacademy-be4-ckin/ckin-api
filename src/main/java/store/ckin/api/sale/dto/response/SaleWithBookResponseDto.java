@@ -1,10 +1,11 @@
 package store.ckin.api.sale.dto.response;
 
+import lombok.Getter;
+import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
 
 /**
  * 주문 상세 정보와 주문한 책 정보 응답 DTO 클래스입니다.
