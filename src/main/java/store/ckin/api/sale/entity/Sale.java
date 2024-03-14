@@ -40,17 +40,14 @@ public class Sale {
      * 주문의 배송 상태를 나타내는 Enum.
      */
     public enum DeliveryStatus {
-        READY,
-        IN_PROGRESS,
-        DONE
+        READY, IN_PROGRESS, DONE
     }
 
     /**
      * 주문의 결제 상태를 나타내는 Enum.
      */
     public enum PaymentStatus {
-        WAITING,
-        PAID
+        WAITING, PAID
     }
 
     @Id
@@ -64,6 +61,9 @@ public class Sale {
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     private Set<BookSale> bookSales;
+
+    @Column(name = "sale_title")
+    private String saleTitle;
 
     @Column(name = "sale_number")
     private String saleNumber;
@@ -113,16 +113,16 @@ public class Sale {
     private String saleShippingPostCode;
 
     @Builder
-    public Sale(Long saleId, Member member, Set<BookSale> bookSales, String saleNumber, String saleOrdererName,
-                String saleOrdererContact, String saleReceiverName, String saleReceiverContact,
-                String saleReceiverAddress,
-                LocalDateTime saleDate, LocalDateTime saleShippingDate, LocalDate saleDeliveryDate,
-                DeliveryStatus saleDeliveryStatus, Integer saleDeliveryFee, Integer salePointUsage,
-                Integer saleTotalPrice,
-                PaymentStatus salePaymentStatus, String saleShippingPostCode) {
+    public Sale(Long saleId, Member member, Set<BookSale> bookSales, String saleTitle, String saleNumber,
+                String saleOrdererName, String saleOrdererContact, String saleReceiverName, String saleReceiverContact,
+                String saleReceiverAddress, LocalDateTime saleDate, LocalDateTime saleShippingDate,
+                LocalDate saleDeliveryDate, DeliveryStatus saleDeliveryStatus, Integer saleDeliveryFee,
+                Integer salePointUsage, Integer saleTotalPrice, PaymentStatus salePaymentStatus,
+                String saleShippingPostCode) {
         this.saleId = saleId;
         this.member = member;
         this.bookSales = bookSales;
+        this.saleTitle = saleTitle;
         this.saleNumber = saleNumber;
         this.saleOrdererName = saleOrdererName;
         this.saleOrdererContact = saleOrdererContact;

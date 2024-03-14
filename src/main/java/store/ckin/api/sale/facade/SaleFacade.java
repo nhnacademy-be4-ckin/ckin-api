@@ -13,7 +13,6 @@ import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.service.PaymentService;
-import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
@@ -50,11 +49,7 @@ public class SaleFacade {
     @Transactional
     public String createSale(SaleCreateRequestDto requestDto) {
 
-        SaleCreateNoBookRequestDto saleInfo =
-                requestDto.toCreateSaleWithoutBookRequestDto();
-
-        SaleResponseDto sale = saleService.createSale(saleInfo);
-
+        SaleResponseDto sale = saleService.createSale(requestDto.toCreateSaleWithoutBookRequestDto());
         bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
@@ -141,5 +136,16 @@ public class SaleFacade {
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
         PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
         return new SaleDetailResponseDto(bookSale, saleDetail, payment);
+    }
+
+    /**
+     * 회원 ID를 통해 해당 회원의 모든 주문 내역을 조회하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 페이징 처리된 주문 응답 DTO 리스트
+     */
+    public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
+        return saleService.getSalesByMemberId(memberId, pageable);
     }
 }

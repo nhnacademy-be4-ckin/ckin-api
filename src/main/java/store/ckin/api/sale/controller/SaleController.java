@@ -107,9 +107,23 @@ public class SaleController {
         return ResponseEntity.ok(saleFacade.getSalePaymentInfo(saleNumber));
     }
 
+    /**
+     * 비회원의 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호
+     * @return 200 (OK), 주문 상세 정보
+     */
     @GetMapping("/guest/{saleNumber}")
     public ResponseEntity<SaleDetailResponseDto> getSaleDetailBySaleNumber(
             @PathVariable("saleNumber") String saleNumber) {
         return ResponseEntity.ok(saleFacade.getSaleDetailBySaleNumber(saleNumber));
+    }
+
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<PagedResponse<List<SaleInfoResponseDto>>> getSalesByMemberId(
+            @PathVariable Long memberId,
+            @PageableDefault Pageable pageable) {
+
+        return ResponseEntity.ok(saleFacade.getSalesByMemberId(memberId, pageable));
     }
 }

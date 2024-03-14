@@ -47,11 +47,11 @@ public class SaleWithBookResponseDto {
 
     private Integer totalPrice;
 
-    public SaleWithBookResponseDto(Long saleId, String saleNumber, String memberEmail, String saleOrderName,
-                                   String saleOrderContact,
-                                   String saleReceiverName, String saleReceiverContact, Integer deliveryFee,
-                                   LocalDate saleDeliveryDate, String postcode, String address, Integer pointUsage,
-                                   Integer totalPrice) {
+    public SaleWithBookResponseDto(String saleTitle, Long saleId, String saleNumber, String memberEmail,
+                                   String saleOrderName, String saleOrderContact, String saleReceiverName,
+                                   String saleReceiverContact, Integer deliveryFee, LocalDate saleDeliveryDate,
+                                   String postcode, String address, Integer pointUsage, Integer totalPrice) {
+        this.saleTitle = saleTitle;
         this.saleId = saleId;
         this.saleNumber = saleNumber;
         this.memberEmail = memberEmail;
@@ -71,24 +71,8 @@ public class SaleWithBookResponseDto {
         this.bookSaleList.add(bookSale);
     }
 
-    public void updateSaleTitle(String saleTitle) {
-
-        if (bookSaleList.size() == 1) {
-            this.saleTitle = saleTitle;
-            return;
-        }
-
-        this.saleTitle = saleTitle + " 외 " + (bookSaleList.size() - 1) + "권";
-    }
-
     public SaleInfoResponseDto extractSaleInfoResponseDto() {
-        return new SaleInfoResponseDto(
-                saleTitle,
-                saleNumber,
-                memberEmail,
-                saleOrdererName,
-                saleOrdererContact,
-                totalPrice
-        );
+        return new SaleInfoResponseDto(saleTitle, saleNumber, memberEmail, saleOrdererName, saleOrdererContact,
+                totalPrice);
     }
 }

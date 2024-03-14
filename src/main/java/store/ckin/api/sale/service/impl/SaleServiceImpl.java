@@ -59,9 +59,11 @@ public class SaleServiceImpl implements SaleService {
         }
 
 
+
         String saleNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
         Sale sale = Sale.builder()
                 .member(member.orElse(null))
+                .saleTitle(requestDto.getSaleTitle())
                 .saleNumber(saleNumber)
                 .saleOrdererName(requestDto.getSaleOrderName())
                 .saleOrdererContact(requestDto.getSaleOrderContact())
@@ -94,8 +96,12 @@ public class SaleServiceImpl implements SaleService {
     public PagedResponse<List<SaleResponseDto>> getSales(Pageable pageable) {
         Page<Sale> salePage = saleRepository.findAllByOrderBySaleIdDesc(pageable);
 
-        PageInfo pageInfo = PageInfo.builder().page(pageable.getPageNumber()).size(pageable.getPageSize())
-                .totalElements((int) salePage.getTotalElements()).totalPages(salePage.getTotalPages()).build();
+        PageInfo pageInfo = PageInfo.builder()
+                .page(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .totalElements((int) salePage.getTotalElements())
+                .totalPages(salePage.getTotalPages())
+                .build();
 
         List<SaleResponseDto> currentPageSalesResponse =
                 salePage.getContent().stream().map(SaleResponseDto::toDto).collect(Collectors.toList());
@@ -176,6 +182,7 @@ public class SaleServiceImpl implements SaleService {
      * @param saleNumber
      * @return 주문 조회 응답 DTO
      */
+    @Transactional(readOnly = true)
     @Override
     public SaleResponseDto getSaleBySaleNumber(String saleNumber) {
 
@@ -187,5 +194,11 @@ public class SaleServiceImpl implements SaleService {
 
         log.debug("responseDto = {}", responseDto);
         return responseDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
+        return saleRepository.findAllByMemberId(memberId, pageable);
     }
 }
