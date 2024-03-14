@@ -1,14 +1,13 @@
 package store.ckin.api.pointpolicy.repository;
 
 import com.querydsl.core.types.Projections;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.entity.QPointPolicy;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 포인트 정책 Repository Querydsl 사용을 위한 구현 클래스입니다.

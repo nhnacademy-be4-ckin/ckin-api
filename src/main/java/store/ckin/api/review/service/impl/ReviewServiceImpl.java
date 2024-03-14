@@ -69,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
-        if(Objects.nonNull(imageList)) {
+        if (Objects.nonNull(imageList)) {
             try {
                 for (MultipartFile file : imageList) {
                     File reviewFile = objectStorageService.saveFile(file, "review");

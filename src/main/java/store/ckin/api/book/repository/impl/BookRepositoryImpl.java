@@ -116,7 +116,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .fetch();
 
 
-
         Long total = Optional.ofNullable(queryFactory
                         .select(book.count())
                         .from(book)

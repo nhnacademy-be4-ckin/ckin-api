@@ -1,10 +1,10 @@
 package store.ckin.api.pointpolicy.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 포인트 정책 Repository Querydsl 사용할 메서드가 있는 인터페이스입니다.

@@ -1,10 +1,10 @@
 package store.ckin.api.pointpolicy.service;
 
-import java.util.List;
-
 import store.ckin.api.pointpolicy.dto.request.PointPolicyCreateRequestDto;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
+
+import java.util.List;
 
 /**
  * 포인트 정책을 관리하는 서비스 인터페이스입니다.

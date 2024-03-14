@@ -1,7 +1,5 @@
 package store.ckin.api.deliverypolicy.service.impl;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +11,8 @@ import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotActiveException;
 import store.ckin.api.deliverypolicy.exception.DeliveryPolicyNotFoundException;
 import store.ckin.api.deliverypolicy.repository.DeliveryPolicyRepository;
 import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
+
+import java.util.List;
 
 /**
  * 배송비 정책을 관리하는 서비스 구현 클래스입니다.
