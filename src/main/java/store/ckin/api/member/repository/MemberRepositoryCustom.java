@@ -19,12 +19,5 @@ public interface MemberRepositoryCustom {
     MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
 
     MemberMyPageResponseDto getMyPageInfo(Long id);
-
-    /**
-     * 회원 포인트를 조회하는 메서드 입니다.
-     *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    MemberPointResponseDto getMemberPointById(Long id);
+  
 }

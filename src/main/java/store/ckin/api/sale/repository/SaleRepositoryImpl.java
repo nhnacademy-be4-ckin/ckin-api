@@ -2,11 +2,14 @@ package store.ckin.api.sale.repository;
 
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import store.ckin.api.book.entity.QBook;
 import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
 import store.ckin.api.booksale.entity.QBookSale;
+import store.ckin.api.common.domain.PageInfo;
+import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.entity.QMember;
+import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.QSale;
@@ -43,6 +46,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,
                         sale.saleOrdererName,
@@ -72,11 +76,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
     public SaleWithBookResponseDto getSaleWithBook(String saleNumber) {
 
         QSale sale = QSale.sale;
-
         QBookSale bookSale = QBookSale.bookSale;
-
-        QBook book = QBook.book;
-
         QMember member = QMember.member;
 
 
@@ -100,6 +100,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                         .leftJoin(sale.member, member)
                         .on(sale.member.id.eq(member.id))
                         .select(Projections.constructor(SaleWithBookResponseDto.class,
+                                sale.saleTitle,
                                 sale.saleId,
                                 sale.saleNumber,
                                 sale.member.email,
@@ -109,6 +110,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                                 sale.saleReceiverContact,
                                 sale.saleDeliveryFee,
                                 sale.saleDeliveryDate,
+                                sale.saleDate,
                                 sale.saleShippingPostCode,
                                 sale.saleReceiverAddress,
                                 sale.salePointUsage,
@@ -119,13 +121,6 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
         for (BookSaleResponseDto bookSaleResponseDto : bookSaleResponseDtoList) {
             responseDto.addBookSale(bookSaleResponseDto);
         }
-
-        String saleTitle = from(book)
-                .where(book.bookId.eq(bookSaleResponseDtoList.get(0).getBookId()))
-                .select(book.bookTitle)
-                .fetchFirst();
-
-        responseDto.updateSaleTitle(saleTitle);
 
         return responseDto;
     }
@@ -148,6 +143,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,
                         sale.saleOrdererName,
@@ -166,6 +162,48 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                         sale.saleShippingPostCode))
                 .fetchOne();
 
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 주문 응답 DTO 리스트
+     */
+    @Override
+    public PagedResponse<List<SaleInfoResponseDto>> findAllByMemberId(Long memberId, Pageable pageable) {
+
+        QSale sale = QSale.sale;
+
+        List<SaleInfoResponseDto> responseDto = from(sale)
+                .where(sale.member.id.eq(memberId))
+                .select(Projections.constructor(SaleInfoResponseDto.class,
+                        sale.saleTitle,
+                        sale.saleNumber,
+                        sale.member.email,
+                        sale.saleOrdererName,
+                        sale.saleOrdererContact,
+                        sale.saleTotalPrice,
+                        sale.saleDate))
+                .orderBy(sale.saleId.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        long totalElements = from(sale)
+                .where(sale.member.id.eq(memberId))
+                .fetchCount();
+
+        return new PagedResponse<>(
+                responseDto,
+                PageInfo.builder()
+                        .page(pageable.getPageNumber())
+                        .size(pageable.getPageSize())
+                        .totalElements((int) totalElements)
+                        .totalPages((int) Math.ceil((double) totalElements / pageable.getPageSize()))
+                        .build());
     }
 
 }

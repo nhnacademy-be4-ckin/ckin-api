@@ -74,4 +74,12 @@ public interface SaleService {
      */
     SaleResponseDto getSaleBySaleNumber(String saleNumber);
 
+    /**
+     * 회원 ID를 통해 해당 회원의 모든 주문 내역을 조회합니다.
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 페이징 처리된 주문 응답 DTO 리스트
+     */
+    PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable);
 }

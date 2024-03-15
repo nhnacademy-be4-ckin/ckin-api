@@ -1,5 +1,6 @@
 package store.ckin.api.sale.dto.response;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -25,4 +26,6 @@ public class SaleInfoResponseDto {
     private String saleOrdererContact;
 
     private Integer totalPrice;
+
+    private LocalDateTime saleDate;
 }

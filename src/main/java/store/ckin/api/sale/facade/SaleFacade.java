@@ -1,6 +1,7 @@
 package store.ckin.api.sale.facade;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -10,15 +11,17 @@ import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.common.dto.PagedResponse;
+import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.service.PaymentService;
-import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.exception.SaleMemberNotMatchException;
+import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -50,11 +53,7 @@ public class SaleFacade {
     @Transactional
     public String createSale(SaleCreateRequestDto requestDto) {
 
-        SaleCreateNoBookRequestDto saleInfo =
-                requestDto.toCreateSaleWithoutBookRequestDto();
-
-        SaleResponseDto sale = saleService.createSale(saleInfo);
-
+        SaleResponseDto sale = saleService.createSale(requestDto.toCreateSaleWithoutBookRequestDto());
         bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
@@ -130,16 +129,89 @@ public class SaleFacade {
     }
 
     /**
-     * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
+     * 비회원의 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
      *
-     * @param saleNumber 주문 번호 (UUID)
+     * @param saleNumber     주문 번호 (UUID)
+     * @param ordererContact 주문자 연락처
      * @return 주문 상세 정보 DTO
      */
-    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber) {
+    @Transactional(readOnly = true)
+    public SaleDetailResponseDto getGuestSaleDetailBySaleNumber(String saleNumber, String ordererContact) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
+
+        if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
+            throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
+        }
+
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
         PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
         return new SaleDetailResponseDto(bookSale, saleDetail, payment);
     }
+
+    /**
+     * 회원의 주문 번호를 통해 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호
+     * @param memberId   회원 ID
+     * @return 주문 상세 정보 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public SaleDetailResponseDto getMemberSaleDetailBySaleNumber(String saleNumber, Long memberId) {
+
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
+        MemberInfoDetailResponseDto memberInfo = memberService.getMemberInfoDetail(memberId);
+
+        if (!Objects.equals(memberInfo.getEmail(), saleDetail.getMemberEmail())) {
+            throw new SaleMemberNotMatchException(saleNumber);
+        }
+
+        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
+        PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
+
+        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
+    }
+
+    /**
+     * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber     주문 번호
+     * @param memberId       회원 ID
+     * @param ordererContact 주문자 연락처
+     * @return 주문 상세 정보 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber, Long memberId, String ordererContact) {
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
+
+        if (memberId != null) { // 회원인 경우
+            if (!Objects.equals(memberId, saleDetail.getSaleId())) {
+                throw new SaleMemberNotMatchException(saleNumber);
+            }
+        } else { // 비회원인 경우
+            if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
+                throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
+            }
+        }
+
+        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
+        PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
+
+        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
+    }
+
+
+    /**
+     * 회원 ID를 통해 해당 회원의 모든 주문 내역을 조회하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param pageable 페이지 정보
+     * @return 페이징 처리된 주문 응답 DTO 리스트
+     */
+    @Transactional(readOnly = true)
+    public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
+        return saleService.getSalesByMemberId(memberId, pageable);
+    }
+
+
 }

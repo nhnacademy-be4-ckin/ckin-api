@@ -65,6 +65,7 @@ class SaleControllerTest {
 
         SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
                 1L,
+                "테스트 책",
                 "정승조",
                 "01012345678",
                 "정승조",
@@ -96,6 +97,7 @@ class SaleControllerTest {
         SaleResponseDto responseDto =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -155,6 +157,7 @@ class SaleControllerTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -258,6 +261,7 @@ class SaleControllerTest {
     void testGetSaleWithBooks() throws Exception {
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -267,6 +271,7 @@ class SaleControllerTest {
                 "01011112222",
                 3000,
                 LocalDate.of(2024, 3, 7).plusDays(1),
+                LocalDateTime.of(2024, 3, 7, 12, 0),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -309,7 +314,8 @@ class SaleControllerTest {
                         "test@test.com",
                         "Tester",
                         "01012341234",
-                        45000
+                        45000,
+                        LocalDateTime.of(2024, 3, 7, 12, 0)
                 );
 
         given(saleFacade.getSalePaymentInfo(anyString()))
@@ -328,5 +334,139 @@ class SaleControllerTest {
                 ).andDo(print());
 
         verify(saleFacade, times(1)).getSalePaymentInfo(anyString());
+    }
+
+    @Test
+    @DisplayName("비회원 주문 상세 정보를 조회 테스트")
+    void testGetSaleDetailBySaleNumber() throws Exception {
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "test-img.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+
+        PaymentResponseDto payment = new PaymentResponseDto(
+                1L,
+                1L,
+                "1232321",
+                "1234",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "test.com");
+
+
+        SaleDetailResponseDto responseDto =
+                new SaleDetailResponseDto(List.of(bookSale), sale, payment);
+
+        given(saleFacade.getGuestSaleDetailBySaleNumber(anyString(), anyString()))
+                .willReturn(responseDto);
+
+        mockMvc.perform(get("/api/sales/guest")
+                        .param("saleNumber", "12abc23")
+                        .param("ordererContact", "01012341234"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.bookSaleList[0].bookId").value(bookSale.getBookId()),
+                        jsonPath("$.bookSaleList[0].fileUrl").value(bookSale.getFileUrl()),
+                        jsonPath("$.bookSaleList[0].bookTitle").value(bookSale.getBookTitle()),
+                        jsonPath("$.bookSaleList[0].quantity").value(bookSale.getQuantity()),
+                        jsonPath("$.bookSaleList[0].couponId").value(bookSale.getCouponId()),
+                        jsonPath("$.bookSaleList[0].packagingType").value(bookSale.getPackagingType()),
+                        jsonPath("$.bookSaleList[0].packagingPrice").value(bookSale.getPackagingPrice()),
+                        jsonPath("$.bookSaleList[0].paymentAmount").value(bookSale.getPaymentAmount()),
+                        jsonPath("$.saleResponseDto.saleId").value(sale.getSaleId()),
+                        jsonPath("$.saleResponseDto.memberEmail").value(sale.getMemberEmail()),
+                        jsonPath("$.saleResponseDto.saleNumber").value(sale.getSaleNumber()),
+                        jsonPath("$.saleResponseDto.saleOrdererName").value(sale.getSaleOrdererName()),
+                        jsonPath("$.saleResponseDto.saleOrdererContact").value(sale.getSaleOrdererContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverName").value(sale.getSaleReceiverName()),
+                        jsonPath("$.saleResponseDto.saleReceiverContact").value(sale.getSaleReceiverContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverAddress").value(sale.getSaleReceiverAddress()),
+                        jsonPath("$.saleResponseDto.saleDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleShippingDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryStatus").value(sale.getSaleDeliveryStatus().name()),
+                        jsonPath("$.saleResponseDto.saleDeliveryFee").value(sale.getSaleDeliveryFee()),
+                        jsonPath("$.saleResponseDto.salePointUsage").value(sale.getSalePointUsage()),
+                        jsonPath("$.saleResponseDto.saleTotalPrice").value(sale.getSaleTotalPrice()),
+                        jsonPath("$.saleResponseDto.salePaymentStatus").value(sale.getSalePaymentStatus().name()),
+                        jsonPath("$.saleResponseDto.saleShippingPostCode").value(sale.getSaleShippingPostCode()),
+                        jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
+                        jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
+                        jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
+                        jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
+                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
+                );
+    }
+
+    @Test
+    @DisplayName("회원 ID로 회원의 모든 주문 리스트 조회")
+    void testGetSalesByMemberId() throws Exception {
+        SaleInfoResponseDto saleInfo
+                = new SaleInfoResponseDto("홍길동전 외 3권",
+                "123aqbc4",
+                "test@test.com",
+                "Tester",
+                "010123211234",
+                45000,
+                LocalDateTime.of(2024, 3, 7, 12, 0));
+
+        PageInfo pageInfo = PageInfo.builder()
+                .page(1)
+                .size(10)
+                .build();
+
+        PagedResponse<List<SaleInfoResponseDto>> pagedResponse = new PagedResponse<>(List.of(saleInfo), pageInfo);
+
+        given(saleFacade.getSalesByMemberId(anyLong(), any()))
+                .willReturn(pagedResponse);
+
+        mockMvc.perform(get("/api/sales/member/{memberId}", 1L))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.data[0].saleTitle").value(saleInfo.getSaleTitle()),
+                        jsonPath("$.data[0].saleNumber").value(saleInfo.getSaleNumber()),
+                        jsonPath("$.data[0].memberEmail").value(saleInfo.getMemberEmail()),
+                        jsonPath("$.data[0].saleOrdererName").value(saleInfo.getSaleOrdererName()),
+                        jsonPath("$.data[0].saleOrdererContact").value(saleInfo.getSaleOrdererContact()),
+                        jsonPath("$.data[0].totalPrice").value(saleInfo.getTotalPrice()),
+                        jsonPath("$.data[0].saleDate").isNotEmpty(),
+                        jsonPath("$.pageInfo.page").value(pageInfo.getPage()),
+                        jsonPath("$.pageInfo.size").value(pageInfo.getSize())
+                );
     }
 }

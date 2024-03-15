@@ -36,4 +36,5 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, SaleRepositor
      * @return 주문
      */
     Sale getBySaleNumber(String saleNumber);
+
 }

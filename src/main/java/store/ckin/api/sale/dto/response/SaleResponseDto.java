@@ -22,6 +22,8 @@ public class SaleResponseDto {
 
     private Long saleId;
 
+    private String title;
+
     private String memberEmail;
 
     private String saleNumber;
@@ -58,6 +60,7 @@ public class SaleResponseDto {
 
         return new SaleResponseDto(
                 sale.getSaleId(),
+                sale.getSaleTitle(),
                 Objects.nonNull(sale.getMember()) ? sale.getMember().getEmail() : "비회원",
                 sale.getSaleNumber(),
                 sale.getSaleOrdererName(),

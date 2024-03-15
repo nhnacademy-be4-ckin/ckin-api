@@ -91,22 +91,6 @@ public class MemberServiceImpl implements MemberService {
     /**
      * {@inheritDoc}
      *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public MemberPointResponseDto getMemberPoint(Long id) {
-        if (!memberRepository.existsById(id)) {
-            throw new MemberNotFoundException(id);
-        }
-
-        return memberRepository.getMemberPointById(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @param memberId   회원 ID
      * @param pointUsage 사용한 포인트
      */
