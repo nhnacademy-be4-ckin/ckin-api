@@ -17,6 +17,7 @@ import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
 import store.ckin.api.review.repository.ReviewRepository;
@@ -102,4 +103,18 @@ public class ReviewServiceImpl implements ReviewService {
         });
         return reviewPage;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException(memberId);
+        }
+        Page<MyPageReviewResponseDto> reviewPage =
+                reviewRepository.findReviewsByMemberWithPagination(memberId, pageable);
+        reviewPage.stream().forEach(reviewResponseDto -> reviewResponseDto.setFilePath(
+                fileRepository.findFilePathByReviewId(reviewResponseDto.getReviewId())));
+        return reviewPage;
+    }
+
 }
