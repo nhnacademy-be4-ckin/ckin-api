@@ -13,6 +13,7 @@ import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.service.BookService;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
@@ -187,6 +188,29 @@ public class BookController {
             throws IOException {
         bookService.updateBookThumbnail(bookId, thumbnail);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주어진 카테고리 ID에 해당하는 메인 페이지 도서 목록을 반환합니다.
+     *
+     * @param categoryId 카테고리 ID
+     * @param limit      반환할 도서의 수
+     * @return 카테고리에 해당하는 도서 목록
+     */
+    @GetMapping("/main-page/category/{categoryId}")
+    public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksByCategoryId(
+            @PathVariable Long categoryId,
+            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+
+        List<BookMainPageResponseDto> books = bookService.getMainPageBookListByCategoryId(categoryId, limit);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/main-page")
+    public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksOrderByBookPublicationDate(
+            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+        List<BookMainPageResponseDto> books = bookService.getMainPageBookListOrderByBookPublicationDate(limit);
+        return ResponseEntity.ok(books);
     }
 
 

@@ -1,5 +1,7 @@
 package store.ckin.api.book.service;
 
+import java.io.IOException;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,10 +9,8 @@ import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * BookService 인터페이스.
@@ -104,6 +104,12 @@ public interface BookService {
      * @throws IOException 파일 처리 중 발생하는 예외
      */
     void updateBookThumbnail(Long bookId, MultipartFile newThumbnail) throws IOException;
+
+    List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit);
+
+    List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit);
+
+
 }
 
 
