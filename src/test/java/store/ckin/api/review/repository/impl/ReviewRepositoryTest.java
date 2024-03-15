@@ -9,10 +9,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import store.ckin.api.book.entity.Book;
+import store.ckin.api.file.entity.File;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
 import store.ckin.api.review.repository.ReviewRepository;
@@ -60,6 +63,16 @@ class ReviewRepositoryTest {
                 .build();
         testEntityManager.persist(member);
 
+        File thumbnail = File.builder()
+                .fileId("fileId123")
+                .fileOriginName("thumbnail.jpg")
+                .fileUrl("http://example.com/thumbnail.jpg")
+                .fileExtension("jpg")
+                .fileCategory("image")
+                .build();
+        testEntityManager.persist(thumbnail);
+
+
         book = Book.builder()
                 .bookTitle("사람은 무엇으로 사는가")
                 .bookIsbn("1234567890123")
@@ -69,6 +82,7 @@ class ReviewRepositoryTest {
                 .bookPackaging(true)
                 .bookState("ON_SALE")
                 .bookStock(180)
+                .thumbnail(thumbnail)
                 .bookRegularPrice(20000)
                 .bookDiscountRate(10)
                 .bookSalePrice(18000)
@@ -88,14 +102,25 @@ class ReviewRepositoryTest {
     @Test
     @DisplayName("멤버 아이디로 리뷰 목록 조회 테스트")
     void testFindReviewsByMemberWithPagination() {
-        Page<ReviewResponseDto> results = reviewRepository.findReviewsByMemberWithPagination(1L, pageable);
+        PageRequest pageable = PageRequest.of(0, 10); // 첫 번째 페이지, 페이지당 10개 항목
+        Long memberId = member.getId();
 
-        Assertions.assertThat(results.getNumber()).isEqualTo(pageable.getPageNumber());
-        Assertions.assertThat(results.getContent().get(0).getReviewRate()).isEqualTo(review.getReviewRate());
-        Assertions.assertThat(results.getContent().get(0).getReviewDate()).isEqualTo(review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        Assertions.assertThat(results.getContent().get(0).getMessage()).isEqualTo(review.getReviewComment());
-        Assertions.assertThat(results.getContent().get(0).getAuthor()).isEqualTo("***" + review.getMember().getEmail().substring(3));
-        Assertions.assertThat(results.getContent().get(0).getReviewId()).isNotNull();
+        Page<MyPageReviewResponseDto> result = reviewRepository.findReviewsByMemberWithPagination(memberId, pageable);
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getContent()).isNotEmpty();
+        Assertions.assertThat(result.getContent().size()).isGreaterThan(0);
+
+
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getContent()).hasSize(1);
+        MyPageReviewResponseDto dto = result.getContent().get(0);
+        Assertions.assertThat(dto.getReviewId()).isEqualTo(review.getReviewId());
+        Assertions.assertThat(dto.getAuthor()).isEqualTo("ckin");
+        Assertions.assertThat(dto.getMessage()).isEqualTo(review.getReviewComment());
+        // 필요한 나머지 필드에 대한 검증
+
+
     }
 
     @Test

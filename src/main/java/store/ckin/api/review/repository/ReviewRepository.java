@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.review.entity.Review;
 
 /**
- * {class name}.
+ * ReviewRepository 인터페이스.
  *
  * @author 나국로
  * @version 2024. 03. 03.
