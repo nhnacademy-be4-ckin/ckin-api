@@ -58,7 +58,7 @@ public class ReviewController {
      */
     @GetMapping("{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewPageList(
-            @PageableDefault(page = 0, size = 5) Pageable pageable,
+            @PageableDefault(size = 5) Pageable pageable,
             @PathVariable("bookId") Long bookId) {
         Page<ReviewResponseDto> content = reviewFacade.getReviewPageList(pageable, bookId);
 
