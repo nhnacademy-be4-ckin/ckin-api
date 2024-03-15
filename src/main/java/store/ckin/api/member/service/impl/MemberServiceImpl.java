@@ -12,7 +12,6 @@ import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -87,22 +86,7 @@ public class MemberServiceImpl implements MemberService {
 
         return memberRepository.getMyPageInfo(id);
     }
-  
-    /**
-     * {@inheritDoc}
-     *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public MemberPointResponseDto getMemberPoint(Long id) {
-        if (!memberRepository.existsById(id)) {
-            throw new MemberNotFoundException(id);
-        }
 
-        return memberRepository.getMemberPointById(id);
-    }
 
     /**
      * {@inheritDoc}

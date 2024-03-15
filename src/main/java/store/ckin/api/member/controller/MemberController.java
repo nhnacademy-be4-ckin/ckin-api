@@ -17,7 +17,6 @@ import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -122,17 +121,4 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    /**
-     * 회원의 포인트를 조회하는 메서드 입니다.
-     *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    @GetMapping("/members/{id}/point")
-    public ResponseEntity<MemberPointResponseDto> getMemberPoint(@PathVariable("id") Long id) {
-        MemberPointResponseDto responseDto = memberService.getMemberPoint(id);
-
-        log.debug("MemberPointResponseDto = {}", responseDto.getPoint());
-        return ResponseEntity.ok(responseDto);
-    }
 }
