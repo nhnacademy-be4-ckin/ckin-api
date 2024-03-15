@@ -197,7 +197,7 @@ public class BookController {
      * @param limit      반환할 도서의 수
      * @return 카테고리에 해당하는 도서 목록
      */
-    @GetMapping("/category/{categoryId}/main-page")
+    @GetMapping("/main-page/category/{categoryId}")
     public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksByCategoryId(
             @PathVariable Long categoryId,
             @RequestParam(required = false, defaultValue = "10") Integer limit) {
