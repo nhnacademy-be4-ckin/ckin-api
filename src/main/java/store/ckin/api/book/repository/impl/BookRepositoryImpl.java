@@ -2,6 +2,10 @@ package store.ckin.api.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +23,6 @@ import store.ckin.api.book.repository.BookRepositoryCustom;
 import store.ckin.api.category.entity.QCategory;
 import store.ckin.api.file.entity.QFile;
 import store.ckin.api.tag.entity.QTag;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * BookRepository의 구현클래스.

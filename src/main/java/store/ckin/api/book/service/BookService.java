@@ -1,5 +1,7 @@
 package store.ckin.api.book.service;
 
+import java.io.IOException;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,9 +10,6 @@ import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * BookService 인터페이스.

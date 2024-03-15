@@ -1,11 +1,10 @@
 package store.ckin.api.sale.dto.response;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
-
-import java.util.List;
 
 /**
  * 주문 상세 조회 응답 DTO 입니다.

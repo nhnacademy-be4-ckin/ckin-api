@@ -1,8 +1,7 @@
 package store.ckin.api.tag.dto.request;
 
-import lombok.Getter;
-
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
 
 /**
  * description

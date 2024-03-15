@@ -1,13 +1,12 @@
 package store.ckin.api.tag.service;
 
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
 import store.ckin.api.tag.dto.request.TagDeleteRequestDto;
 import store.ckin.api.tag.dto.request.TagUpdateRequestDto;
 import store.ckin.api.tag.dto.response.TagResponseDto;
-
-import java.util.List;
 
 /**
  * 태그 서비스 인터페이스

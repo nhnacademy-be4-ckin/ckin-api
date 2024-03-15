@@ -1,11 +1,20 @@
 package store.ckin.api.tag.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.ErrorResponse;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.tag.dto.request.TagCreateRequestDto;
@@ -15,9 +24,6 @@ import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.exception.TagNameAlreadyExistException;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.TagService;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * 태그 요청을 받는 컨트롤러 클래스
@@ -38,7 +44,8 @@ public class TagController {
      * @return 모든 태그 리스트
      */
     @GetMapping
-    public ResponseEntity<PagedResponse<List<TagResponseDto>>> getAllTagList(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<PagedResponse<List<TagResponseDto>>> getAllTagList(
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return ResponseEntity.ok(tagService.readTagList(pageable));
     }
 

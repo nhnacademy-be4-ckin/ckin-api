@@ -1,5 +1,8 @@
 package store.ckin.api.tag.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +19,6 @@ import store.ckin.api.tag.exception.TagNameAlreadyExistException;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
 import store.ckin.api.tag.service.TagService;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 태그 서비스 구현 클래스

@@ -1,9 +1,8 @@
 package store.ckin.api.objectstorage.service;
 
+import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.file.entity.File;
-
-import java.io.IOException;
 
 /**
  * ObjectStorageService 인터페이스.

@@ -1,13 +1,12 @@
 package store.ckin.api.config;
 
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import store.ckin.api.skm.util.KeyManager;
-
-import javax.sql.DataSource;
 
 /**
  * DBCP2 설정을 위한 클래스입니다.

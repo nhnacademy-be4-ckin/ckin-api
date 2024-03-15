@@ -1,5 +1,10 @@
 package store.ckin.api.book.service.impl;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +35,6 @@ import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.tag.entity.Tag;
 import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.repository.TagRepository;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * BookService 구현클래스.

@@ -1,13 +1,18 @@
 package store.ckin.api.author.entity;
 
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
-
-import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Author 테이블.
