@@ -118,7 +118,8 @@ class ReviewRepositoryTest {
         Assertions.assertThat(dto.getReviewId()).isEqualTo(review.getReviewId());
         Assertions.assertThat(dto.getAuthor()).isEqualTo("ckin");
         Assertions.assertThat(dto.getMessage()).isEqualTo(review.getReviewComment());
-        // 필요한 나머지 필드에 대한 검증
+        Assertions.assertThat(dto.getReviewRate()).isEqualTo(review.getReviewRate());
+        Assertions.assertThat(dto.getReviewDate()).isEqualTo(review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
 
     }
