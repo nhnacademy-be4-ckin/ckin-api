@@ -1,7 +1,6 @@
 package store.ckin.api.pointpolicy.service;
 
 import java.util.List;
-
 import store.ckin.api.pointpolicy.dto.request.PointPolicyCreateRequestDto;
 import store.ckin.api.pointpolicy.dto.request.PointPolicyUpdateRequestDto;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;

@@ -1,10 +1,9 @@
 package store.ckin.api.category.service;
 
+import java.util.List;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
-
-import java.util.List;
 
 /**
  * CategoryService.
@@ -55,4 +54,11 @@ public interface CategoryService {
      */
     void deleteCategory(Long categoryId);
 
+    /**
+     * 카테고리 이름을 가져옵니다.
+     *
+     * @param categoryId 카테고리 아이디
+     * @return 카테고리 이름
+     */
+    String getCategoryName(Long categoryId);
 }

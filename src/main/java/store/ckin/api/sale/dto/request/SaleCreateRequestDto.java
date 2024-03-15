@@ -1,14 +1,17 @@
 package store.ckin.api.sale.dto.request;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
-
-import javax.validation.constraints.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 주문 생성 요청 DTO.
@@ -24,6 +27,9 @@ public class SaleCreateRequestDto {
     private final List<BookSaleCreateRequestDto> bookSaleList = new ArrayList<>();
 
     private Long memberId;
+
+    @NotBlank(message = "주문명을 입력해주세요")
+    private String saleTitle;
 
     @NotBlank(message = "주문자 이름을 입력해주세요.")
     private String saleOrdererName;
@@ -66,6 +72,7 @@ public class SaleCreateRequestDto {
     public SaleCreateNoBookRequestDto toCreateSaleWithoutBookRequestDto() {
         return new SaleCreateNoBookRequestDto(
                 memberId,
+                saleTitle,
                 saleOrdererName,
                 saleOrdererContact,
                 saleReceiverName,

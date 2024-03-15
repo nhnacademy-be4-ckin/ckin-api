@@ -1,5 +1,6 @@
 package store.ckin.api.packaging.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,6 @@ import store.ckin.api.packaging.exception.PackagingAlreadyExistsException;
 import store.ckin.api.packaging.exception.PackagingNotFoundException;
 import store.ckin.api.packaging.repository.PackagingRepository;
 import store.ckin.api.packaging.service.PackagingService;
-
-import java.util.List;
 
 /**
  * 포장 정책 서비스 구현 클래스입니다.

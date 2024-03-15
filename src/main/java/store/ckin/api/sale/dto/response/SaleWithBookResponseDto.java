@@ -1,11 +1,12 @@
 package store.ckin.api.sale.dto.response;
 
-import lombok.Getter;
-import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
 
 /**
  * 주문 상세 정보와 주문한 책 정보 응답 DTO 클래스입니다.
@@ -40,6 +41,8 @@ public class SaleWithBookResponseDto {
 
     private LocalDate saleDeliveryDate;
 
+    private LocalDateTime saleDate;
+
     private String postcode;
 
     private String address;
@@ -48,11 +51,13 @@ public class SaleWithBookResponseDto {
 
     private Integer totalPrice;
 
-    public SaleWithBookResponseDto(Long saleId, String saleNumber, String memberEmail, String saleOrderName,
-                                   String saleOrderContact,
-                                   String saleReceiverName, String saleReceiverContact, Integer deliveryFee,
-                                   LocalDate saleDeliveryDate, String postcode, String address, Integer pointUsage,
+    @Builder
+    public SaleWithBookResponseDto(String saleTitle, Long saleId, String saleNumber, String memberEmail,
+                                   String saleOrderName, String saleOrderContact, String saleReceiverName,
+                                   String saleReceiverContact, Integer deliveryFee, LocalDate saleDeliveryDate,
+                                   LocalDateTime saleDate, String postcode, String address, Integer pointUsage,
                                    Integer totalPrice) {
+        this.saleTitle = saleTitle;
         this.saleId = saleId;
         this.saleNumber = saleNumber;
         this.memberEmail = memberEmail;
@@ -62,6 +67,7 @@ public class SaleWithBookResponseDto {
         this.saleReceiverContact = saleReceiverContact;
         this.deliveryFee = deliveryFee;
         this.saleDeliveryDate = saleDeliveryDate;
+        this.saleDate = saleDate;
         this.postcode = postcode;
         this.address = address;
         this.pointUsage = pointUsage;
@@ -72,24 +78,8 @@ public class SaleWithBookResponseDto {
         this.bookSaleList.add(bookSale);
     }
 
-    public void updateSaleTitle(String saleTitle) {
-
-        if (bookSaleList.size() == 1) {
-            this.saleTitle = saleTitle;
-            return;
-        }
-
-        this.saleTitle = saleTitle + " 외 " + (bookSaleList.size() - 1) + "권";
-    }
-
     public SaleInfoResponseDto extractSaleInfoResponseDto() {
-        return new SaleInfoResponseDto(
-                saleTitle,
-                saleNumber,
-                memberEmail,
-                saleOrdererName,
-                saleOrdererContact,
-                totalPrice
-        );
+        return new SaleInfoResponseDto(saleTitle, saleNumber, memberEmail, saleOrdererName, saleOrdererContact,
+                totalPrice, saleDate);
     }
 }

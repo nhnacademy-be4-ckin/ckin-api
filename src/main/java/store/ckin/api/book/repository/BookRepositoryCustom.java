@@ -1,5 +1,7 @@
 package store.ckin.api.book.repository;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -7,9 +9,6 @@ import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.entity.Book;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * BookRepositoryCustom 인터페이스.

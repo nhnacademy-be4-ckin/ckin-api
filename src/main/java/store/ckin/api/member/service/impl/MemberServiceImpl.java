@@ -1,12 +1,12 @@
 package store.ckin.api.member.service.impl;
 
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
@@ -17,8 +17,6 @@ import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
-
-import java.time.LocalDateTime;
 
 /**
  * MemberService interface 의 구현체 입니다.
@@ -92,22 +90,6 @@ public class MemberServiceImpl implements MemberService {
     /**
      * {@inheritDoc}
      *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public MemberPointResponseDto getMemberPoint(Long id) {
-        if (!memberRepository.existsById(id)) {
-            throw new MemberNotFoundException(id);
-        }
-
-        return memberRepository.getMemberPointById(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @param memberId   회원 ID
      * @param pointUsage 사용한 포인트
      */
@@ -118,7 +100,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         // TODO : PointHistory - 사용한 포인트 기록 남기기 (추후 구현)
-
         member.updatePoint(pointUsage);
     }
 }

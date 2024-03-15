@@ -1,6 +1,5 @@
 package store.ckin.api.member.service;
 
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
@@ -32,14 +31,6 @@ public interface MemberService {
     MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
 
     MemberMyPageResponseDto getMyPageInfo(Long id);
-
-    /**
-     * 회원의 포인트를 조회하는 메서드 입니다.
-     *
-     * @param id 회원 ID
-     * @return 회원 포인트 응답 DTO
-     */
-    MemberPointResponseDto getMemberPoint(Long id);
 
     /**
      * 회원의 포인트를 업데이트하는 메서드 입니다.

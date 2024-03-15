@@ -1,5 +1,6 @@
 package store.ckin.api.review.service;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,8 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
-
-import java.util.List;
 
 /**
  * ReviewService

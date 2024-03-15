@@ -1,10 +1,9 @@
 package store.ckin.api.category.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import store.ckin.api.category.entity.Category;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import store.ckin.api.category.entity.Category;
 
 /**
  * CategoryRepository.

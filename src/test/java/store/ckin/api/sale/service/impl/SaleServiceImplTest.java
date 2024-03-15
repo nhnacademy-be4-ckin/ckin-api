@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
@@ -113,6 +114,7 @@ class SaleServiceImplTest {
         // given
         SaleCreateNoBookRequestDto requestDto = new SaleCreateNoBookRequestDto(
                 1L,
+                "홍길동전",
                 "정승조",
                 "01012345678",
                 "정승조",
@@ -255,6 +257,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -263,7 +266,8 @@ class SaleServiceImplTest {
                 "Tester",
                 "01011112222",
                 3000,
-                LocalDate.now().plusDays(1),
+                LocalDate.of(2024, 3, 7).plusDays(1),
+                LocalDateTime.of(2024, 3, 7, 12, 0),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -316,6 +320,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -325,6 +330,7 @@ class SaleServiceImplTest {
                 "01011112222",
                 3000,
                 LocalDate.now().plusDays(1),
+                LocalDateTime.now(),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -391,6 +397,40 @@ class SaleServiceImplTest {
                 () -> assertEquals(saleDetail.getSaleShippingPostCode(), sale.getSaleShippingPostCode())
         );
 
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
     }
 
+    @Test
+    @DisplayName("회원 ID로 주문 조회 테스트")
+    void testGetSalesByMemberId() {
+
+        SaleInfoResponseDto saleInfo
+                = new SaleInfoResponseDto("홍길동전 외 3권",
+                "123aqbc4",
+                "test@test.com",
+                "Tester",
+                "010123211234",
+                45000,
+                LocalDateTime.of(2024, 3, 7, 12, 0));
+
+
+        PageInfo pageInfo = new PageInfo(1, 10, 45, 5);
+        PagedResponse<List<SaleInfoResponseDto>> sales = new PagedResponse<>(List.of(saleInfo), pageInfo);
+
+        given(saleRepository.findAllByMemberId(anyLong(), any()))
+                .willReturn(sales);
+
+        PagedResponse<List<SaleInfoResponseDto>> responseDto =
+                saleService.getSalesByMemberId(1L, Pageable.ofSize(10));
+
+
+
+        assertAll(
+                () -> assertNotNull(responseDto),
+                () -> assertEquals(responseDto.getData().get(0), saleInfo),
+                () -> assertEquals(sales.getPageInfo(), pageInfo)
+        );
+
+        verify(saleRepository, times(1)).findAllByMemberId(anyLong(), any());
+    }
 }
