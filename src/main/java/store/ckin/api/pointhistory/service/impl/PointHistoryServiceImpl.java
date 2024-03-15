@@ -41,7 +41,6 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-
         PointHistory pointHistory = PointHistory.builder()
                 .member(member)
                 .pointHistoryReason(requestDto.getPointHistoryReason())

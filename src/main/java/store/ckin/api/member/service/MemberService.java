@@ -39,4 +39,12 @@ public interface MemberService {
      * @param pointUsage 사용한 포인트
      */
     void updatePoint(Long memberId, Integer pointUsage);
+
+    /**
+     * 회원 등급의 적립률에 따라 적립 포인트를 업데이트하는 메서드입니다.
+     *
+     * @param memberId   회원 ID
+     * @param totalPrice 총 가격
+     */
+    void updateRewardPoint(Long memberId, Integer totalPrice);
 }

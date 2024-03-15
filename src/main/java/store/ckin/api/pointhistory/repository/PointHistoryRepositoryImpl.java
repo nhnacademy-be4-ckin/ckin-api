@@ -31,6 +31,8 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport implem
         List<PointHistoryResponseDto> pointHistoryList = from(pointHistory)
                 .where(pointHistory.member.id.eq(memberId))
                 .select(Projections.constructor(PointHistoryResponseDto.class,
+                        pointHistory.pointHistoryId,
+                        pointHistory.member.id,
                         pointHistory.pointHistoryReason,
                         pointHistory.pointHistoryPoint,
                         pointHistory.pointHistoryTime))

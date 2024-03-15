@@ -1,5 +1,6 @@
 package store.ckin.api.pointhistory.dto.response;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,9 +16,12 @@ import lombok.Getter;
 public class PointHistoryResponseDto {
 
     private Long id;
-    private Long memberId;
-    private String pointHistoryReason;
-    private Integer pointHistoryPoint;
-    private String pointHistoryTime;
 
+    private Long memberId;
+
+    private String pointHistoryReason;
+
+    private Integer pointHistoryPoint;
+
+    private LocalDate pointHistoryTime;
 }

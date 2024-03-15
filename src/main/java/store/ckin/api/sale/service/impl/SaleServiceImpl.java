@@ -82,6 +82,9 @@ public class SaleServiceImpl implements SaleService {
 
 
         Sale savedSale = saleRepository.save(sale);
+
+
+
         return SaleResponseDto.toDto(savedSale);
     }
 

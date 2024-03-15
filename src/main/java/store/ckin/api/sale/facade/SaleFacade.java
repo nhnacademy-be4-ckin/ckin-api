@@ -15,6 +15,8 @@ import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.service.PaymentService;
+import store.ckin.api.pointhistory.dto.request.PointHistoryCreateRequestDto;
+import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
@@ -44,6 +46,8 @@ public class SaleFacade {
 
     private final PaymentService paymentService;
 
+    private final PointHistoryService pointHistoryService;
+
     /**
      * 주문을 생성하는 메서드입니다.
      *
@@ -57,7 +61,16 @@ public class SaleFacade {
         bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
-            memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
+            memberService.updatePoint(requestDto.getMemberId(), -requestDto.getPointUsage());
+
+            PointHistoryCreateRequestDto pointHistoryCreateRequestDto = PointHistoryCreateRequestDto.builder()
+                    .memberId(requestDto.getMemberId())
+                    .pointHistoryPoint(-requestDto.getPointUsage())
+                    .pointHistoryReason("주문 사용")
+                    .pointHistoryTime(sale.getSaleDate().toLocalDate())
+                    .build();
+
+            pointHistoryService.createPointHistory(pointHistoryCreateRequestDto);
         }
 
         return sale.getSaleNumber();
@@ -214,4 +227,14 @@ public class SaleFacade {
     }
 
 
+    /**
+     * 회원 등급의 적립률에 따라 적립 포인트를 업데이트하는 메서드입니다.
+     *
+     * @param memberId   회원 ID
+     * @param totalPrice 주문 금액
+     */
+    @Transactional
+    public void createRewardPointHistory(Long memberId, Integer totalPrice) {
+        memberService.updateRewardPoint(memberId, totalPrice);
+    }
 }

@@ -46,6 +46,8 @@ public class SaleController {
     @PostMapping
     public ResponseEntity<String> createSale(@Valid @RequestBody SaleCreateRequestDto requestDto) {
         String saleNumber = saleFacade.createSale(requestDto);
+        saleFacade.createRewardPointHistory(requestDto.getMemberId(), requestDto.getTotalPrice());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(saleNumber);
     }
 
