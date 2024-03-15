@@ -1,6 +1,5 @@
 package store.ckin.api.member.service;
 
-import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
