@@ -73,7 +73,7 @@ public class CategoryController {
     /**
      * 지정된 ID의 카테고리를 업데이트합니다.
      *
-     * @param categoryId 카테고리 ID
+     * @param categoryId               카테고리 ID
      * @param categoryUpdateRequestDto 카테고리 업데이트 요청 DTO
      * @return 업데이트 성공시 상태 코드 200과 함께 ResponseEntity 반환
      */
@@ -94,5 +94,18 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 카테고리 이름을 가져옵니다.
+     *
+     * @param categoryId
+     * @return 카테고리 이름
+     */
+    @GetMapping("/get/{categoryId}")
+    public ResponseEntity<String> getCategoryName(@PathVariable("categoryId") Long categoryId) {
+        String categoryName = categoryService.getCategoryName(categoryId);
+
+        return ResponseEntity.ok().body(categoryName);
     }
 }

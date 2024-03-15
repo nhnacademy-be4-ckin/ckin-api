@@ -44,12 +44,14 @@ public class TagController {
      * @return 모든 태그 리스트
      */
     @GetMapping
-    public ResponseEntity<PagedResponse<List<TagResponseDto>>> getAllTagList(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<PagedResponse<List<TagResponseDto>>> getAllTagList(
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
         return ResponseEntity.ok(tagService.readTagList(pageable));
     }
 
     /**
      * 태그를 저장하는 컨트롤러 메서드
+     *
      * @param tagCreateRequestDto 태그 생성 요청 Dto
      * @return 성공시 CREATED, 태그 이름 이미 존재할 시 BAD_REQUEST, Validation Fail 시 BAD_REQUEST
      */
@@ -61,6 +63,7 @@ public class TagController {
 
     /**
      * 태그를 수정하는 컨트롤러 메서드
+     *
      * @param tagUpdateRequestDto 태그 수정 요청 Dto
      * @return 성공 시 Ok, 존재하지 않는 태그 수정 요청시 NOT_FOUND
      */
@@ -72,6 +75,7 @@ public class TagController {
 
     /**
      * 태그를 삭제하는 컨트롤러 메서드
+     *
      * @param tagDeleteRequestDto 태그 삭제 요청 Dto
      * @return 성공 시 Ok, 존재하지 않는 태그 삭제 요청시 NOT_FOUND
      */
@@ -99,6 +103,7 @@ public class TagController {
 
     /**
      * 존재하지 않는 태그 아이디일 때 발생하는 TagNotFoundException 핸들링 메서드
+     *
      * @param e 태그 아이디가 존재하지 않을 때 발생
      * @return NOT_FOUND 상태와 코드, 메세지를 담은 JSON 응답
      */

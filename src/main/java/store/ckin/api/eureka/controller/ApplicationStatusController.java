@@ -37,14 +37,15 @@ public class ApplicationStatusController {
 
     private final ApplicationStatus applicationStatus;
 
-    public ApplicationStatusController(ApplicationInfoManager applicationInfoManager, ApplicationStatus applicationStatus) {
+    public ApplicationStatusController(ApplicationInfoManager applicationInfoManager,
+                                       ApplicationStatus applicationStatus) {
         this.applicationInfoManager = applicationInfoManager;
         this.applicationStatus = applicationStatus;
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public void stopStatus(){
+    public void stopStatus() {
         applicationInfoManager.setInstanceStatus(InstanceInfo.InstanceStatus.DOWN);
         applicationStatus.stopService();
     }

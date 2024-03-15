@@ -1,5 +1,14 @@
 package store.ckin.api.review.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,8 +16,6 @@ import lombok.NoArgsConstructor;
 import store.ckin.api.adit.Auditable;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.member.entity.Member;
-
-import javax.persistence.*;
 
 /**
  * Review 엔티티 클래스입니다.

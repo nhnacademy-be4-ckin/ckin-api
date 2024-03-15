@@ -1,7 +1,6 @@
 package store.ckin.api.review.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +101,6 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
                 review.getReviewRate(),
                 review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
-
 
 
 }

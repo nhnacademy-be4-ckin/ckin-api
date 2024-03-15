@@ -103,7 +103,7 @@ class ReviewServiceTest {
                 .bookRegularPrice(20000)
                 .bookDiscountRate(10)
                 .bookSalePrice(18000)
-                .bookReviewRate("4.3")
+                .bookReviewRate("4")
                 .build();
 
         review = new Review(1L, 5, "good", member, book);

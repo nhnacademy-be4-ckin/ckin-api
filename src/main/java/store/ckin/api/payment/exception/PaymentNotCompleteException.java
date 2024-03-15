@@ -6,7 +6,7 @@ package store.ckin.api.payment.exception;
  * @author 정승조
  * @version 2024. 03. 11.
  */
-public class PaymentNotCompleteException extends RuntimeException{
+public class PaymentNotCompleteException extends RuntimeException {
 
     public PaymentNotCompleteException() {
         super("Payment is not complete.");

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.entity.Book;
 
 /**
@@ -68,4 +69,8 @@ public interface BookRepositoryCustom {
      * @return 도서 추출 정보 응답 DTO 리스트
      */
     List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds);
+
+    List<BookMainPageResponseDto> getMainPageResponseDtoByCategoryId(Long categoryId, Integer limit);
+
+    List<BookMainPageResponseDto> getMainPageResponseDtoOrderByBookPublicationDate(Integer limit);
 }

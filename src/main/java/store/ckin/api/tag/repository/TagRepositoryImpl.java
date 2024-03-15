@@ -1,8 +1,6 @@
 package store.ckin.api.tag.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import store.ckin.api.tag.dto.response.TagResponseDto;
 import store.ckin.api.tag.entity.Tag;
 
 /**

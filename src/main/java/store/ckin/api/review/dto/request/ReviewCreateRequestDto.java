@@ -1,6 +1,5 @@
 package store.ckin.api.review.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

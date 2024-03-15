@@ -1,6 +1,7 @@
 package store.ckin.api.member.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
+import store.ckin.api.member.domain.MemberPointResponseDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
@@ -18,5 +19,5 @@ public interface MemberRepositoryCustom {
     MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
 
     MemberMyPageResponseDto getMyPageInfo(Long id);
-
+  
 }

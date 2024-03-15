@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
@@ -113,7 +114,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .where(book.bookId.in(bookIds))
                 .distinct()
                 .fetch();
-
 
 
         Long total = Optional.ofNullable(queryFactory
@@ -275,6 +275,64 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return bookInfoList;
     }
 
+    @Override
+    public List<BookMainPageResponseDto> getMainPageResponseDtoByCategoryId(Long categoryId, Integer limit) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.categories, bookCategory)
+                .where(bookCategory.category.categoryId.eq(categoryId))
+                .orderBy(book.bookPublicationDate.desc())
+                .limit(limit)
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageResponseDtoOrderByBookPublicationDate(Integer limit) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .orderBy(book.bookPublicationDate.desc())
+                .limit(limit)
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
 
     private BookListResponseDto convertToBookListResponseDto(Book book) {
         List<String> authorNames = book.getAuthors().stream()
@@ -300,6 +358,31 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .bookReviewRate(book.getBookReviewRate())
                 .authorNames(authorNames)
                 .thumbnail(thumbnailUrl) // 썸네일 URL 추가
+                .build();
+    }
+    private BookMainPageResponseDto convertToBookMainPageResponseDto(Book book) {
+        List<String> authorNames = book.getAuthors().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getAuthor().getAuthorName())
+                .collect(Collectors.toList());
+        List<String> categoryNames = book.getCategories().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getCategory().getCategoryName())
+                .collect(Collectors.toList());
+        List<String> tagNames = book.getTags().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getTag().getTagName())
+                .collect(Collectors.toList());
+
+        String thumbnailUrl = book.getThumbnail() != null ? book.getThumbnail().getFileUrl() : null;
+
+        return BookMainPageResponseDto.builder()
+                .bookId(book.getBookId())
+                .bookTitle(book.getBookTitle())
+                .bookRegularPrice(book.getBookRegularPrice())
+                .bookDiscountRate(book.getBookDiscountRate())
+                .bookSalePrice(book.getBookSalePrice())
+                .productCategories(categoryNames)
+                .productAuthorNames(authorNames)
+                .productTags(tagNames)
+                .thumbnail(thumbnailUrl)
                 .build();
     }
 }

@@ -6,5 +6,5 @@ package store.ckin.api.grade.exception;
  * @author : jinwoolee
  * @version : 2024. 02. 26.
  */
-public class GradeNotFoundException extends RuntimeException{
+public class GradeNotFoundException extends RuntimeException {
 }

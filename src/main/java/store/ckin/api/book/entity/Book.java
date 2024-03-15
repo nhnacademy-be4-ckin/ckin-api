@@ -109,4 +109,8 @@ public class Book {
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<BookSale> sales;
+
+    public void setBookReviewRate(Integer reviewRate) {
+        this.bookReviewRate = String.valueOf(Integer.parseInt(this.bookReviewRate) + reviewRate);
+    }
 }
