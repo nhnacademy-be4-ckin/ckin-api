@@ -1,8 +1,7 @@
 package store.ckin.api.file.repository;
 
-import org.springframework.data.repository.NoRepositoryBean;
-
 import java.util.List;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  * description:

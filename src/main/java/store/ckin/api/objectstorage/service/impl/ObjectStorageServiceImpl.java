@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -67,7 +66,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         String identityUrl = keyManager.keyStore(properties.getIdentity()) + "/tokens";
 
         if (Objects.isNull(tokenId)
-                    || expires.minusMinutes(1).isBefore(LocalDateTime.now())) {
+                || expires.minusMinutes(1).isBefore(LocalDateTime.now())) {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");

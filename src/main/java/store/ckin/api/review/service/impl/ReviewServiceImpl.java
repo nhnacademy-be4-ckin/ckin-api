@@ -1,5 +1,8 @@
 package store.ckin.api.review.service.impl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,10 +24,6 @@ import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
 import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * ReviewService
@@ -69,7 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
-        if(Objects.nonNull(imageList)) {
+        if (Objects.nonNull(imageList)) {
             try {
                 for (MultipartFile file : imageList) {
                     File reviewFile = objectStorageService.saveFile(file, "review");

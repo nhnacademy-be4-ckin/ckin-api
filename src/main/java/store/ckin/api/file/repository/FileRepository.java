@@ -1,9 +1,8 @@
 package store.ckin.api.file.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.file.entity.File;
-
-import java.util.Optional;
 
 /**
  * {class name}.

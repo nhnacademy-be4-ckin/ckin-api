@@ -1,10 +1,9 @@
 package store.ckin.api.file.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.file.entity.File;
 import store.ckin.api.file.entity.QFile;
-
-import java.util.List;
 
 /**
  * description:

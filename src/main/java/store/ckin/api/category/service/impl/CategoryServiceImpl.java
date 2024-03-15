@@ -1,5 +1,7 @@
 package store.ckin.api.category.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,9 +12,6 @@ import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;
 import store.ckin.api.category.repository.CategoryRepository;
 import store.ckin.api.category.service.CategoryService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * CategoryServiceImpl.
@@ -107,6 +106,19 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CategoryNotFoundException(categoryId);
         }
         categoryRepository.deleteById(categoryId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCategoryName(Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+        return category.getCategoryName();
+
     }
 
 

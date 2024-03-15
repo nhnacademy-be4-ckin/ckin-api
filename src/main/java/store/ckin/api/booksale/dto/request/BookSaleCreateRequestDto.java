@@ -1,10 +1,9 @@
 package store.ckin.api.booksale.dto.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 주문 도서 생성 요청 DTO.

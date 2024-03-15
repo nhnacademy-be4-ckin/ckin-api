@@ -1,11 +1,10 @@
 package store.ckin.api.book.dto.response;
 
+import java.time.LocalDate;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * BookListResponseDto 리스트로 받아올 떄 Dto입니다.

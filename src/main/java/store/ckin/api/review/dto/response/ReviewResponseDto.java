@@ -1,10 +1,9 @@
 package store.ckin.api.review.dto.response;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * ReviewResponseDto 리뷰 응답 dto.
