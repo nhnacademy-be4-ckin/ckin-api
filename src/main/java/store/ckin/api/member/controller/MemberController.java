@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -57,20 +56,6 @@ public class MemberController {
     public ResponseEntity<MemberAuthResponseDto> getMemberInfo(
             @Valid @RequestBody MemberAuthRequestDto memberAuthRequestDto) {
         MemberAuthResponseDto responseDto = memberService.getLoginMemberInfo(memberAuthRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
-
-    /**
-     * SecurityContextHolder 에 담을 멤버 정보 요청을 처리하는 Method 입니다.
-     *
-     * @param id Member ID
-     * @return MemberInfoDetail
-     */
-    @PostMapping("/login/{id}")
-    public ResponseEntity<MemberInfoDetailResponseDto> getMemberInfoDetail(
-            @PathVariable("id") Long id) {
-        MemberInfoDetailResponseDto responseDto = memberService.getMemberInfoDetail(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }

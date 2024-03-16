@@ -3,7 +3,6 @@ package store.ckin.api.member.service;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 
 /**
@@ -27,8 +26,6 @@ public interface MemberService {
      * @return LoginResponseDto 로그인 응답 DTO
      */
     MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
-
-    MemberInfoDetailResponseDto getMemberInfoDetail(Long id);
 
     MemberMyPageResponseDto getMyPageInfo(Long id);
 
