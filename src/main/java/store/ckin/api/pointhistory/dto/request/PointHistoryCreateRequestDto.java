@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 /**
  * 포인트 내역 생성 요청 DTO.
@@ -19,7 +19,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
 public class PointHistoryCreateRequestDto {
 
     @NotNull(message = "회원 아이디는 필수입니다.")

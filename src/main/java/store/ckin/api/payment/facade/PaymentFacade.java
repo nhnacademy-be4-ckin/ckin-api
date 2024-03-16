@@ -30,6 +30,12 @@ public class PaymentFacade {
 
     private final MemberService memberService;
 
+    /**
+     * 결제 정보를 DB에 저장 후 성공 응답 DTO를 반환하는 메서드입니다.
+     *
+     * @param requestDto 결제 요청 DTO
+     * @return 결제 성공 응답 DTO
+     */
     @Transactional
     public PaymentSuccessResponseDto createPayment(PaymentRequestDto requestDto) {
 
@@ -58,6 +64,11 @@ public class PaymentFacade {
     }
 
 
+    /**
+     * 주문 결제 완료 시 회원일 경우 포인트를 적립하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호 (UUID)
+     */
     @Transactional
     public void createRewardPoint(String saleNumber) {
         SaleResponseDto sale = saleService.getSaleBySaleNumber(saleNumber);

@@ -57,8 +57,6 @@ public class ReviewFacade {
                 .pointHistoryTime(LocalDate.now())
                 .build();
 
-        log.info("pointHistory = {}", pointHistory);
-
         pointHistoryService.createPointHistory(pointHistory);
         memberService.updatePoint(createRequestDto.getMemberId(), pointPolicy.getPointPolicyReserve());
     }

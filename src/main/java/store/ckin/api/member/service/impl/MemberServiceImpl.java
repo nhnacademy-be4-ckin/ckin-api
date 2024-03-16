@@ -43,6 +43,8 @@ public class MemberServiceImpl implements MemberService {
 
     private static final Long REGISTER_POINT_POLICY_ID = 100L;
 
+    private static final Long NORMAL_GRADE_ID = 1L;
+
     @Override
     @Transactional
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
@@ -50,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberAlreadyExistsException(memberCreateRequestDto.getEmail());
         }
 
-        Grade grade = gradeRepository.findById(1L)
+        Grade grade = gradeRepository.findById(NORMAL_GRADE_ID)
                 .orElseThrow(GradeNotFoundException::new);
 
         // 회원가입 포인트 정책 조회

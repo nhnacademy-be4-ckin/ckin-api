@@ -1,8 +1,8 @@
 package store.ckin.api.payment.dto.request;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 결제 요청 DTO 클래스입니다.
@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentRequestDto {
 
     private String paymentKey;
