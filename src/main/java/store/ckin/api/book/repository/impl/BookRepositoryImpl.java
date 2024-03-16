@@ -360,6 +360,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .thumbnail(thumbnailUrl) // 썸네일 URL 추가
                 .build();
     }
+
     private BookMainPageResponseDto convertToBookMainPageResponseDto(Book book) {
         List<String> authorNames = book.getAuthors().stream()
                 .map(bookAuthorElement -> bookAuthorElement.getAuthor().getAuthorName())

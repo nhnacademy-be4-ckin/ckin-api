@@ -232,10 +232,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit) {
-        return bookRepository.getMainPageResponseDtoByCategoryId(categoryId,limit);
+        return bookRepository.getMainPageResponseDtoByCategoryId(categoryId, limit);
     }
+
     @Override
-    public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate( Integer limit) {
+    public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit) {
         return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
     }
 
