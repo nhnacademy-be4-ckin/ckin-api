@@ -43,8 +43,7 @@ public class PointHistoryController {
     public ResponseEntity<PagedResponse<List<PointHistoryResponseDto>>> getPointHistoryList(
             @RequestParam("memberId") Long memberId,
             @PageableDefault Pageable pageable) {
-        PagedResponse<List<PointHistoryResponseDto>> responseDto =
-                pointHistoryService.getPointHistoryList(memberId, pageable);
-        return ResponseEntity.ok().body(responseDto);
+
+        return ResponseEntity.ok().body(pointHistoryService.getPointHistoryList(memberId, pageable));
     }
 }

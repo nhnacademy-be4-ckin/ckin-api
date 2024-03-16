@@ -15,12 +15,13 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 03. 03.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class SaleResponseDto {
 
     private Long saleId;
+
+    private Long memberId;
 
     private String title;
 
@@ -60,6 +61,7 @@ public class SaleResponseDto {
 
         return new SaleResponseDto(
                 sale.getSaleId(),
+                Objects.nonNull(sale.getMember()) ? sale.getMember().getId() : null,
                 sale.getSaleTitle(),
                 Objects.nonNull(sale.getMember()) ? sale.getMember().getEmail() : "비회원",
                 sale.getSaleNumber(),

@@ -11,7 +11,6 @@ import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.common.dto.PagedResponse;
-import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.service.PaymentService;
@@ -173,9 +172,8 @@ public class SaleFacade {
     public SaleDetailResponseDto getMemberSaleDetailBySaleNumber(String saleNumber, Long memberId) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
-        MemberInfoDetailResponseDto memberInfo = memberService.getMemberInfoDetail(memberId);
 
-        if (!Objects.equals(memberInfo.getEmail(), saleDetail.getMemberEmail())) {
+        if (!Objects.equals(memberId, saleDetail.getMemberId())) {
             throw new SaleMemberNotMatchException(saleNumber);
         }
 
