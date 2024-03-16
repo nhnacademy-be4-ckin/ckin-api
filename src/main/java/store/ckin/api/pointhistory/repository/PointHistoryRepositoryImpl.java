@@ -38,6 +38,7 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport implem
                         pointHistory.pointHistoryTime))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(pointHistory.pointHistoryId.desc())
                 .fetch();
 
         JPQLQuery<Long> count = from(pointHistory)

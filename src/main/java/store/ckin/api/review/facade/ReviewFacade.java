@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import store.ckin.api.review.service.ReviewService;
  * @author 정승조
  * @version 2024. 03. 15.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReviewFacade {
@@ -54,6 +56,8 @@ public class ReviewFacade {
                 .pointHistoryReason(pointPolicy.getPointPolicyName())
                 .pointHistoryTime(LocalDate.now())
                 .build();
+
+        log.info("pointHistory = {}", pointHistory);
 
         pointHistoryService.createPointHistory(pointHistory);
         memberService.updatePoint(createRequestDto.getMemberId(), pointPolicy.getPointPolicyReserve());

@@ -125,25 +125,33 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
         member.updatePoint(pointUsage);
-
-        pointHistoryRepository.save(PointHistory.builder()
-                .member(member)
-                .pointHistoryPoint(-pointUsage)
-                .pointHistoryReason("주문 사용")
-                .pointHistoryTime(LocalDate.now())
-                .build());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param email      회원 이메일
+     * @param totalPrice 총 가격
+     */
     @Override
-    public void updateRewardPoint(Long memberId, Integer totalPrice) {
+    public void updateRewardPoint(String email, Integer totalPrice) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
 
         Grade grade = gradeRepository.findById(member.getGrade().getGradeId())
                 .orElseThrow(GradeNotFoundException::new);
 
-        long reward = Math.round(((double) grade.getPointRatio() / 100) * totalPrice);
-        member.updatePoint((int) reward);
+        int reward = (int) Math.round(((double) grade.getPointRatio() / 100) * totalPrice);
+        member.updatePoint(reward);
+
+        PointHistory pointHistory = PointHistory.builder()
+                .member(member)
+                .pointHistoryPoint(reward)
+                .pointHistoryReason("주문 적립")
+                .pointHistoryTime(LocalDate.now())
+                .build();
+
+        pointHistoryRepository.save(pointHistory);
     }
 }

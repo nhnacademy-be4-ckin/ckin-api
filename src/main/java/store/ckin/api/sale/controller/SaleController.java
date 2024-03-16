@@ -41,12 +41,11 @@ public class SaleController {
      * 주문을 등록하는 메서드입니다.
      *
      * @param requestDto 주문 등록 요청 DTO
-     * @return 주문 번호
+     * @return 201(CREATED), 주문 번호(UUID)
      */
     @PostMapping
     public ResponseEntity<String> createSale(@Valid @RequestBody SaleCreateRequestDto requestDto) {
         String saleNumber = saleFacade.createSale(requestDto);
-        saleFacade.createRewardPointHistory(requestDto.getMemberId(), requestDto.getTotalPrice());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saleNumber);
     }
@@ -54,7 +53,7 @@ public class SaleController {
     /**
      * 모든 주문 목록을 조회하는 메서드입니다.
      *
-     * @return 주문 DTO 리스트
+     * @return 200(OK), 주문 DTO 리스트
      */
     @GetMapping
     public ResponseEntity<PagedResponse<List<SaleResponseDto>>> getSales(@PageableDefault Pageable pageable) {
@@ -66,7 +65,7 @@ public class SaleController {
      * 주문 상세 정보를 조회하는 메서드입니다.
      *
      * @param saleId 주문 ID
-     * @return 주문 상세 정보 DTO
+     * @return 200(OK), 주문 상세 정보 DTO
      */
     @GetMapping("/{saleId}")
     public ResponseEntity<SaleDetailResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
@@ -123,6 +122,13 @@ public class SaleController {
         return ResponseEntity.ok(saleFacade.getGuestSaleDetailBySaleNumber(saleNumber, ordererContact));
     }
 
+    /**
+     * 회원의 주문 상세 정보를 조회하는 메서드입니다.
+     *
+     * @param saleNumber 주문 번호
+     * @param memberId   회원 ID
+     * @return 200 (OK), 주문 상세 정보
+     */
     @GetMapping("/member")
     public ResponseEntity<SaleDetailResponseDto> getMemberSaleDetailBySaleNumber(
             @RequestParam("saleNumber") String saleNumber,

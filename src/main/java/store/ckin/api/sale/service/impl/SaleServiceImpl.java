@@ -84,7 +84,6 @@ public class SaleServiceImpl implements SaleService {
         Sale savedSale = saleRepository.save(sale);
 
 
-
         return SaleResponseDto.toDto(savedSale);
     }
 
@@ -137,7 +136,8 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional
     public void updateSalePaymentPaidStatus(Long saleId) {
-        Sale sale = saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException(saleId));
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new SaleNotFoundException(saleId));
 
         sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
     }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentSuccessResponseDto;
 import store.ckin.api.payment.exception.PaymentAmountNotCorrectException;
@@ -20,7 +21,6 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 09.
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentFacade {
@@ -28,6 +28,8 @@ public class PaymentFacade {
     private final PaymentService paymentService;
 
     private final SaleService saleService;
+
+    private final MemberService memberService;
 
     @Transactional
     public PaymentSuccessResponseDto createPayment(PaymentRequestDto requestDto) {
@@ -54,5 +56,15 @@ public class PaymentFacade {
                 .deliveryDate(sale.getSaleDeliveryDate())
                 .receiptUrl(requestDto.getReceiptUrl())
                 .build();
+    }
+
+
+    @Transactional
+    public void createRewardPoint(String saleNumber) {
+        SaleResponseDto sale = saleService.getSaleBySaleNumber(saleNumber);
+
+        if (Objects.nonNull(sale.getMemberEmail())) {
+            memberService.updateRewardPoint(sale.getMemberEmail(), sale.getSaleTotalPrice());
+        }
     }
 }

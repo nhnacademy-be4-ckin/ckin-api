@@ -41,10 +41,11 @@ public interface MemberService {
     void updatePoint(Long memberId, Integer pointUsage);
 
     /**
-     * 회원 등급의 적립률에 따라 적립 포인트를 업데이트하는 메서드입니다.
+     * [회원 등급의 적립률 * 주문금액]만큼 적립 포인트를 업데이트하는 메서드입니다.
      *
-     * @param memberId   회원 ID
+     * @param email      회원 이메일
      * @param totalPrice 총 가격
      */
-    void updateRewardPoint(Long memberId, Integer totalPrice);
+    void updateRewardPoint(String email, Integer totalPrice);
+
 }

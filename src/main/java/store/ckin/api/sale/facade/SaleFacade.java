@@ -225,16 +225,4 @@ public class SaleFacade {
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
         return saleService.getSalesByMemberId(memberId, pageable);
     }
-
-
-    /**
-     * 회원 등급의 적립률에 따라 적립 포인트를 업데이트하는 메서드입니다.
-     *
-     * @param memberId   회원 ID
-     * @param totalPrice 주문 금액
-     */
-    @Transactional
-    public void createRewardPointHistory(Long memberId, Integer totalPrice) {
-        memberService.updateRewardPoint(memberId, totalPrice);
-    }
 }
