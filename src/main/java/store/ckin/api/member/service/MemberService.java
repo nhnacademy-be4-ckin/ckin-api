@@ -23,10 +23,14 @@ public interface MemberService {
      * 로그인하는 Member 의 정보를 조회하는 메서드 입니다.
      *
      * @param memberAuthRequestDto 로그인 정보 요청 DTO
-     * @return LoginResponseDto 로그인 응답 DTO
      */
     MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto);
 
+    /**
+     * 마이페이지 헤더에 들어갈 계정 정보를 조회하는 메서드 입니다.
+     *
+     * @param id Member ID
+     */
     MemberMyPageResponseDto getMyPageInfo(Long id);
 
     /**
