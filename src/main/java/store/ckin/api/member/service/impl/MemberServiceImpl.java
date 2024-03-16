@@ -43,8 +43,8 @@ public class MemberServiceImpl implements MemberService {
 
     private static final Long REGISTER_POINT_POLICY_ID = 100L;
 
-    @Transactional
     @Override
+    @Transactional
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
         if (memberRepository.existsByEmail(memberCreateRequestDto.getEmail())) {
             throw new MemberAlreadyExistsException(memberCreateRequestDto.getEmail());
@@ -83,8 +83,8 @@ public class MemberServiceImpl implements MemberService {
         pointHistoryRepository.save(pointHistory);
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto) {
         if (!memberRepository.existsByEmail(memberAuthRequestDto.getEmail())) {
             throw new MemberNotFoundException(memberAuthRequestDto.getEmail());
@@ -93,8 +93,8 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public MemberInfoDetailResponseDto getMemberInfoDetail(Long id) {
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException(id);
@@ -103,8 +103,8 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.getMemberInfoDetail(id);
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException(id);
@@ -119,8 +119,8 @@ public class MemberServiceImpl implements MemberService {
      * @param memberId   회원 ID
      * @param pointUsage 사용한 포인트
      */
-    @Transactional
     @Override
+    @Transactional
     public void updatePoint(Long memberId, Integer pointUsage) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
@@ -134,6 +134,7 @@ public class MemberServiceImpl implements MemberService {
      * @param totalPrice 총 가격
      */
     @Override
+    @Transactional
     public void updateRewardPoint(String email, Integer totalPrice) {
 
         Member member = memberRepository.findByEmail(email)

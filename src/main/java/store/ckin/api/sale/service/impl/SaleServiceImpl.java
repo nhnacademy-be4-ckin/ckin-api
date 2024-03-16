@@ -184,8 +184,8 @@ public class SaleServiceImpl implements SaleService {
      * @param saleNumber
      * @return 주문 조회 응답 DTO
      */
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public SaleResponseDto getSaleBySaleNumber(String saleNumber) {
 
         if (!saleRepository.existsBySaleNumber(saleNumber)) {
@@ -205,8 +205,8 @@ public class SaleServiceImpl implements SaleService {
      * @param pageable 페이지 정보
      * @return 페이징 처리된 주문 응답 DTO 리스트
      */
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
         return saleRepository.findAllByMemberId(memberId, pageable);
     }
