@@ -2,8 +2,10 @@ package store.ckin.api.member.service;
 
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 
 /**
  * Member 의 관한 로직을 처리하는 서비스 인터페이스 입니다.
@@ -40,4 +42,6 @@ public interface MemberService {
      * @param pointUsage 사용한 포인트
      */
     void updatePoint(Long memberId, Integer pointUsage);
+
+    MemberOauthLoginResponseDto getOauthMemberInfo(MemberOauthIdOnlyRequestDto memberOauthIdOnlyRequestDto);
 }

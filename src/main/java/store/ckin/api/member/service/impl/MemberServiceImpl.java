@@ -9,8 +9,10 @@ import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -90,5 +92,17 @@ public class MemberServiceImpl implements MemberService {
 
         // TODO : PointHistory - 사용한 포인트 기록 남기기 (추후 구현)
         member.updatePoint(pointUsage);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public MemberOauthLoginResponseDto getOauthMemberInfo(MemberOauthIdOnlyRequestDto memberOauthIdOnlyRequestDto) {
+        String oauthId = memberOauthIdOnlyRequestDto.getOauthId();
+
+        if (!memberRepository.existsByOauthId(oauthId)) {
+            throw new MemberNotFoundException();
+        }
+
+        return memberRepository.getOauthMemberInfo(oauthId);
     }
 }
