@@ -2,7 +2,6 @@ package store.ckin.api.payment.facade;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.service.MemberService;
