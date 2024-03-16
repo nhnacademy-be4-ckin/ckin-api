@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import store.ckin.api.grade.entity.QGrade;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
@@ -57,4 +58,15 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                 .fetchOne();
     }
 
+    @Override
+    public MemberOauthLoginResponseDto getOauthMemberInfo(String oauthId) {
+        QMember member = QMember.member;
+
+        return from(member)
+                .select(Projections.constructor(MemberOauthLoginResponseDto.class,
+                        member.id,
+                        member.role))
+                .where(member.oauthId.eq(oauthId))
+                .fetchOne();
+    }
 }
