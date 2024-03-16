@@ -11,7 +11,7 @@ import store.ckin.api.category.entity.Category;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryCustom {
 
     /**
      * 주어진 카테고리 ID에 해당하는 카테고리를 조회합니다.
