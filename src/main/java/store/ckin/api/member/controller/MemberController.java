@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
@@ -76,6 +78,20 @@ public class MemberController {
         log.info("API dto : {}", responseDto);
         log.info("API dto name : {}", responseDto.getName());
         log.info("API dto grade name : {}", responseDto.getGradeName());
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    /**
+     * OAuth 로그인 시 필요한 정보를 요청하는 API Method 입니다.
+     *
+     * @param memberOauthIdOnlyRequestDto Member OAuth ID
+     * @return MemberOauthLoginResponseDto (200 OK)
+     */
+    @GetMapping("/login/oauth")
+    public ResponseEntity<MemberOauthLoginResponseDto> getOauthMemberInfo(
+            @Valid @RequestBody MemberOauthIdOnlyRequestDto memberOauthIdOnlyRequestDto) {
+        MemberOauthLoginResponseDto responseDto = memberService.getOauthMemberInfo(memberOauthIdOnlyRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
