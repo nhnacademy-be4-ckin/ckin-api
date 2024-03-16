@@ -71,13 +71,7 @@ public class MemberController {
     @GetMapping("/members/mypage/{memberId}")
     public ResponseEntity<MemberMyPageResponseDto> getMyPageInfo(
             @PathVariable("memberId") Long id) {
-        log.info("API memberId: {}", id.toString());
-
         MemberMyPageResponseDto responseDto = memberService.getMyPageInfo(id);
-
-        log.info("API dto : {}", responseDto);
-        log.info("API dto name : {}", responseDto.getName());
-        log.info("API dto grade name : {}", responseDto.getGradeName());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
