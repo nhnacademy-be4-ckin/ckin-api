@@ -62,9 +62,14 @@ public class AddressServiceImpl implements AddressService {
         addressRepository.save(address);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MemberAddressResponseDto> getMemberAddressList(Long memberId) {
-        return null;
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
+        return addressRepository.getMemberAddressList(memberId);
     }
 
     @Override
