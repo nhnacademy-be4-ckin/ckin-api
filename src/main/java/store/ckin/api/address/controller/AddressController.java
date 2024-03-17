@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import store.ckin.api.address.domain.request.AddressAddRequestDto;
 import store.ckin.api.address.domain.request.AddressUpdateRequestDto;
 import store.ckin.api.address.domain.response.MemberAddressResponseDto;
+import store.ckin.api.address.exception.AddressAlreadyExistsException;
+import store.ckin.api.address.exception.AddressNotFoundException;
 import store.ckin.api.address.service.AddressService;
+import store.ckin.api.member.exception.MemberNotFoundException;
 
 /**
  * Address 에 관한 REST Controller 입니다.
@@ -60,5 +63,15 @@ public class AddressController {
         addressService.deleteAddress(memberId, addressId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ExceptionHandler({ MemberNotFoundException.class, AddressNotFoundException.class })
+    public ResponseEntity<Void> handleNotFoundException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(AddressAlreadyExistsException.class)
+    public ResponseEntity<Void> handleAlreadyExistsException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
