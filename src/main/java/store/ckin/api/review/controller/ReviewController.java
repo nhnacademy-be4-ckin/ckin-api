@@ -19,6 +19,7 @@ import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.facade.ReviewFacade;
+import store.ckin.api.review.service.ReviewService;
 
 /**
  * ReviewController 클래스.
@@ -33,6 +34,8 @@ import store.ckin.api.review.facade.ReviewFacade;
 public class ReviewController {
 
     private final ReviewFacade reviewFacade;
+
+    private final ReviewService reviewService;
 
     /**
      * 리뷰 업로드를 구현하는 메소드 입니다.
