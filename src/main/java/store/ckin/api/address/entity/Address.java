@@ -40,16 +40,16 @@ public class Address {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column("address_base")
+    @Column(name = "address_base")
     private String base;
 
-    @Column("address_detail")
+    @Column(name = "address_detail")
     private String detail;
 
-    @Column("address_alias")
+    @Column(name = "address_alias")
     private String alias;
 
-    @Column("address_default")
+    @Column(name = "address_default")
     @ColumnDefault("false")
     private boolean isDefault;
 }
