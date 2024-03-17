@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
-import store.ckin.api.review.service.ReviewService;
+import store.ckin.api.review.facade.ReviewFacade;
 
 /**
  * ReviewController 클래스.
@@ -30,7 +31,8 @@ import store.ckin.api.review.service.ReviewService;
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
 public class ReviewController {
-    private final ReviewService reviewService;
+
+    private final ReviewFacade reviewFacade;
 
     /**
      * 리뷰 업로드를 구현하는 메소드 입니다.
@@ -43,8 +45,7 @@ public class ReviewController {
                                            @RequestPart(value = "imageList", required = false)
                                            List<MultipartFile> imageList) {
 
-        reviewService.postReview(createRequestDto, imageList);
-        //TODO: point 적립
+        reviewFacade.postReview(createRequestDto, imageList);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -58,9 +59,25 @@ public class ReviewController {
      */
     @GetMapping("{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewPageList(
-            @PageableDefault(page = 0, size = 5) Pageable pageable,
+            @PageableDefault(size = 5) Pageable pageable,
             @PathVariable("bookId") Long bookId) {
-        Page<ReviewResponseDto> content = reviewService.getReviewPageList(pageable, bookId);
+        Page<ReviewResponseDto> content = reviewFacade.getReviewPageList(pageable, bookId);
+
+        return ResponseEntity.ok().body(content);
+    }
+
+    /**
+     * 도서 아이디로 해당되는 리뷰 목록을 반환하는 메소드 입니다.
+     *
+     * @param pageable 리뷰 페이지
+     * @param memberId 회원 아이디
+     * @return 리뷰 DTO 페이지
+     */
+    @GetMapping("/my-page/{memberId}")
+    public ResponseEntity<Page<MyPageReviewResponseDto>> getReviewPageListByMemberId(
+            @PageableDefault(page = 0, size = 5) Pageable pageable,
+            @PathVariable("memberId") Long memberId) {
+        Page<MyPageReviewResponseDto> content = reviewService.findReviewsByMemberWithPagination(memberId, pageable);
 
         return ResponseEntity.ok().body(content);
     }

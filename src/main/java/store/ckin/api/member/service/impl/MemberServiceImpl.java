@@ -1,5 +1,6 @@
 package store.ckin.api.member.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
+import store.ckin.api.pointhistory.entity.PointHistory;
+import store.ckin.api.pointhistory.repository.PointHistoryRepository;
+import store.ckin.api.pointpolicy.entity.PointPolicy;
+import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
+import store.ckin.api.pointpolicy.repository.PointPolicyRepository;
 
 /**
  * MemberService interface 의 구현체 입니다.
@@ -32,15 +38,28 @@ public class MemberServiceImpl implements MemberService {
 
     private final GradeRepository gradeRepository;
 
-    @Transactional
+    private final PointHistoryRepository pointHistoryRepository;
+
+    private final PointPolicyRepository pointPolicyRepository;
+
+    private static final Long REGISTER_POINT_POLICY_ID = 100L;
+
+    private static final Long NORMAL_GRADE_ID = 1L;
+
     @Override
+    @Transactional
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
         if (memberRepository.existsByEmail(memberCreateRequestDto.getEmail())) {
             throw new MemberAlreadyExistsException(memberCreateRequestDto.getEmail());
         }
 
-        Grade grade = gradeRepository.findById(1L)
+        Grade grade = gradeRepository.findById(NORMAL_GRADE_ID)
                 .orElseThrow(GradeNotFoundException::new);
+
+        // 회원가입 포인트 정책 조회
+        PointPolicy registerPolicy = pointPolicyRepository.findById(REGISTER_POINT_POLICY_ID)
+                .orElseThrow(() -> new PointPolicyNotFoundException(REGISTER_POINT_POLICY_ID));
+
 
         Member member = Member.builder()
                 .grade(grade)
@@ -52,14 +71,23 @@ public class MemberServiceImpl implements MemberService {
                 .state(Member.State.ACTIVE)
                 .latestLoginAt(LocalDateTime.now())
                 .role(Member.Role.MEMBER)
-                .point(5000)
+                .point(registerPolicy.getPointPolicyReserve())
                 .build();
 
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+
+        PointHistory pointHistory = PointHistory.builder()
+                .member(savedMember)
+                .pointHistoryPoint(registerPolicy.getPointPolicyReserve())
+                .pointHistoryReason(registerPolicy.getPointPolicyName())
+                .pointHistoryTime(LocalDate.now())
+                .build();
+
+        pointHistoryRepository.save(pointHistory);
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto) {
         if (!memberRepository.existsByEmail(memberAuthRequestDto.getEmail())) {
             throw new MemberNotFoundException(memberAuthRequestDto.getEmail());
@@ -68,8 +96,8 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException(id);
@@ -84,13 +112,11 @@ public class MemberServiceImpl implements MemberService {
      * @param memberId   회원 ID
      * @param pointUsage 사용한 포인트
      */
-    @Transactional
     @Override
+    @Transactional
     public void updatePoint(Long memberId, Integer pointUsage) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
-
-        // TODO : PointHistory - 사용한 포인트 기록 남기기 (추후 구현)
         member.updatePoint(pointUsage);
     }
 
@@ -104,5 +130,34 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return memberRepository.getOauthMemberInfo(oauthId);
+    }
+  
+    /**
+     * {@inheritDoc}
+     *
+     * @param email      회원 이메일
+     * @param totalPrice 총 가격
+     */
+    @Override
+    @Transactional
+    public void updateRewardPoint(String email, Integer totalPrice) {
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
+
+        Grade grade = gradeRepository.findById(member.getGrade().getGradeId())
+                .orElseThrow(GradeNotFoundException::new);
+
+        int reward = (int) Math.round(((double) grade.getPointRatio() / 100) * totalPrice);
+        member.updatePoint(reward);
+
+        PointHistory pointHistory = PointHistory.builder()
+                .member(member)
+                .pointHistoryPoint(reward)
+                .pointHistoryReason("주문 적립")
+                .pointHistoryTime(LocalDate.now())
+                .build();
+
+        pointHistoryRepository.save(pointHistory);
     }
 }

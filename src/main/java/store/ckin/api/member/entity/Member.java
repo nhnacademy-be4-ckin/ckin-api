@@ -107,6 +107,6 @@ public class Member {
     private String oauthId;
 
     public void updatePoint(Integer pointUsage) {
-        this.point -= pointUsage;
+        this.point += pointUsage;
     }
 }

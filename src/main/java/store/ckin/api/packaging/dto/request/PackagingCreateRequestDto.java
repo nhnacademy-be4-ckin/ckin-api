@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 포장 정책 생성 요청 DTO.
@@ -14,6 +15,7 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class PackagingCreateRequestDto {
 
     @NotBlank(message = "포장지 종류를 입력해주세요.")

@@ -22,6 +22,9 @@ import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.repository.MemberRepository;
+import store.ckin.api.pointhistory.repository.PointHistoryRepository;
+import store.ckin.api.pointpolicy.entity.PointPolicy;
+import store.ckin.api.pointpolicy.repository.PointPolicyRepository;
 
 /**
  * MemberService 에 대한 Test 입니다.
@@ -36,6 +39,15 @@ class MemberServiceImplTest {
 
     @Mock
     private GradeRepository gradeRepository;
+
+    @Mock
+    private PointHistoryRepository pointHistoryRepository;
+
+    @Mock
+    private PointPolicyRepository pointPolicyRepository;
+
+    private static final Long REGISTER_POINT_POLICY_ID = 100L;
+
 
     @InjectMocks
     private MemberServiceImpl memberService;
@@ -58,6 +70,15 @@ class MemberServiceImplTest {
         ReflectionTestUtils.setField(dto, "name", "abc");
         ReflectionTestUtils.setField(dto, "contact", "0101111234");
         ReflectionTestUtils.setField(dto, "birth", LocalDate.now());
+
+        PointPolicy pointPolicy = PointPolicy.builder()
+                .pointPolicyId(100L)
+                .pointPolicyName("회원가입")
+                .pointPolicyReserve(5000)
+                .build();
+
+        when(pointPolicyRepository.findById(REGISTER_POINT_POLICY_ID))
+                .thenReturn(Optional.of(pointPolicy));
 
         memberService.createMember(dto);
 

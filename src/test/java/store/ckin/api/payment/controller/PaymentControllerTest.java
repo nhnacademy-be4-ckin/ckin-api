@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentSuccessResponseDto;
@@ -49,15 +50,14 @@ class PaymentControllerTest {
     @DisplayName("결제 생성 테스트")
     void testCreatePayment() throws Exception {
 
-        PaymentRequestDto paymentRequestDto = new PaymentRequestDto(
-                "12341234",
-                "423421432",
-                "DONE",
-                LocalDateTime.now().minusMinutes(10),
-                LocalDateTime.now(),
-                15000,
-                "https://test.com"
-        );
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
+        ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", "DONE");
+        ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
+        ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);
+        ReflectionTestUtils.setField(paymentRequestDto, "receiptUrl", "https://test.com");
 
         String json = objectMapper.writeValueAsString(paymentRequestDto);
 

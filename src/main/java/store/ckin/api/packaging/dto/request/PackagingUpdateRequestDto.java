@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 포장 정책 수정 요청 DTO.
@@ -14,6 +15,7 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class PackagingUpdateRequestDto {
 
     @NotNull(message = "포장 정책가 없습니다.")

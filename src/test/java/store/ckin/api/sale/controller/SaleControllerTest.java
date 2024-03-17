@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.common.domain.PageInfo;
@@ -63,21 +64,20 @@ class SaleControllerTest {
         given(saleFacade.createSale(any(SaleCreateRequestDto.class)))
                 .willReturn("12314");
 
-        SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
-                1L,
-                "테스트 책",
-                "정승조",
-                "01012345678",
-                "정승조",
-                "01012345678",
-                3000,
-                LocalDate.of(2024, 3, 7),
-                "123456",
-                "광주광역시 동구 조선대 5길 ",
-                "IT 융합대학",
-                0,
-                10000
-        );
+        SaleCreateRequestDto requestDto = new SaleCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "memberId", 1L);
+        ReflectionTestUtils.setField(requestDto, "saleTitle", "테스트 책");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "deliveryFee", 3000);
+        ReflectionTestUtils.setField(requestDto, "saleDeliveryDate", LocalDate.of(2024, 3, 7));
+        ReflectionTestUtils.setField(requestDto, "postcode", "123456");
+        ReflectionTestUtils.setField(requestDto, "address", "광주광역시 동구 조선대 5길 ");
+        ReflectionTestUtils.setField(requestDto, "detailAddress", "1층 NHN");
+        ReflectionTestUtils.setField(requestDto, "pointUsage", 0);
+        ReflectionTestUtils.setField(requestDto, "totalPrice", 10000);
 
         String json = objectMapper.writeValueAsString(requestDto);
 
@@ -96,6 +96,7 @@ class SaleControllerTest {
     void testGetSales() throws Exception {
         SaleResponseDto responseDto =
                 new SaleResponseDto(
+                        1L,
                         1L,
                         "테스트 제목",
                         "test@test.com",
@@ -156,6 +157,7 @@ class SaleControllerTest {
     void testGetSaleDetail() throws Exception {
         SaleResponseDto sale =
                 new SaleResponseDto(
+                        1L,
                         1L,
                         "테스트 제목",
                         "test@test.com",
@@ -355,6 +357,7 @@ class SaleControllerTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        1L,
                         "테스트 제목",
                         "test@test.com",
                         "1234",
@@ -430,6 +433,102 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
                         jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
                 );
+    }
+
+    @Test
+    @DisplayName("회원의 ID와 주분 번호를 통해 주문 상세 정보 조회")
+    void testGetMemberSaleDetailBySaleNumber() throws Exception {
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "testimg.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+        SaleResponseDto responseDto =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        Sale.DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        Sale.PaymentStatus.WAITING,
+                        "123456"
+                );
+
+        PaymentResponseDto payment = new PaymentResponseDto(
+                1L,
+                1L,
+                "1232321",
+                "1234",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "test.com");
+
+
+        SaleDetailResponseDto sale = new SaleDetailResponseDto(List.of(bookSale), responseDto, payment);
+
+        given(saleFacade.getMemberSaleDetailBySaleNumber(anyString(), anyLong()))
+                .willReturn(sale);
+
+        mockMvc.perform(get("/api/sales/member")
+                        .param("saleNumber", "1234")
+                        .param("memberId", "1"))
+                .andExpectAll(
+                        jsonPath("$.bookSaleList[0].bookId").value(bookSale.getBookId()),
+                        jsonPath("$.bookSaleList[0].fileUrl").value(bookSale.getFileUrl()),
+                        jsonPath("$.bookSaleList[0].bookTitle").value(bookSale.getBookTitle()),
+                        jsonPath("$.bookSaleList[0].quantity").value(bookSale.getQuantity()),
+                        jsonPath("$.bookSaleList[0].couponId").value(bookSale.getCouponId()),
+                        jsonPath("$.bookSaleList[0].packagingType").value(bookSale.getPackagingType()),
+                        jsonPath("$.bookSaleList[0].packagingPrice").value(bookSale.getPackagingPrice()),
+                        jsonPath("$.bookSaleList[0].paymentAmount").value(bookSale.getPaymentAmount()),
+                        jsonPath("$.saleResponseDto.saleId").value(responseDto.getSaleId()),
+                        jsonPath("$.saleResponseDto.title").value(responseDto.getTitle()),
+                        jsonPath("$.saleResponseDto.memberEmail").value(responseDto.getMemberEmail()),
+                        jsonPath("$.saleResponseDto.saleNumber").value(responseDto.getSaleNumber()),
+                        jsonPath("$.saleResponseDto.saleOrdererName").value(responseDto.getSaleOrdererName()),
+                        jsonPath("$.saleResponseDto.saleOrdererContact").value(responseDto.getSaleOrdererContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverName").value(responseDto.getSaleReceiverName()),
+                        jsonPath("$.saleResponseDto.saleReceiverContact").value(responseDto.getSaleReceiverContact()),
+                        jsonPath("$.saleResponseDto.saleReceiverAddress").value(responseDto.getSaleReceiverAddress()),
+                        jsonPath("$.saleResponseDto.saleDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleShippingDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryDate").isNotEmpty(),
+                        jsonPath("$.saleResponseDto.saleDeliveryStatus").value(
+                                responseDto.getSaleDeliveryStatus().name()),
+                        jsonPath("$.saleResponseDto.saleDeliveryFee").value(responseDto.getSaleDeliveryFee()),
+                        jsonPath("$.saleResponseDto.salePointUsage").value(responseDto.getSalePointUsage()),
+                        jsonPath("$.saleResponseDto.saleTotalPrice").value(responseDto.getSaleTotalPrice()),
+                        jsonPath("$.saleResponseDto.salePaymentStatus").value(
+                                responseDto.getSalePaymentStatus().name()),
+                        jsonPath("$.saleResponseDto.saleShippingPostCode").value(responseDto.getSaleShippingPostCode()),
+                        jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
+                        jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
+                        jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
+                        jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
+                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
+                )
+                .andDo(print());
     }
 
     @Test
