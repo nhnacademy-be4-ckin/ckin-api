@@ -3,6 +3,8 @@ package store.ckin.api.address.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.address.domain.exception.AddressNotFoundException;
 import store.ckin.api.address.domain.request.AddressAddRequestDto;
 import store.ckin.api.address.domain.request.AddressUpdateRequestDto;
 import store.ckin.api.address.domain.response.MemberAddressResponseDto;
@@ -20,9 +22,14 @@ import store.ckin.api.address.service.AddressService;
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public boolean isDefaultAddress(Long addressId) {
-        return false;
+        if (!addressRepository.existsById(addressId)) {
+            throw new AddressNotFoundException();
+        }
+
+        return addressRepository.isDefaultAddress(addressId);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package store.ckin.api.address.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import store.ckin.api.address.entity.Address;
 
 /**
@@ -10,4 +11,6 @@ import store.ckin.api.address.entity.Address;
  * @version : 2024. 03. 17.
  */
 public interface AddressRepository extends JpaRepository<Address, Long>, AddressRepositoryCustom {
+    @Query(value = "SELECT a.isDefault FROM Address AS a WHERE a.id = :addressId")
+    Boolean isDefaultAddress(Long addressId);
 }

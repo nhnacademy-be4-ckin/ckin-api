@@ -51,5 +51,5 @@ public class Address {
 
     @Column(name = "address_default")
     @ColumnDefault("false")
-    private boolean isDefault;
+    private Boolean isDefault;
 }

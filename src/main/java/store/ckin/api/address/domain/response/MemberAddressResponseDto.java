@@ -18,5 +18,5 @@ public class MemberAddressResponseDto {
 
     private String alias;
 
-    private boolean isDefault;
+    private Boolean isDefault;
 }
