@@ -72,9 +72,17 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.getMemberAddressList(memberId);
     }
 
+    @Transactional
     @Override
-    public void updateAddress(Long memberId, AddressUpdateRequestDto addressUpdateRequestDto) {
+    public void updateAddress(Long memberId, Long addressId, AddressUpdateRequestDto addressUpdateRequestDto) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
 
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(AddressNotFoundException::new);
+
+        address.update(addressUpdateRequestDto);
     }
 
     @Override

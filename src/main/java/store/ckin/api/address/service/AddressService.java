@@ -18,7 +18,7 @@ public interface AddressService {
 
     List<MemberAddressResponseDto> getMemberAddressList(Long memberId);
 
-    void updateAddress(Long memberId, AddressUpdateRequestDto addressUpdateRequestDto);
+    void updateAddress(Long memberId, Long addressId, AddressUpdateRequestDto addressUpdateRequestDto);
 
     void setDefaultAddress(Long addressId);
 

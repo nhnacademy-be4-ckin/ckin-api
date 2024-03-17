@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import store.ckin.api.address.domain.request.AddressUpdateRequestDto;
 import store.ckin.api.member.entity.Member;
 
 /**
@@ -52,4 +53,15 @@ public class Address {
     @Column(name = "address_default")
     @ColumnDefault("false")
     private Boolean isDefault;
+
+    /**
+     * 주소를 수정하는 메서드 입니다.
+     *
+     * @param addressUpdateRequestDto 기본주소, 상세주소, 별칭
+     */
+    public void update(AddressUpdateRequestDto addressUpdateRequestDto) {
+        this.base = addressUpdateRequestDto.getBase();
+        this.detail = addressUpdateRequestDto.getDetail();
+        this.alias = addressUpdateRequestDto.getAlias();
+    }
 }
