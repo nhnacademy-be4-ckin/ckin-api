@@ -9,5 +9,5 @@ import store.ckin.api.address.entity.Address;
  * @author : jinwoolee
  * @version : 2024. 03. 17.
  */
-public interface AddressRepository extends JpaRepository<Address, Long> {
+public interface AddressRepository extends JpaRepository<Address, Long>, AddressRepositoryCustom {
 }

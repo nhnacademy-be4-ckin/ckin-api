@@ -1,8 +1,7 @@
 package store.ckin.api.address.repository.impl;
 
-import java.util.List;
-
 import com.querydsl.core.types.Projections;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.address.domain.response.MemberAddressResponseDto;
 import store.ckin.api.address.entity.Address;
