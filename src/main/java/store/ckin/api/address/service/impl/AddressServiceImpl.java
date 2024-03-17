@@ -4,12 +4,17 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.address.domain.exception.AddressAlreadyExistsException;
 import store.ckin.api.address.domain.exception.AddressNotFoundException;
 import store.ckin.api.address.domain.request.AddressAddRequestDto;
 import store.ckin.api.address.domain.request.AddressUpdateRequestDto;
 import store.ckin.api.address.domain.response.MemberAddressResponseDto;
+import store.ckin.api.address.entity.Address;
 import store.ckin.api.address.repository.AddressRepository;
 import store.ckin.api.address.service.AddressService;
+import store.ckin.api.member.entity.Member;
+import store.ckin.api.member.exception.MemberNotFoundException;
+import store.ckin.api.member.repository.MemberRepository;
 
 /**
  * AddressService 의 구현체 입니다.
@@ -22,6 +27,8 @@ import store.ckin.api.address.service.AddressService;
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
+    private final MemberRepository memberRepository;
+
     @Transactional(readOnly = true)
     @Override
     public boolean isDefaultAddress(Long addressId) {
@@ -32,9 +39,27 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.isDefaultAddress(addressId);
     }
 
+    @Transactional
     @Override
     public void addAddress(Long memberId, AddressAddRequestDto addressAddRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
 
+        if (addressRepository.existsByMemberIdAndBaseAndDetail(
+                memberId,
+                addressAddRequestDto.getBase(),
+                addressAddRequestDto.getDetail())) {
+            throw new AddressAlreadyExistsException();
+        }
+
+        Address address = Address.builder()
+                .member(member)
+                .base(addressAddRequestDto.getBase())
+                .base(addressAddRequestDto.getDetail())
+                .base(addressAddRequestDto.getAlias())
+                .build();
+
+        addressRepository.save(address);
     }
 
     @Override

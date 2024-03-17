@@ -13,4 +13,6 @@ import store.ckin.api.address.entity.Address;
 public interface AddressRepository extends JpaRepository<Address, Long>, AddressRepositoryCustom {
     @Query(value = "SELECT a.isDefault FROM Address AS a WHERE a.id = :addressId")
     Boolean isDefaultAddress(Long addressId);
+
+    boolean existsByMemberIdAndBaseAndDetail(Long memberId, String base, String detail);
 }

@@ -1,5 +1,6 @@
 package store.ckin.api.address.domain.request;
 
+import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +13,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AddressAddRequestDto {
+    @NotBlank
     private String base;
 
+    @NotBlank
     private String detail;
 
+    @NotBlank
     private String alias;
 }
