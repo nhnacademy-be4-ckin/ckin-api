@@ -10,9 +10,10 @@ import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
@@ -97,16 +98,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberInfoDetailResponseDto getMemberInfoDetail(Long id) {
-        if (!memberRepository.existsById(id)) {
-            throw new MemberNotFoundException(id);
-        }
-
-        return memberRepository.getMemberInfoDetail(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException(id);
@@ -129,6 +120,18 @@ public class MemberServiceImpl implements MemberService {
         member.updatePoint(pointUsage);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public MemberOauthLoginResponseDto getOauthMemberInfo(MemberOauthIdOnlyRequestDto memberOauthIdOnlyRequestDto) {
+        String oauthId = memberOauthIdOnlyRequestDto.getOauthId();
+
+        if (!memberRepository.existsByOauthId(oauthId)) {
+            throw new MemberNotFoundException();
+        }
+
+        return memberRepository.getOauthMemberInfo(oauthId);
+    }
+  
     /**
      * {@inheritDoc}
      *

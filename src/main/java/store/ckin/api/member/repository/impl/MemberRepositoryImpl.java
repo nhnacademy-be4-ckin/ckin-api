@@ -4,8 +4,8 @@ import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.grade.entity.QGrade;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberInfoDetailResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
@@ -39,18 +39,6 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public MemberInfoDetailResponseDto getMemberInfoDetail(Long id) {
-        QMember member = QMember.member;
-
-        return from(member)
-                .select(Projections.constructor(MemberInfoDetailResponseDto.class,
-                        member.email,
-                        member.role))
-                .where(member.id.eq(id))
-                .fetchOne();
-    }
-
-    @Override
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         QMember member = QMember.member;
         QGrade grade = QGrade.grade;
@@ -70,4 +58,15 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                 .fetchOne();
     }
 
+    @Override
+    public MemberOauthLoginResponseDto getOauthMemberInfo(String oauthId) {
+        QMember member = QMember.member;
+
+        return from(member)
+                .select(Projections.constructor(MemberOauthLoginResponseDto.class,
+                        member.id,
+                        member.role))
+                .where(member.oauthId.eq(oauthId))
+                .fetchOne();
+    }
 }

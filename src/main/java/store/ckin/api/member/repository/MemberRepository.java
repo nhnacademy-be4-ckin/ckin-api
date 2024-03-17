@@ -13,6 +13,8 @@ import store.ckin.api.member.entity.Member;
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     boolean existsByEmail(String email);
 
+    boolean existsByOauthId(String oauthId);
+
     /**
      * 이메일로 Member 를 조회하는 메서드 입니다.
      *

@@ -172,7 +172,7 @@ public class SaleFacade {
     public SaleDetailResponseDto getMemberSaleDetailBySaleNumber(String saleNumber, Long memberId) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
-
+      
         if (!Objects.equals(memberId, saleDetail.getMemberId())) {
             throw new SaleMemberNotMatchException(saleNumber);
         }
