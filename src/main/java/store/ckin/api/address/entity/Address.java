@@ -64,4 +64,8 @@ public class Address {
         this.detail = addressUpdateRequestDto.getDetail();
         this.alias = addressUpdateRequestDto.getAlias();
     }
+
+    public void toggleDefault() {
+        this.isDefault = !this.isDefault;
+    }
 }

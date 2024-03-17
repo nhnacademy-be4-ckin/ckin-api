@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import store.ckin.api.address.entity.Address;
 
+import java.util.Optional;
+
 /**
  * Address 에 관한 쿼리를 관리하는 인터페이스 입니다.
  *
@@ -15,4 +17,7 @@ public interface AddressRepository extends JpaRepository<Address, Long>, Address
     Boolean isDefaultAddress(Long addressId);
 
     boolean existsByMemberIdAndBaseAndDetail(Long memberId, String base, String detail);
+
+    @Query(value = "SELECT a FROM Address AS a WHERE a.member.id = :memberId AND a.isDefault = true")
+    Optional<Address> findDefaultAddressByMemberId(Long memberId);
 }

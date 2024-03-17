@@ -85,9 +85,22 @@ public class AddressServiceImpl implements AddressService {
         address.update(addressUpdateRequestDto);
     }
 
+    @Transactional
     @Override
-    public void setDefaultAddress(Long addressId) {
+    public void setDefaultAddress(Long memberId, Long addressId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
 
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(AddressNotFoundException::new);
+
+        if (!address.getIsDefault()) {
+            addressRepository.findDefaultAddressByMemberId(memberId)
+                            .ifPresent(Address::toggleDefault);
+
+            address.toggleDefault();
+        }
     }
 
     @Override

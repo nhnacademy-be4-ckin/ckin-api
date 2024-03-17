@@ -20,7 +20,7 @@ public interface AddressService {
 
     void updateAddress(Long memberId, Long addressId, AddressUpdateRequestDto addressUpdateRequestDto);
 
-    void setDefaultAddress(Long addressId);
+    void setDefaultAddress(Long memberId, Long addressId);
 
     void deleteAddress(Long addressId);
 }
