@@ -105,7 +105,11 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional
     @Override
-    public void deleteAddress(Long addressId) {
+    public void deleteAddress(Long memberId, Long addressId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
         if (!addressRepository.existsById(addressId)) {
             throw new AddressNotFoundException();
         }

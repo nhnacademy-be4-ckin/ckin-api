@@ -22,5 +22,5 @@ public interface AddressService {
 
     void setDefaultAddress(Long memberId, Long addressId);
 
-    void deleteAddress(Long addressId);
+    void deleteAddress(Long memberId, Long addressId);
 }
