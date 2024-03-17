@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.member.entity.QMember;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.QReview;
 import store.ckin.api.review.entity.Review;
@@ -33,21 +34,30 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
 
     QReview review = QReview.review;
     QMember member = QMember.member;
-
     QBook book = QBook.book;
 
     @Override
-    public Page<ReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable) {
+    public Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-
-        List<Review> reviews = queryFactory
-                .selectFrom(review)
-                .leftJoin(review.member, member)
-                .where(member.id.eq(memberId))
+        List<Long> reviewIds = queryFactory
+                .select(review.reviewId)
+                .from(review)
+                .orderBy(review.createdAt.desc())
+                .where(review.member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        List<Review> reviews = queryFactory
+                .selectFrom(review)
+                .leftJoin(review.member, member).fetchJoin()
+                .leftJoin(review.book, book).fetchJoin()
+                .orderBy(review.createdAt.desc())
+                .where(review.reviewId.in(reviewIds))
+                .distinct()
+                .fetch();
+
 
         Long total = Optional.ofNullable(queryFactory
                         .select(review.count())
@@ -58,8 +68,8 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
                 .orElse(0L);
 
 
-        List<ReviewResponseDto> reviewResponseDtos = reviews.stream()
-                .map(this::convertToReviewResponseDto)
+        List<MyPageReviewResponseDto> reviewResponseDtos = reviews.stream()
+                .map(this::convertToMyPageReviewResponseDto)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(reviewResponseDtos, pageable, total);
@@ -72,6 +82,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
         List<Review> reviews = queryFactory
                 .selectFrom(review)
                 .leftJoin(review.book, book)
+                .orderBy(review.createdAt.desc())
                 .where(book.bookId.eq(bookId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -102,5 +113,17 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
                 review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
+    private MyPageReviewResponseDto convertToMyPageReviewResponseDto(Review review) {
+        return MyPageReviewResponseDto.builder()
+                .bookId(review.getBook().getBookId())
+                .reviewId(review.getReviewId())
+                .author(review.getMember().getName())
+                .message(review.getReviewComment())
+                .reviewRate(review.getReviewRate())
+                .reviewDate(review.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .bookTitle(review.getBook().getBookTitle())
+                .thumbnailPath(review.getBook().getThumbnail().getFileUrl())
+                .build();
+    }
 
 }
