@@ -1,4 +1,4 @@
-package store.ckin.api.address.domain.exception;
+package store.ckin.api.address.exception;
 
 /**
  * 이미 등록된 주소일 때 호출되는 Exception 클래스 입니다.

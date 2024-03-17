@@ -1,4 +1,4 @@
-package store.ckin.api.address.domain.exception;
+package store.ckin.api.address.exception;
 
 /**
  * 조회한 주소가 없을 때 호출되는 Exception 클래스 입니다.
