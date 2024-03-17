@@ -33,6 +33,5 @@ public interface ReviewService {
      * @return 리뷰 DTO 페이지
      */
     Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId);
-    @Transactional(readOnly = true)
     Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable);
 }
