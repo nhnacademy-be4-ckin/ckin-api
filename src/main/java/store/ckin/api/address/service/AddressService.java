@@ -12,8 +12,6 @@ import store.ckin.api.address.domain.response.MemberAddressResponseDto;
  * @version : 2024. 03. 18.
  */
 public interface AddressService {
-    boolean isDefaultAddress(Long addressId);
-
     void addAddress(Long memberId, AddressAddRequestDto addressAddRequestDto);
 
     List<MemberAddressResponseDto> getMemberAddressList(Long memberId);

@@ -29,16 +29,6 @@ public class AddressServiceImpl implements AddressService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional(readOnly = true)
-    @Override
-    public boolean isDefaultAddress(Long addressId) {
-        if (!addressRepository.existsById(addressId)) {
-            throw new AddressNotFoundException();
-        }
-
-        return addressRepository.isDefaultAddress(addressId);
-    }
-
     @Transactional
     @Override
     public void addAddress(Long memberId, AddressAddRequestDto addressAddRequestDto) {
