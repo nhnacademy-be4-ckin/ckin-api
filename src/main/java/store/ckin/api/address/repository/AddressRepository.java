@@ -1,4 +1,4 @@
-package store.ckin.api.address.entity.repository;
+package store.ckin.api.address.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.address.entity.Address;
