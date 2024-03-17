@@ -105,6 +105,6 @@ public class Member {
 
 
     public void updatePoint(Integer pointUsage) {
-        this.point -= pointUsage;
+        this.point += pointUsage;
     }
 }

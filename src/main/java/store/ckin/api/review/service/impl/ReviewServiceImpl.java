@@ -1,8 +1,8 @@
 package store.ckin.api.review.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +22,7 @@ import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
+import store.ckin.api.review.exception.SaveFileException;
 import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
 
@@ -31,8 +32,8 @@ import store.ckin.api.review.service.ReviewService;
  * @author 이가은
  * @version 2024. 03. 11.
  */
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
@@ -40,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final BookRepository bookRepository;
     private final ObjectStorageService objectStorageService;
     private final FileRepository fileRepository;
+
+    private static final String REVIEW_IMAGE_CATEGORY = "review";
 
     /**
      * 리뷰 업로드를 구현하는 메소드 입니다.
@@ -50,34 +53,31 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void postReview(ReviewCreateRequestDto createRequestDto, List<MultipartFile> imageList) {
-        Optional<Member> member = memberRepository.findById(createRequestDto.getMemberId());
+        Member member = memberRepository.findById(createRequestDto.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException(createRequestDto.getMemberId()));
 
-        if (member.isEmpty()) {
-            throw new MemberNotFoundException(createRequestDto.getMemberId());
-        }
+        Book book = bookRepository.findByBookId(createRequestDto.getBookId())
+                .orElseThrow(() -> new BookNotFoundException(createRequestDto.getBookId()));
 
-        Optional<Book> book = bookRepository.findByBookId(createRequestDto.getBookId());
+        book.updateBookReviewRate(createRequestDto.getReviewRate());
 
-        if (book.isEmpty()) {
-            throw new BookNotFoundException(createRequestDto.getBookId());
-        }
-        book.get().setBookReviewRate(createRequestDto.getReviewRate());
         Review review = reviewRepository.save(Review.builder()
-                .member(member.get())
-                .book(book.get())
+                .member(member)
+                .book(book)
                 .reviewRate(createRequestDto.getReviewRate())
                 .reviewComment(createRequestDto.getReviewComment())
                 .build());
+
         if (Objects.nonNull(imageList)) {
             try {
                 for (MultipartFile file : imageList) {
-                    File reviewFile = objectStorageService.saveFile(file, "review");
+                    File reviewFile = objectStorageService.saveFile(file, REVIEW_IMAGE_CATEGORY);
                     fileRepository.save(reviewFile.toBuilder()
                             .review(review)
                             .build());
                 }
-            } catch (Exception e) {
-                throw new RuntimeException();
+            } catch (IOException e) {
+                throw new SaveFileException();
             }
         }
     }
@@ -92,13 +92,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional(readOnly = true)
     public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
+
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
         }
+
         Page<ReviewResponseDto> reviewPage = reviewRepository.getReviewPageList(pageable, bookId);
-        reviewPage.stream().forEach(reviewResponseDto -> {
-            reviewResponseDto.setFilePath(fileRepository.findFilePathByReviewId(reviewResponseDto.getReviewId()));
-        });
+
+        reviewPage.stream()
+                .forEach(reviewResponseDto -> reviewResponseDto.setFilePath(
+                        fileRepository.findFilePathByReviewId(reviewResponseDto.getReviewId())));
         return reviewPage;
     }
 }

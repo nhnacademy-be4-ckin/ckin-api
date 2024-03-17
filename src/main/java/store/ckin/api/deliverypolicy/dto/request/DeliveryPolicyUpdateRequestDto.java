@@ -3,6 +3,7 @@ package store.ckin.api.deliverypolicy.dto.request;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 배송비 정책 수정 요청 DTO.
@@ -12,6 +13,7 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class DeliveryPolicyUpdateRequestDto {
 
     @NotNull(message = "배송비를 입력해주세요.")

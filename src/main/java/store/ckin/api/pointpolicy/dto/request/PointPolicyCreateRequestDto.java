@@ -6,6 +6,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 포인트 정책 생성 요청 DTO.
@@ -15,6 +16,7 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class PointPolicyCreateRequestDto {
 
     @Positive(message = "포인트 정책 ID는 1 이상의 숫자로 입력해주세요.")

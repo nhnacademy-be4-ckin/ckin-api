@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
-import store.ckin.api.review.service.ReviewService;
+import store.ckin.api.review.facade.ReviewFacade;
 
 /**
  * ReviewController 클래스.
@@ -30,7 +30,8 @@ import store.ckin.api.review.service.ReviewService;
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
 public class ReviewController {
-    private final ReviewService reviewService;
+
+    private final ReviewFacade reviewFacade;
 
     /**
      * 리뷰 업로드를 구현하는 메소드 입니다.
@@ -43,8 +44,7 @@ public class ReviewController {
                                            @RequestPart(value = "imageList", required = false)
                                            List<MultipartFile> imageList) {
 
-        reviewService.postReview(createRequestDto, imageList);
-        //TODO: point 적립
+        reviewFacade.postReview(createRequestDto, imageList);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -58,9 +58,9 @@ public class ReviewController {
      */
     @GetMapping("{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewPageList(
-            @PageableDefault(page = 0, size = 5) Pageable pageable,
+            @PageableDefault(size = 5) Pageable pageable,
             @PathVariable("bookId") Long bookId) {
-        Page<ReviewResponseDto> content = reviewService.getReviewPageList(pageable, bookId);
+        Page<ReviewResponseDto> content = reviewFacade.getReviewPageList(pageable, bookId);
 
         return ResponseEntity.ok().body(content);
     }
