@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.address.domain.request.AddressAddRequestDto;
+import store.ckin.api.address.domain.request.AddressUpdateRequestDto;
 import store.ckin.api.address.domain.response.MemberAddressResponseDto;
 import store.ckin.api.address.service.AddressService;
 
@@ -38,5 +39,14 @@ public class AddressController {
         List<MemberAddressResponseDto> addressList = addressService.getMemberAddressList(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(addressList);
+    }
+
+    @PostMapping("/members/{memberId}/addresses/{addressId}")
+    ResponseEntity<Void> updateAddress(@PathVariable("memberId") Long memberId,
+                                       @PathVariable("addressId") Long addressId,
+                                       AddressUpdateRequestDto addressUpdateRequestDto) {
+        addressService.updateAddress(memberId, addressId, addressUpdateRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
