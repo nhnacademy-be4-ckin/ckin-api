@@ -103,8 +103,13 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteAddress(Long addressId) {
+        if (!addressRepository.existsById(addressId)) {
+            throw new AddressNotFoundException();
+        }
 
+        addressRepository.deleteById(addressId);
     }
 }
