@@ -77,7 +77,7 @@ public class ReviewController {
     public ResponseEntity<Page<MyPageReviewResponseDto>> getReviewPageListByMemberId(
             @PageableDefault(page = 0, size = 5) Pageable pageable,
             @PathVariable("memberId") Long memberId) {
-        Page<MyPageReviewResponseDto> content = reviewService.findReviewsByMemberWithPagination(memberId, pageable);
+        Page<MyPageReviewResponseDto> content = reviewFacade.findReviewsByMemberWithPagination(memberId, pageable);
 
         return ResponseEntity.ok().body(content);
     }

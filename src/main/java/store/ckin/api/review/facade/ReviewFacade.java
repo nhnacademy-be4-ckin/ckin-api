@@ -15,6 +15,7 @@ import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.pointpolicy.dto.response.PointPolicyResponseDto;
 import store.ckin.api.pointpolicy.service.PointPolicyService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.service.ReviewService;
 
@@ -62,5 +63,9 @@ public class ReviewFacade {
     @Transactional(readOnly = true)
     public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
         return reviewService.getReviewPageList(pageable, bookId);
+    }
+
+    public Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable) {
+        return reviewService.findReviewsByMemberWithPagination(memberId, pageable);
     }
 }
