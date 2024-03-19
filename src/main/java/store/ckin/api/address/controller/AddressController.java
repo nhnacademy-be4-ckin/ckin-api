@@ -1,6 +1,7 @@
 package store.ckin.api.address.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class AddressController {
 
     @PostMapping("/members/{memberId}/address")
     ResponseEntity<Void> addAddress(@PathVariable("memberId") Long memberId,
-                                    AddressAddRequestDto addressAddRequestDto) {
+                                    @Valid @RequestBody AddressAddRequestDto addressAddRequestDto) {
         addressService.addAddress(memberId, addressAddRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -43,7 +44,7 @@ public class AddressController {
     @PutMapping("/members/{memberId}/addresses/{addressId}")
     ResponseEntity<Void> updateAddress(@PathVariable("memberId") Long memberId,
                                        @PathVariable("addressId") Long addressId,
-                                       AddressUpdateRequestDto addressUpdateRequestDto) {
+                                       @Valid @RequestBody AddressUpdateRequestDto addressUpdateRequestDto) {
         addressService.updateAddress(memberId, addressId, addressUpdateRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();

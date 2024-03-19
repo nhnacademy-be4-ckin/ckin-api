@@ -16,4 +16,8 @@ public interface AddressRepository extends JpaRepository<Address, Long>, Address
 
     @Query(value = "SELECT a FROM Address AS a WHERE a.member.id = :memberId AND a.isDefault = true")
     Optional<Address> findDefaultAddressByMemberId(Long memberId);
+
+    Optional<Address> findByIdAndMember_Id(Long addressId, Long memberId);
+
+    boolean existsByIdAndMember_Id(Long addressId, Long memberId);
 }

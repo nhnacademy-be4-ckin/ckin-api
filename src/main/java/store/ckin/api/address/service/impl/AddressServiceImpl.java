@@ -31,7 +31,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional
     @Override
-    public void addAddress(Long memberId, AddressAddRequestDto addressAddRequestDto) {
+    public void addAddress(Long memberId,
+                           AddressAddRequestDto addressAddRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -45,8 +46,8 @@ public class AddressServiceImpl implements AddressService {
         Address address = Address.builder()
                 .member(member)
                 .base(addressAddRequestDto.getBase())
-                .base(addressAddRequestDto.getDetail())
-                .base(addressAddRequestDto.getAlias())
+                .detail(addressAddRequestDto.getDetail())
+                .alias(addressAddRequestDto.getAlias())
                 .build();
 
         addressRepository.save(address);
@@ -64,12 +65,21 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional
     @Override
-    public void updateAddress(Long memberId, Long addressId, AddressUpdateRequestDto addressUpdateRequestDto) {
+    public void updateAddress(Long memberId,
+                              Long addressId,
+                              AddressUpdateRequestDto addressUpdateRequestDto) {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
 
-        Address address = addressRepository.findById(addressId)
+        if (addressRepository.existsByMemberIdAndBaseAndDetail(
+                memberId,
+                addressUpdateRequestDto.getBase(),
+                addressUpdateRequestDto.getDetail())) {
+            throw new AddressAlreadyExistsException();
+        }
+
+        Address address = addressRepository.findByIdAndMember_Id(addressId, memberId)
                 .orElseThrow(AddressNotFoundException::new);
 
         address.update(addressUpdateRequestDto);
@@ -82,7 +92,7 @@ public class AddressServiceImpl implements AddressService {
             throw new MemberNotFoundException();
         }
 
-        Address address = addressRepository.findById(addressId)
+        Address address = addressRepository.findByIdAndMember_Id(addressId, memberId)
                 .orElseThrow(AddressNotFoundException::new);
 
         if (!address.getIsDefault()) {
@@ -100,7 +110,7 @@ public class AddressServiceImpl implements AddressService {
             throw new MemberNotFoundException();
         }
 
-        if (!addressRepository.existsById(addressId)) {
+        if (!addressRepository.existsByIdAndMember_Id(addressId, memberId)) {
             throw new AddressNotFoundException();
         }
 
