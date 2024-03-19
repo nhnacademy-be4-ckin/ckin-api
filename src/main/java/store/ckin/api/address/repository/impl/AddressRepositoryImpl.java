@@ -7,7 +7,6 @@ import store.ckin.api.address.domain.response.MemberAddressResponseDto;
 import store.ckin.api.address.entity.Address;
 import store.ckin.api.address.entity.QAddress;
 import store.ckin.api.address.repository.AddressRepositoryCustom;
-import store.ckin.api.member.entity.QMember;
 
 /**
  * MemberRepositoryCustom 의 구현체 입니다.
@@ -24,10 +23,10 @@ public class AddressRepositoryImpl extends QuerydslRepositorySupport
     @Override
     public List<MemberAddressResponseDto> getMemberAddressList(Long memberId) {
         QAddress address = QAddress.address;
-        QMember member = QMember.member;
 
         return from(address)
                 .select(Projections.constructor(MemberAddressResponseDto.class,
+                        address.postCode,
                         address.base,
                         address.detail,
                         address.alias,

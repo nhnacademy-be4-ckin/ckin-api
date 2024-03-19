@@ -45,6 +45,7 @@ public class AddressServiceImpl implements AddressService {
 
         Address address = Address.builder()
                 .member(member)
+                .postCode(addressAddRequestDto.getPostCode())
                 .base(addressAddRequestDto.getBase())
                 .detail(addressAddRequestDto.getDetail())
                 .alias(addressAddRequestDto.getAlias())
