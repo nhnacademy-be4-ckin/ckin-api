@@ -33,12 +33,14 @@ import store.ckin.api.sale.entity.Sale;
 @Getter
 @Entity
 @Table(name = "BookSale")
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookSale {
 
 
     public enum BookSaleState {
-        ORDER, RETURN, CANCEL, COMPLETE
+        ORDER, CANCEL
     }
 
     @EmbeddedId
@@ -87,22 +89,6 @@ public class BookSale {
         @Column(name = "book_id")
         private Long bookId;
     }
-
-    @Builder
-    public BookSale(Pk pk, Sale sale, Book book, Long couponId, Integer bookSaleQuantity,
-                    Integer bookSalePackagingPrice,
-                    String bookSalePackagingType, Integer bookSalePaymentAmount, BookSaleState bookSaleState) {
-        this.pk = pk;
-        this.sale = sale;
-        this.book = book;
-        this.couponId = couponId;
-        this.bookSaleQuantity = bookSaleQuantity;
-        this.bookSalePackagingPrice = bookSalePackagingPrice;
-        this.bookSalePackagingType = bookSalePackagingType;
-        this.bookSalePaymentAmount = bookSalePaymentAmount;
-        this.bookSaleState = bookSaleState;
-    }
-
 
     public void updateBookSaleState(BookSaleState state) {
         this.bookSaleState = state;
