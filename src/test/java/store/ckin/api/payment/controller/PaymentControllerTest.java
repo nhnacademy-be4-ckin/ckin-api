@@ -25,6 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentSuccessResponseDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.facade.PaymentFacade;
 
 /**
@@ -53,7 +54,7 @@ class PaymentControllerTest {
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
         ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
-        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", "DONE");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", PaymentStatus.DONE);
         ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
         ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
         ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);

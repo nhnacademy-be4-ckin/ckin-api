@@ -18,7 +18,10 @@ import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.entity.Payment;
+import store.ckin.api.payment.entity.PaymentStatus;
+import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 
 /**
  * 결제 레포지토리 테스트입니다.
@@ -45,6 +48,7 @@ class PaymentRepositoryTest {
     Book book;
 
     Sale sale;
+    DeliveryStatus DeliveryStatus;
 
     @BeforeEach
     void setUp() {
@@ -102,10 +106,10 @@ class PaymentRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -120,7 +124,7 @@ class PaymentRepositoryTest {
         Payment payment = Payment.builder()
                 .sale(sale)
                 .paymentKey("12343214")
-                .paymentStatus("DONE")
+                .paymentStatus(PaymentStatus.DONE)
                 .requestedAt(LocalDateTime.now().minusMinutes(10))
                 .approvedAt(LocalDateTime.now())
                 .receipt("https://test.com")
@@ -145,7 +149,7 @@ class PaymentRepositoryTest {
         Payment payment = Payment.builder()
                 .sale(sale)
                 .paymentKey("12343214")
-                .paymentStatus("DONE")
+                .paymentStatus(PaymentStatus.DONE)
                 .requestedAt(LocalDateTime.now().minusMinutes(10))
                 .approvedAt(LocalDateTime.now())
                 .receipt("https://test.com")
