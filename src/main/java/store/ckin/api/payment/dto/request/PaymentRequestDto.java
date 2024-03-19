@@ -3,6 +3,7 @@ package store.ckin.api.payment.dto.request;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.ckin.api.payment.entity.PaymentStatus;
 
 /**
  * 결제 요청 DTO 클래스입니다.
@@ -19,7 +20,7 @@ public class PaymentRequestDto {
 
     private String saleNumber;
 
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
 
     private LocalDateTime requestedAt;
 
