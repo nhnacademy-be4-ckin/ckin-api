@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentSuccessResponseDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.exception.PaymentAmountNotCorrectException;
 import store.ckin.api.payment.exception.PaymentNotCompleteException;
 import store.ckin.api.payment.service.PaymentService;
@@ -39,7 +40,7 @@ public class PaymentFacade {
     @Transactional
     public PaymentSuccessResponseDto createPayment(PaymentRequestDto requestDto) {
 
-        if (!("DONE".equals(requestDto.getPaymentStatus()))) {
+        if (PaymentStatus.DONE != requestDto.getPaymentStatus()) {
             throw new PaymentNotCompleteException();
         }
 
@@ -52,6 +53,11 @@ public class PaymentFacade {
         paymentService.createPayment(sale.getSaleId(), requestDto);
         saleService.updateSalePaymentPaidStatus(sale.getSaleId());
 
+
+        if (Objects.nonNull(sale.getMemberEmail())) {
+            memberService.updateRewardPoint(sale.getSaleId(), sale.getMemberEmail(), sale.getSaleTotalPrice());
+        }
+
         return PaymentSuccessResponseDto.builder()
                 .saleNumber(sale.getSaleNumber())
                 .receiverName(sale.getSaleReceiverName())
@@ -63,18 +69,4 @@ public class PaymentFacade {
                 .build();
     }
 
-
-    /**
-     * 주문 결제 완료 시 회원일 경우 포인트를 적립하는 메서드입니다.
-     *
-     * @param saleNumber 주문 번호 (UUID)
-     */
-    @Transactional
-    public void createRewardPoint(String saleNumber) {
-        SaleResponseDto sale = saleService.getSaleBySaleNumber(saleNumber);
-
-        if (Objects.nonNull(sale.getMemberEmail())) {
-            memberService.updateRewardPoint(sale.getMemberEmail(), sale.getSaleTotalPrice());
-        }
-    }
 }
