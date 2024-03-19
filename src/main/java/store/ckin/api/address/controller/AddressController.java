@@ -21,12 +21,12 @@ import store.ckin.api.member.exception.MemberNotFoundException;
  * @version : 2024. 03. 18.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/members/{memberId}")
 @RequiredArgsConstructor
 public class AddressController {
     private final AddressService addressService;
 
-    @PostMapping("/members/{memberId}/address")
+    @PostMapping("/address")
     ResponseEntity<Void> addAddress(@PathVariable("memberId") Long memberId,
                                     @Valid @RequestBody AddressAddRequestDto addressAddRequestDto) {
         addressService.addAddress(memberId, addressAddRequestDto);
@@ -34,14 +34,14 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/members/{memberId}/address")
+    @GetMapping("/address")
     ResponseEntity<List<MemberAddressResponseDto>> getMemberAddressList(@PathVariable("memberId") Long memberId) {
         List<MemberAddressResponseDto> addressList = addressService.getMemberAddressList(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(addressList);
     }
 
-    @PutMapping("/members/{memberId}/addresses/{addressId}")
+    @PutMapping("/addresses/{addressId}")
     ResponseEntity<Void> updateAddress(@PathVariable("memberId") Long memberId,
                                        @PathVariable("addressId") Long addressId,
                                        @Valid @RequestBody AddressUpdateRequestDto addressUpdateRequestDto) {
@@ -50,7 +50,7 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/members/{memberId}/addresses/{addressId}/default")
+    @PutMapping("/addresses/{addressId}/default")
     ResponseEntity<Void> setDefaultAddress(@PathVariable("memberId") Long memberId,
                                        @PathVariable("addressId") Long addressId) {
         addressService.setDefaultAddress(memberId, addressId);
@@ -58,7 +58,7 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/members/{memberId}/addresses/{addressId}")
+    @DeleteMapping("/addresses/{addressId}")
     ResponseEntity<Void> deleteAddress(@PathVariable("memberId") Long memberId,
                                        @PathVariable("addressId") Long addressId) {
         addressService.deleteAddress(memberId, addressId);
