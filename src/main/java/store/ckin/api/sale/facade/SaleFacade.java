@@ -96,8 +96,6 @@ public class SaleFacade {
 
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleId);
 
-        log.info("bookSale = {}", bookSale);
-
         SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
         PaymentResponseDto payment = paymentService.getPayment(saleId);
 

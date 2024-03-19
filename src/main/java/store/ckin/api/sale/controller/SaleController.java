@@ -154,8 +154,6 @@ public class SaleController {
                                                      @Valid @RequestBody
                                                      SaleDeliveryUpdateRequestDto deliveryStatus) {
 
-        log.info("saleId = {}, deliveryStatus = {}", saleId, deliveryStatus);
-
         saleFacade.updateSaleDeliveryStatus(saleId, deliveryStatus);
         return ResponseEntity.ok().build();
     }
