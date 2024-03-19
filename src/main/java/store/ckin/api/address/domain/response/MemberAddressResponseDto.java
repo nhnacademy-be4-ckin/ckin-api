@@ -12,6 +12,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberAddressResponseDto {
+    private Long addressId;
+
     private String postCode;
 
     private String base;

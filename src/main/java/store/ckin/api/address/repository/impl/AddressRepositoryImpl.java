@@ -26,6 +26,7 @@ public class AddressRepositoryImpl extends QuerydslRepositorySupport
 
         return from(address)
                 .select(Projections.constructor(MemberAddressResponseDto.class,
+                        address.id,
                         address.postCode,
                         address.base,
                         address.detail,
