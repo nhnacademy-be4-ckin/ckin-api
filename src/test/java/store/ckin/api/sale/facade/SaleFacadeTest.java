@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
-import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;

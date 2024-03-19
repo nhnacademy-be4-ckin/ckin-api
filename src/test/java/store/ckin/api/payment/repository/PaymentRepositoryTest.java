@@ -48,7 +48,6 @@ class PaymentRepositoryTest {
     Book book;
 
     Sale sale;
-    DeliveryStatus DeliveryStatus;
 
     @BeforeEach
     void setUp() {
