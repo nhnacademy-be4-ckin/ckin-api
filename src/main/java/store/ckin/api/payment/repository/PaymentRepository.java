@@ -1,5 +1,6 @@
 package store.ckin.api.payment.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.payment.entity.Payment;
 
@@ -11,4 +12,5 @@ import store.ckin.api.payment.entity.Payment;
  */
 public interface PaymentRepository extends JpaRepository<Payment, Long>, PaymentRepositoryCustom {
 
+    Optional<Payment> findBySale_SaleId(Long saleId);
 }

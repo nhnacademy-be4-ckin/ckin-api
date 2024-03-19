@@ -3,6 +3,7 @@ package store.ckin.api.sale.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -30,6 +32,7 @@ import store.ckin.api.sale.facade.SaleFacade;
  * @version 2024. 03. 02.
  */
 
+@Slf4j
 @RestController
 @RequestMapping("/api/sales")
 @RequiredArgsConstructor
@@ -71,19 +74,6 @@ public class SaleController {
     public ResponseEntity<SaleDetailResponseDto> getSaleDetail(@PathVariable("saleId") Long saleId) {
 
         return ResponseEntity.ok(saleFacade.getSaleDetail(saleId));
-    }
-
-    /**
-     * 주문 결제 상태를 결제 완료(PAID)로 변경하는 메서드입니다.
-     * 주문의 상태를 업데이트하고, 책 주문의 상태를 완료(COMPLETE)로 업데이트합니다.
-     *
-     * @param saleId 주문 ID
-     * @return 200 (OK)
-     */
-    @PutMapping("/{saleId}")
-    public ResponseEntity<Void> updateSalePaymentPaidStatus(@PathVariable("saleId") Long saleId) {
-        saleFacade.updateSalePaymentPaidStatus(saleId);
-        return ResponseEntity.ok().build();
     }
 
     /**
@@ -134,7 +124,6 @@ public class SaleController {
             @RequestParam("saleNumber") String saleNumber,
             @RequestParam("memberId") Long memberId) {
 
-
         return ResponseEntity.ok(saleFacade.getMemberSaleDetailBySaleNumber(saleNumber, memberId));
     }
 
@@ -151,5 +140,35 @@ public class SaleController {
             @PageableDefault Pageable pageable) {
 
         return ResponseEntity.ok(saleFacade.getSalesByMemberId(memberId, pageable));
+    }
+
+    /**
+     * 주문 배송 상태를 업데이트하는 메서드입니다.
+     *
+     * @param saleId         주문 ID
+     * @param deliveryStatus 배송 상태
+     * @return 200 (OK)
+     */
+    @PutMapping("/{saleId}/delivery/status")
+    public ResponseEntity<Void> updateDeliveryStatus(@PathVariable Long saleId,
+                                                     @Valid @RequestBody
+                                                     SaleDeliveryUpdateRequestDto deliveryStatus) {
+
+        log.info("saleId = {}, deliveryStatus = {}", saleId, deliveryStatus);
+
+        saleFacade.updateSaleDeliveryStatus(saleId, deliveryStatus);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주문 상태를 취소로 변경하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     * @return 200 (OK)
+     */
+    @PutMapping("/{saleId}/cancel")
+    public ResponseEntity<Void> cancelSale(@PathVariable Long saleId) {
+        saleFacade.cancelSale(saleId);
+        return ResponseEntity.ok().build();
     }
 }

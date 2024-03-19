@@ -1,5 +1,6 @@
 package store.ckin.api.pointhistory.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.ckin.api.pointhistory.entity.PointHistory;
 
@@ -10,4 +11,6 @@ import store.ckin.api.pointhistory.entity.PointHistory;
  * @version 2024. 03. 15.
  */
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long>, PointHistoryRepositoryCustom {
+
+    Optional<PointHistory> findBySale_SaleId(Long saleId);
 }

@@ -48,8 +48,17 @@ public interface MemberService {
     /**
      * [회원 등급의 적립률 * 주문금액]만큼 적립 포인트를 업데이트하는 메서드입니다.
      *
+     * @param saleId     주문 ID
      * @param email      회원 이메일
      * @param totalPrice 총 가격
      */
-    void updateRewardPoint(String email, Integer totalPrice);
+    void updateRewardPoint(Long saleId, String email, Integer totalPrice);
+
+    /**
+     * 취소된 주문의 포인트를 업데이트하는 메서드입니다.
+     *
+     * @param saleId         주문 ID
+     * @param memberEmail    회원 이메일
+     */
+    void updateCancelSalePoint(Long saleId, String memberEmail);
 }
