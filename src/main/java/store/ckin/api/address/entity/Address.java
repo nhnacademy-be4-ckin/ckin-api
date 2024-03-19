@@ -41,6 +41,9 @@ public class Address {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name = "address_post_code")
+    private String postCode;
+
     @Column(name = "address_base")
     private String base;
 
@@ -60,6 +63,7 @@ public class Address {
      * @param addressUpdateRequestDto 기본주소, 상세주소, 별칭
      */
     public void update(AddressUpdateRequestDto addressUpdateRequestDto) {
+        this.postCode = addressUpdateRequestDto.getPostCode();
         this.base = addressUpdateRequestDto.getBase();
         this.detail = addressUpdateRequestDto.getDetail();
         this.alias = addressUpdateRequestDto.getAlias();

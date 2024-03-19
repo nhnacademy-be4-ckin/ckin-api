@@ -12,6 +12,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberAddressResponseDto {
+    private String postCode;
+
     private String base;
 
     private String detail;
