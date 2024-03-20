@@ -44,7 +44,7 @@ import store.ckin.api.packaging.service.PackagingService;
  * @version 2024. 02. 20.
  */
 
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(PackagingController.class)
 class PackagingControllerTest {
 
