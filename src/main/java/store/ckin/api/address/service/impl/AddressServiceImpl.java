@@ -73,13 +73,6 @@ public class AddressServiceImpl implements AddressService {
             throw new MemberNotFoundException();
         }
 
-        if (addressRepository.existsByMemberIdAndBaseAndDetail(
-                memberId,
-                addressUpdateRequestDto.getBase(),
-                addressUpdateRequestDto.getDetail())) {
-            throw new AddressAlreadyExistsException();
-        }
-
         Address address = addressRepository.findByIdAndMember_Id(addressId, memberId)
                 .orElseThrow(AddressNotFoundException::new);
 
