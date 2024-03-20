@@ -1,6 +1,19 @@
 package store.ckin.api.review.controller;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,21 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
-import store.ckin.api.review.service.ReviewService;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import store.ckin.api.review.facade.ReviewFacade;
 
 /**
  * ReviewControllerTest
@@ -46,7 +45,7 @@ class ReviewControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ReviewService reviewService;
+    private ReviewFacade reviewFacade;
     private ReviewCreateRequestDto reviewCreateRequestDto;
     private ReviewResponseDto reviewResponseDto;
 
@@ -71,10 +70,14 @@ class ReviewControllerTest {
     @DisplayName("리뷰 업로드 구현 테스트")
     void testPostReview() throws Exception {
 
-        MockMultipartFile multipartFile1 = new MockMultipartFile("file", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8));
-        MockMultipartFile multipartFile2 = new MockMultipartFile("file", "test2.txt", "text/plain", "test file2".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile multipartFile1 =
+                new MockMultipartFile("file", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile multipartFile2 =
+                new MockMultipartFile("file", "test2.txt", "text/plain", "test file2".getBytes(StandardCharsets.UTF_8));
         String json = objectMapper.writeValueAsString(reviewCreateRequestDto);
-        MockMultipartFile createRequestDto = new MockMultipartFile("createRequestDto", "createRequestDto", "application/json", json.getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile createRequestDto =
+                new MockMultipartFile("createRequestDto", "createRequestDto", "application/json",
+                        json.getBytes(StandardCharsets.UTF_8));
 
         mockMvc.perform(multipart("/api/review")
                         .file(multipartFile1)
@@ -90,7 +93,7 @@ class ReviewControllerTest {
     void testGetReviewPageList() throws Exception {
         Page<ReviewResponseDto> page = new PageImpl<>(List.of(reviewResponseDto));
 
-        when(reviewService.getReviewPageList(any(), anyLong())).thenReturn(page);
+        when(reviewFacade.getReviewPageList(any(), anyLong())).thenReturn(page);
 
         mockMvc.perform(get("/api/review/{bookId}", 1L)
                         .param("page", "0")

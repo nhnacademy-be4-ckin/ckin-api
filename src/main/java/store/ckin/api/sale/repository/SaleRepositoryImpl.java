@@ -46,6 +46,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.member.id,
                         sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,
@@ -143,6 +144,7 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                 .on(sale.member.eq(member))
                 .select(Projections.constructor(SaleResponseDto.class,
                         sale.saleId,
+                        sale.member.id,
                         sale.saleTitle,
                         sale.member.email,
                         sale.saleNumber,

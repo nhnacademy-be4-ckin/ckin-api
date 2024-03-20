@@ -29,6 +29,7 @@ import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.service.PaymentService;
+import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -62,6 +63,9 @@ class SaleFacadeTest {
     @Mock
     PaymentService paymentService;
 
+    @Mock
+    PointHistoryService pointHistoryService;
+
     @BeforeEach
     void setUp() {
 
@@ -87,26 +91,25 @@ class SaleFacadeTest {
 
         List<BookSaleCreateRequestDto> bookSaleList = List.of(firstDto, secondDto);
 
-        SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
-                1L,
-                "테스트 책",
-                "정승조",
-                "01012345678",
-                "정승조",
-                "01012345678",
-                3000,
-                LocalDate.of(2024, 3, 7),
-                "123456",
-                "광주광역시 동구 조선대 5길 ",
-                "IT 융합대학",
-                300,
-                10000
-        );
-
+        SaleCreateRequestDto requestDto = new SaleCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "memberId", 1L);
+        ReflectionTestUtils.setField(requestDto, "saleTitle", "테스트 제목");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "deliveryFee", 3000);
+        ReflectionTestUtils.setField(requestDto, "saleDeliveryDate", LocalDate.of(2024, 3, 7));
+        ReflectionTestUtils.setField(requestDto, "postcode", "123456");
+        ReflectionTestUtils.setField(requestDto, "address", "광주광역시 동구 조선대 5길 ");
+        ReflectionTestUtils.setField(requestDto, "detailAddress", "IT 융합대학");
+        ReflectionTestUtils.setField(requestDto, "pointUsage", 300);
+        ReflectionTestUtils.setField(requestDto, "totalPrice", 10000);
         ReflectionTestUtils.setField(requestDto, "bookSaleList", bookSaleList);
 
         SaleResponseDto sale =
                 new SaleResponseDto(
+                        1L,
                         1L,
                         "테스트 제목",
                         "test@test.com",
@@ -131,9 +134,10 @@ class SaleFacadeTest {
                 .willReturn(sale);
 
         // when
-        saleFacade.createSale(requestDto);
+        String saleNumber = saleFacade.createSale(requestDto);
 
         // then
+        assertEquals(sale.getSaleNumber(), saleNumber);
         verify(saleService, times(1)).createSale(any());
         verify(bookSaleService, times(1)).createBookSale(anyLong(), any());
         verify(memberService, times(1)).updatePoint(anyLong(), any());
@@ -169,6 +173,7 @@ class SaleFacadeTest {
 
         SaleResponseDto sale =
                 new SaleResponseDto(
+                        1L,
                         1L,
                         "테스트 제목",
                         "test@test.com",
@@ -276,6 +281,7 @@ class SaleFacadeTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        1L,
                         "테스트 제목",
                         "test@test.com",
                         "1234",
@@ -307,6 +313,7 @@ class SaleFacadeTest {
     void testGetSaleDetailBySaleNumber_Success() {
         SaleResponseDto sale =
                 new SaleResponseDto(
+                        1L,
                         1L,
                         "테스트 제목",
                         "test@test.com",

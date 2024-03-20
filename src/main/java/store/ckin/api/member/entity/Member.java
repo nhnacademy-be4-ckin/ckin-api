@@ -103,8 +103,10 @@ public class Member {
     @ColumnDefault("0")
     private Integer accumulateAmount;
 
+    @Column(name = "member_oauth_id")
+    private String oauthId;
 
     public void updatePoint(Integer pointUsage) {
-        this.point -= pointUsage;
+        this.point += pointUsage;
     }
 }

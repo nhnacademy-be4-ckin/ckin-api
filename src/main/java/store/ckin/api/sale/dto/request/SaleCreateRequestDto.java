@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 
@@ -21,7 +21,7 @@ import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
  */
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class SaleCreateRequestDto {
 
     private final List<BookSaleCreateRequestDto> bookSaleList = new ArrayList<>();

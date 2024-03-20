@@ -14,4 +14,7 @@ public class MemberNotFoundException extends RuntimeException {
     public MemberNotFoundException(String email) {
         super(String.format("Member not found for this email [%s]", email));
     }
+
+    public MemberNotFoundException() {
+    }
 }

@@ -210,8 +210,8 @@ public class BookServiceImpl implements BookService {
     /**
      * {@inheritDoc}
      */
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public BookResponseDto findBookById(Long bookId) {
         Book book = bookRepository.findByBookId(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
@@ -231,11 +231,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit) {
         return bookRepository.getMainPageResponseDtoByCategoryId(categoryId, limit);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit) {
         return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
     }
