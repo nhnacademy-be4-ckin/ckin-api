@@ -2,6 +2,7 @@ package store.ckin.api.member.service;
 
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
@@ -14,6 +15,8 @@ import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
  * @version : 2024. 02. 16.
  */
 public interface MemberService {
+    boolean alreadyExistsEmail(MemberEmailOnlyRequestDto memberEmailOnlyRequestDto);
+
     /**
      * Member 를 생성하는 메서드 입니다.
      *
