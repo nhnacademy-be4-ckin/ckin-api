@@ -2,6 +2,8 @@ package store.ckin.api.member.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,6 +89,10 @@ public class MemberServiceImpl implements MemberService {
                 .role(Member.Role.MEMBER)
                 .point(registerPolicy.getPointPolicyReserve())
                 .build();
+
+        if (Objects.nonNull(memberCreateRequestDto.getOauthId())) {
+            member.setOauthId(memberCreateRequestDto.getOauthId());
+        }
 
         Member savedMember = memberRepository.save(member);
 
