@@ -3,6 +3,7 @@ package store.ckin.api.category.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import store.ckin.api.category.dto.response.CategoryNameResponseDto;
 import store.ckin.api.category.entity.Category;
 
 /**
@@ -11,7 +12,7 @@ import store.ckin.api.category.entity.Category;
  * @author 나국로
  * @version 2024. 02. 15.
  */
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryCustom {
 
     /**
      * 주어진 카테고리 ID에 해당하는 카테고리를 조회합니다.
