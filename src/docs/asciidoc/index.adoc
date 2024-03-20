@@ -53,3 +53,5 @@ ckin.store
 include::tag.adoc[]
 
 include::delivery-policy.adoc[]
+
+include::packaging.adoc[]

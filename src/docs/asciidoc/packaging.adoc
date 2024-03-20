@@ -1,0 +1,87 @@
+== 포장 정책
+
+=== 포장 정책 생성 - 성공
+
+==== Request
+
+include::{snippets}/packaging/createPackaging/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/createPackaging/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/packaging/createPackaging/success/request-fields.adoc[]
+
+=== 포장 정책 생성 - 실패 (Validation Error)
+
+==== Request
+
+include::{snippets}/packaging/createPackaging/validation-fail/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/createPackaging/validation-fail/http-response.adoc[]
+
+=== 포장 정책 전체 조회
+
+==== Request
+
+include::{snippets}/packaging/getPackagingList/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/getPackagingList/success/http-response.adoc[]
+
+==== Response Parameters
+
+include::{snippets}/packaging/getPackagingList/success/response-fields.adoc[]
+
+=== 포장 정책 조회
+
+==== Request
+
+include::{snippets}/packaging/getPackaging/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/getPackaging/success/http-response.adoc[]
+
+==== Response Parameters
+
+include::{snippets}/packaging/getPackaging/success/response-fields.adoc[]
+
+=== 포장 정책 수정 - 성공
+
+==== Request
+
+include::{snippets}/packaging/updatePackaging/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/updatePackaging/success/http-response.adoc[]
+
+=== 포장 정책 수정 - 실패 (Validation Error)
+
+==== Request
+
+include::{snippets}/packaging/updatePackaging/validation-fail/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/updatePackaging/validation-fail/http-response.adoc[]
+
+=== 포장 정책 삭제
+
+==== Request
+
+include::{snippets}/packaging/deletePackaging/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/packaging/deletePackaging/success/http-response.adoc[]
+
+
+
+

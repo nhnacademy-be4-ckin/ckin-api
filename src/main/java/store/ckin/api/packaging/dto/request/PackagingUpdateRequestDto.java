@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PackagingUpdateRequestDto {
 
-    @NotNull(message = "포장 정책가 없습니다.")
+    @NotNull(message = "포장 정책 ID를 입력해주세요.")
     private Long packagingId;
 
     @NotBlank(message = "포장지 종류를 입력해주세요.")
