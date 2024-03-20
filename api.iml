@@ -3,12 +3,13 @@
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" />
-
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/java" isTestSource="false" />
     </content>
   </component>
   <component name="CheckStyle-IDEA-Module" serialisationVersion="2">
-    <option name="activeLocationsIds" />
+    <option name="activeLocationsIds">
+      <option value="a8fb8a04-ef3f-4177-9d2c-6c531f81164c" />
+    </option>
   </component>
   <component name="FacetManager">
     <facet type="jpa" name="JPA">
