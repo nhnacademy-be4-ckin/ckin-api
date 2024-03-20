@@ -34,4 +34,7 @@ public class Grade {
 
     @Column(name = "grade_point_ratio")
     private Integer pointRatio;
+
+    @Column(name = "grade_condition")
+    private Integer condition;
 }
