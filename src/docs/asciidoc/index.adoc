@@ -51,3 +51,5 @@ ckin.store
 = 2. API
 
 include::tag.adoc[]
+
+include::delivery-policy.adoc[]
