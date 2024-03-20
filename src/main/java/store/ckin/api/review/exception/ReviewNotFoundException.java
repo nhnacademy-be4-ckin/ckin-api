@@ -8,6 +8,6 @@ package store.ckin.api.review.exception;
  */
 public class ReviewNotFoundException extends RuntimeException {
     public ReviewNotFoundException(Long reviewId) {
-        super(String.format("Review not found: %s", reviewId));
+        super(String.format("Review not found: %d", reviewId));
     }
 }

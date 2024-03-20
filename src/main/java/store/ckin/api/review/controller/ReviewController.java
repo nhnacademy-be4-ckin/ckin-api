@@ -77,7 +77,7 @@ public class ReviewController {
      * @param memberId 회원 아이디
      * @return 리뷰 DTO 페이지
      */
-    @GetMapping("members/review/my-page/{memberId}")
+    @GetMapping("/members/review/my-page/{memberId}")
     public ResponseEntity<Page<MyPageReviewResponseDto>> getReviewPageListByMemberId(
             @PageableDefault(page = 0, size = 5) Pageable pageable,
             @PathVariable("memberId") Long memberId) {

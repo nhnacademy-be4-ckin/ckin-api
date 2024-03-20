@@ -122,15 +122,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void updateReview(Long reviewId, ReviewUpdateRequestDto updateRequestDto) {
         Review existingReview = reviewRepository.findById(reviewId)
-                .orElseThrow(()-> new ReviewNotFoundException(reviewId));
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
 
-
-        Review updatedReview = existingReview.toBuilder()
+        existingReview.toBuilder()
                 .reviewComment(updateRequestDto.getReviewComment())
                 .reviewRate(updateRequestDto.getReviewRate()).build();
-        reviewRepository.save(updatedReview);
     }
 }
