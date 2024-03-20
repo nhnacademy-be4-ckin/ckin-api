@@ -167,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(email));
 
-        Grade grade = gradeRepository.findById(member.getGrade().getGradeId())
+        Grade grade = gradeRepository.findById(member.getGrade().getId())
                 .orElseThrow(GradeNotFoundException::new);
 
         Sale sale = saleRepository.findById(saleId)
