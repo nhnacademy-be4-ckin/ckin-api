@@ -57,3 +57,6 @@ include::delivery-policy.adoc[]
 include::packaging.adoc[]
 
 include::payment.adoc[]
+
+include::point-policy.adoc[]
+
