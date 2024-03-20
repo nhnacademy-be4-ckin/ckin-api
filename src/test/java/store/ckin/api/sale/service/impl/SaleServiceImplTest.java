@@ -34,7 +34,9 @@ import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.exception.SaleNotFoundExceptionBySaleNumber;
 import store.ckin.api.sale.exception.SaleNumberNotFoundException;
@@ -99,11 +101,11 @@ class SaleServiceImplTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
                 .saleTotalPrice(10000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
     }
@@ -160,11 +162,11 @@ class SaleServiceImplTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
                 .saleTotalPrice(10000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -232,7 +234,7 @@ class SaleServiceImplTest {
 
         saleService.updateSalePaymentPaidStatus(1L);
 
-        assertEquals(Sale.PaymentStatus.PAID, sale.getSalePaymentStatus());
+        assertEquals(SalePaymentStatus.PAID, sale.getSalePaymentStatus());
     }
 
     @Test
@@ -422,7 +424,6 @@ class SaleServiceImplTest {
 
         PagedResponse<List<SaleInfoResponseDto>> responseDto =
                 saleService.getSalesByMemberId(1L, Pageable.ofSize(10));
-
 
 
         assertAll(

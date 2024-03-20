@@ -207,12 +207,12 @@ class BookSaleServiceImplTest {
         given(bookSaleRepository.findAllByPkSaleId(anyLong()))
                 .willReturn(bookSaleList);
 
-        bookSaleService.updateBookSaleState(1L, BookSale.BookSaleState.COMPLETE);
+        bookSaleService.updateBookSaleState(1L, BookSale.BookSaleState.ORDER);
 
         verify(bookSaleRepository, times(1)).findAllByPkSaleId(anyLong());
 
-        assertEquals(BookSale.BookSaleState.COMPLETE, firstBookSale.getBookSaleState());
-        assertEquals(BookSale.BookSaleState.COMPLETE, secondBookSale.getBookSaleState());
+        assertEquals(BookSale.BookSaleState.ORDER, firstBookSale.getBookSaleState());
+        assertEquals(BookSale.BookSaleState.ORDER, secondBookSale.getBookSaleState());
     }
 
     @Test

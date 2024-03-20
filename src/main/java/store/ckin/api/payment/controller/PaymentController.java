@@ -35,11 +35,8 @@ public class PaymentController {
      */
     @PostMapping
     public ResponseEntity<PaymentSuccessResponseDto> createPayment(@RequestBody PaymentRequestDto requestDto) {
-        // 결제 SAVE
-        PaymentSuccessResponseDto payment = paymentFacade.createPayment(requestDto);
 
-        // 포인트 적립 + 포인트 기록
-        paymentFacade.createRewardPoint(payment.getSaleNumber());
+        PaymentSuccessResponseDto payment = paymentFacade.createPayment(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(payment);
     }
 }

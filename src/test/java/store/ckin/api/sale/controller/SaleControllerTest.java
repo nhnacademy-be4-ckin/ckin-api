@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,12 +30,14 @@ import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
 import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
-import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.facade.SaleFacade;
 
 /**
@@ -109,11 +110,11 @@ class SaleControllerTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -170,11 +171,11 @@ class SaleControllerTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -182,7 +183,7 @@ class SaleControllerTest {
                 1L,
                 1L,
                 "1232321",
-                "1234",
+                PaymentStatus.DONE,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
                 "test.com");
@@ -237,7 +238,7 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
                         jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
                         jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
-                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus().name()),
                         jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
                         jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
@@ -247,16 +248,6 @@ class SaleControllerTest {
         verify(saleFacade, times(1)).getSaleDetail(anyLong());
     }
 
-    @Test
-    @DisplayName("주문 결제 상태를 완료(PAID)로 변경 테스트")
-    void testUpdateSalePaymentPaidStatus() throws Exception {
-
-        mockMvc.perform(put("/api/sales/{saleId}", 1L))
-                .andExpect(status().isOk())
-                .andDo(print());
-
-        verify(saleFacade, times(1)).updateSalePaymentPaidStatus(1L);
-    }
 
     @Test
     @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
@@ -369,11 +360,11 @@ class SaleControllerTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -382,7 +373,7 @@ class SaleControllerTest {
                 1L,
                 1L,
                 "1232321",
-                "1234",
+                PaymentStatus.DONE,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
                 "test.com");
@@ -428,7 +419,7 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
                         jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
                         jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
-                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus().name()),
                         jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
                         jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
@@ -465,11 +456,11 @@ class SaleControllerTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -477,7 +468,7 @@ class SaleControllerTest {
                 1L,
                 1L,
                 "1232321",
-                "1234",
+                PaymentStatus.DONE,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
                 "test.com");
@@ -523,7 +514,7 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.paymentId").value(payment.getPaymentId()),
                         jsonPath("$.paymentResponseDto.saleId").value(payment.getSaleId()),
                         jsonPath("$.paymentResponseDto.paymentKey").value(payment.getPaymentKey()),
-                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus()),
+                        jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus().name()),
                         jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
                         jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())

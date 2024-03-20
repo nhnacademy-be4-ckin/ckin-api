@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
@@ -47,7 +48,7 @@ class PaymentServiceImplTest {
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
         ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
-        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", "DONE");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", PaymentStatus.DONE);
         ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
         ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
         ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);
@@ -70,12 +71,11 @@ class PaymentServiceImplTest {
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
         ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
-        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", "DONE");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", PaymentStatus.DONE);
         ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
         ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
         ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);
         ReflectionTestUtils.setField(paymentRequestDto, "receiptUrl", "https://test.com");
-
 
 
         given(saleRepository.findById(anyLong()))

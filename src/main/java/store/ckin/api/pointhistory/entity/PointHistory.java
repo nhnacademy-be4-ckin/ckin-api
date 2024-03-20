@@ -9,12 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.sale.entity.Sale;
 
 /**
  * 포인트 내역 엔티티입니다.
@@ -35,6 +37,10 @@ public class PointHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pointhistory_id")
     private Long pointHistoryId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

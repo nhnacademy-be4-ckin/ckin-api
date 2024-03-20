@@ -24,17 +24,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
-import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
-import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
@@ -122,11 +123,11 @@ class SaleFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -186,11 +187,11 @@ class SaleFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -203,7 +204,7 @@ class SaleFacadeTest {
                         1L,
                         3L,
                         "12421312",
-                        "DONE",
+                        PaymentStatus.DONE,
                         LocalDateTime.now(),
                         LocalDateTime.now().plusMinutes(10),
                         "test.com"
@@ -220,16 +221,6 @@ class SaleFacadeTest {
                 () -> assertEquals(saleDetail.getPaymentResponseDto(), payment));
 
         verify(saleService, times(1)).getSaleDetail(1L);
-    }
-
-    @Test
-    @DisplayName("주문 결제 상태 완료 변경 테스트")
-    void testUpdateSalePaymentPaidStatus() {
-
-        saleFacade.updateSalePaymentPaidStatus(1L);
-
-        verify(bookSaleService, times(1)).updateBookSaleState(1L, BookSale.BookSaleState.COMPLETE);
-        verify(saleService, times(1)).updateSalePaymentPaidStatus(1L);
     }
 
     @Test
@@ -293,11 +284,11 @@ class SaleFacadeTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -326,11 +317,11 @@ class SaleFacadeTest {
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0),
                         LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
                         LocalDate.of(2024, 3, 7).plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
