@@ -26,7 +26,6 @@ import lombok.NoArgsConstructor;
 public class Grade {
     @Id
     @Column(name = "grade_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gradeId;
 
     @Column(name = "grade_name", unique = true)

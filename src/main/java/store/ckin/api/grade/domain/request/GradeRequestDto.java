@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GradeRequestDto {
+    private Long id;
+
     private String name;
 
     private Integer pointRatio;
