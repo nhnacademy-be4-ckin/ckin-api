@@ -1,7 +1,8 @@
 package store.ckin.api.grade.service;
 
 import java.util.List;
-import store.ckin.api.grade.domain.request.GradeRequestDto;
+import store.ckin.api.grade.domain.request.GradeCreateRequestDto;
+import store.ckin.api.grade.domain.request.GradeUpdateRequestDto;
 import store.ckin.api.grade.entity.Grade;
 
 /**
@@ -11,11 +12,11 @@ import store.ckin.api.grade.entity.Grade;
  * @version : 2024. 03. 20.
  */
 public interface GradeService {
-    void createGrade(GradeRequestDto gradeRequestDto);
+    void createGrade(GradeCreateRequestDto gradeCreateRequestDto);
 
     List<Grade> getGradeList();
 
-    void updateGrade(GradeRequestDto gradeRequestDto);
+    void updateGrade(Long gradeId, GradeUpdateRequestDto gradeUpdateRequestDto);
 
     void deleteGrade(Long gradeId);
 }

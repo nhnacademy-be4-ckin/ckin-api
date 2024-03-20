@@ -8,7 +8,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.grade.domain.request.GradeRequestDto;
+import store.ckin.api.grade.domain.request.GradeCreateRequestDto;
+import store.ckin.api.grade.domain.request.GradeUpdateRequestDto;
 
 /**
  * Grade 테이블에 대한 Entity 입니다.
@@ -39,10 +40,9 @@ public class Grade {
     /**
      * 등급 수정하는 메서드 입니다.
      */
-    public void update(GradeRequestDto gradeRequestDto) {
-        this.id = gradeRequestDto.getId();
-        this.name = gradeRequestDto.getName();
-        this.pointRatio = gradeRequestDto.getPointRatio();
-        this.condition = gradeRequestDto.getCondition();
+    public void update(GradeUpdateRequestDto gradeUpdateRequestDto) {
+        this.name = gradeUpdateRequestDto.getName();
+        this.pointRatio = gradeUpdateRequestDto.getPointRatio();
+        this.condition = gradeUpdateRequestDto.getCondition();
     }
 }

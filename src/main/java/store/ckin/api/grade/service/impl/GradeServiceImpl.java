@@ -4,7 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.ckin.api.grade.domain.request.GradeRequestDto;
+import store.ckin.api.grade.domain.request.GradeCreateRequestDto;
+import store.ckin.api.grade.domain.request.GradeUpdateRequestDto;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeAlreadyExistsException;
 import store.ckin.api.grade.exception.GradeNotFoundException;
@@ -24,16 +25,16 @@ public class GradeServiceImpl implements GradeService {
 
     @Transactional
     @Override
-    public void createGrade(GradeRequestDto gradeRequestDto) {
-        if (gradeRepository.existsById(gradeRequestDto.getId())) {
+    public void createGrade(GradeCreateRequestDto gradeCreateRequestDto) {
+        if (gradeRepository.existsById(gradeCreateRequestDto.getId())) {
             throw new GradeAlreadyExistsException();
         }
 
         Grade grade = Grade.builder()
-                .id(gradeRequestDto.getId())
-                .name(gradeRequestDto.getName())
-                .pointRatio(gradeRequestDto.getPointRatio())
-                .condition(gradeRequestDto.getCondition())
+                .id(gradeCreateRequestDto.getId())
+                .name(gradeCreateRequestDto.getName())
+                .pointRatio(gradeCreateRequestDto.getPointRatio())
+                .condition(gradeCreateRequestDto.getCondition())
                 .build();
 
         gradeRepository.save(grade);
@@ -47,11 +48,11 @@ public class GradeServiceImpl implements GradeService {
 
     @Transactional
     @Override
-    public void updateGrade(GradeRequestDto gradeRequestDto) {
-        Grade grade = gradeRepository.findById(gradeRequestDto.getId())
+    public void updateGrade(Long gradeId, GradeUpdateRequestDto gradeUpdateRequestDto) {
+        Grade grade = gradeRepository.findById(gradeId)
                 .orElseThrow(GradeNotFoundException::new);
 
-        grade.update(gradeRequestDto);
+        grade.update(gradeUpdateRequestDto);
     }
 
     @Transactional

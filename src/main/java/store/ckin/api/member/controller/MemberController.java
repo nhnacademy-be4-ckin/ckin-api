@@ -42,8 +42,6 @@ public class MemberController {
     @PostMapping("/checkEmail")
     public ResponseEntity<Boolean> checkDuplicateEmail(
             @Valid @RequestBody MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
-        log.info("Start");
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberService.alreadyExistsEmail(memberEmailOnlyRequestDto));
     }
