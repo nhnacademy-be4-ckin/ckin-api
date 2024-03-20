@@ -7,4 +7,7 @@ package store.ckin.api.review.exception;
  * @version 2024. 03. 01.
  */
 public class ReviewNotFoundException extends RuntimeException {
+    public ReviewNotFoundException(Long reviewId) {
+        super(String.format("Review not found: %d", reviewId));
+    }
 }

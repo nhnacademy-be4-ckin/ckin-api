@@ -20,9 +20,11 @@ import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.request.ReviewUpdateRequestDto;
 import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
+import store.ckin.api.review.exception.ReviewNotFoundException;
 import store.ckin.api.review.exception.SaveFileException;
 import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.ReviewService;
@@ -119,4 +121,15 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewPage;
     }
 
+    @Override
+    @Transactional
+    public void updateReview(Long reviewId, ReviewUpdateRequestDto updateRequestDto) {
+        Review existingReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
+
+
+        existingReview.toBuilder()
+                .reviewComment(updateRequestDto.getReviewComment())
+                .reviewRate(updateRequestDto.getReviewRate()).build();
+    }
 }
