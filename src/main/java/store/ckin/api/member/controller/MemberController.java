@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
@@ -34,6 +35,18 @@ import store.ckin.api.member.service.MemberService;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+
+    /**
+     * 존재하는 Email 인지 확인하는 API Method 입니다.
+     */
+    @PostMapping("/checkEmail")
+    public ResponseEntity<Boolean> checkDuplicateEmail(
+            @Valid @RequestBody MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
+        log.info("Start");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(memberService.alreadyExistsEmail(memberEmailOnlyRequestDto));
+    }
 
     /**
      * Member 생성을 하는 API Method 입니다.

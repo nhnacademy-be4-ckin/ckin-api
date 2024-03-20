@@ -10,6 +10,7 @@ import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
 import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
@@ -45,6 +46,11 @@ public class MemberServiceImpl implements MemberService {
     private static final Long REGISTER_POINT_POLICY_ID = 100L;
 
     private static final Long NORMAL_GRADE_ID = 1L;
+
+    @Override
+    public boolean alreadyExistsEmail(MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
+        return memberRepository.existsByEmail(memberEmailOnlyRequestDto.getEmail());
+    }
 
     @Override
     @Transactional
