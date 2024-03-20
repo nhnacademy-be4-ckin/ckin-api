@@ -148,7 +148,7 @@ public class SaleFacade {
     }
 
     /**
-     * 회원의 주문 번호를 통해 주문 상세 정보를 조회하는 메서드입니다.
+     * 회원 ID와 주문 번호를 통해 주문 상세 정보를 조회하는 메서드입니다.
      *
      * @param saleNumber 주문 번호
      * @param memberId   회원 ID
@@ -168,35 +168,6 @@ public class SaleFacade {
 
         return new SaleDetailResponseDto(bookSale, saleDetail, payment);
     }
-
-    /**
-     * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
-     *
-     * @param saleNumber     주문 번호
-     * @param memberId       회원 ID
-     * @param ordererContact 주문자 연락처
-     * @return 주문 상세 정보 응답 DTO
-     */
-    @Transactional(readOnly = true)
-    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber, Long memberId, String ordererContact) {
-        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
-
-        if (memberId != null) { // 회원인 경우
-            if (!Objects.equals(memberId, saleDetail.getSaleId())) {
-                throw new SaleMemberNotMatchException(saleNumber);
-            }
-        } else { // 비회원인 경우
-            if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
-                throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
-            }
-        }
-
-        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
-        PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
-
-        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
-    }
-
 
     /**
      * 회원 ID를 통해 해당 회원의 모든 주문 내역을 조회하는 메서드입니다.
