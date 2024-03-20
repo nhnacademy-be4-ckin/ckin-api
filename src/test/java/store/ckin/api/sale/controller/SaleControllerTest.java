@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +33,7 @@ import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -558,5 +560,32 @@ class SaleControllerTest {
                         jsonPath("$.pageInfo.page").value(pageInfo.getPage()),
                         jsonPath("$.pageInfo.size").value(pageInfo.getSize())
                 );
+    }
+
+    @Test
+    @DisplayName("주문 배송 상태 업데이트 테스트")
+    void testUpdateDeliveryStatus() throws Exception {
+        SaleDeliveryUpdateRequestDto deliveryStatus = new SaleDeliveryUpdateRequestDto();
+        ReflectionTestUtils.setField(deliveryStatus, "deliveryStatus", DeliveryStatus.IN_PROGRESS);
+
+        String json = objectMapper.writeValueAsString(deliveryStatus);
+
+        mockMvc.perform(put("/api/sales/{saleId}/delivery/status", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(saleFacade, times(1)).updateSaleDeliveryStatus(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("주문 상태를 취소로 변경하는 테스트")
+    void testCancelSale() throws Exception {
+        mockMvc.perform(put("/api/sales/{saleId}/cancel", 1L))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(saleFacade, times(1)).cancelSale(anyLong());
     }
 }
