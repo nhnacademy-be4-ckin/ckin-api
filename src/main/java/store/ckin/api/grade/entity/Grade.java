@@ -2,14 +2,13 @@ package store.ckin.api.grade.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.ckin.api.grade.domain.request.GradeRequestDto;
 
 /**
  * Grade 테이블에 대한 Entity 입니다.
@@ -26,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class Grade {
     @Id
     @Column(name = "grade_id")
-    private Long gradeId;
+    private Long id;
 
     @Column(name = "grade_name", unique = true)
     private String name;
@@ -36,4 +35,14 @@ public class Grade {
 
     @Column(name = "grade_condition")
     private Integer condition;
+
+    /**
+     * 등급 수정하는 메서드 입니다.
+     */
+    public void update(GradeRequestDto gradeRequestDto) {
+        this.id = gradeRequestDto.getId();
+        this.name = gradeRequestDto.getName();
+        this.pointRatio = gradeRequestDto.getPointRatio();
+        this.condition = gradeRequestDto.getCondition();
+    }
 }
