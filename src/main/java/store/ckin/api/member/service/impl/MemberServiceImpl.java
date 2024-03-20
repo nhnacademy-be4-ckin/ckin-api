@@ -177,6 +177,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void updateCancelSalePoint(Long saleId, String memberEmail) {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new MemberNotFoundException(memberEmail));

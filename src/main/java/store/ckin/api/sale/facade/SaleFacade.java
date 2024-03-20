@@ -53,6 +53,7 @@ public class SaleFacade {
      * @param requestDto 주문 생성 요청 DTO
      * @return 생성된 주문 ID
      */
+    @Transactional
     public String createSale(SaleCreateRequestDto requestDto) {
 
         SaleResponseDto sale = saleService.createSale(requestDto.toCreateSaleWithoutBookRequestDto());

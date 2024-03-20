@@ -3,7 +3,6 @@ package store.ckin.api.sale.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,6 @@ import store.ckin.api.sale.facade.SaleFacade;
  * @version 2024. 03. 02.
  */
 
-@Slf4j
 @RestController
 @RequestMapping("/api/sales")
 @RequiredArgsConstructor
