@@ -95,7 +95,7 @@ public class MemberController {
      * @param memberOauthIdOnlyRequestDto Member OAuth ID
      * @return MemberOauthLoginResponseDto (200 OK)
      */
-    @GetMapping("/login/oauth")
+    @PostMapping("/login/oauth")
     public ResponseEntity<MemberOauthLoginResponseDto> getOauthMemberInfo(
             @Valid @RequestBody MemberOauthIdOnlyRequestDto memberOauthIdOnlyRequestDto) {
         MemberOauthLoginResponseDto responseDto = memberService.getOauthMemberInfo(memberOauthIdOnlyRequestDto);
