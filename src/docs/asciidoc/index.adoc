@@ -60,3 +60,4 @@ include::payment.adoc[]
 
 include::point-policy.adoc[]
 
+include::sale.adoc[]

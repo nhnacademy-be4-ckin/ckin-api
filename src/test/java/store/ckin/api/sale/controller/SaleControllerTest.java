@@ -6,10 +6,19 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,12 +31,16 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
+import store.ckin.api.booksale.dto.response.BookSaleResponseDto;
 import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
@@ -49,6 +62,7 @@ import store.ckin.api.sale.facade.SaleFacade;
  * @version 2024. 03. 07.
  */
 
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(SaleController.class)
 class SaleControllerTest {
 
@@ -67,7 +81,16 @@ class SaleControllerTest {
         given(saleFacade.createSale(any(SaleCreateRequestDto.class)))
                 .willReturn("12314");
 
+        BookSaleCreateRequestDto bookSale = new BookSaleCreateRequestDto();
+        ReflectionTestUtils.setField(bookSale, "bookId", 1L);
+        ReflectionTestUtils.setField(bookSale, "appliedCouponId", 1L);
+        ReflectionTestUtils.setField(bookSale, "packagingId", 4L);
+        ReflectionTestUtils.setField(bookSale, "quantity", 2);
+        ReflectionTestUtils.setField(bookSale, "paymentAmount", 10000);
+
+
         SaleCreateRequestDto requestDto = new SaleCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "bookSaleList", List.of(bookSale));
         ReflectionTestUtils.setField(requestDto, "memberId", 1L);
         ReflectionTestUtils.setField(requestDto, "saleTitle", "테스트 책");
         ReflectionTestUtils.setField(requestDto, "saleOrdererName", "정승조");
@@ -89,7 +112,30 @@ class SaleControllerTest {
                         .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(content().json("12314"))
-                .andDo(print());
+                .andDo(document("sale/createSale/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("bookSaleList[].bookId").description("도서 ID"),
+                                fieldWithPath("bookSaleList[].appliedCouponId").description("적용된 쿠폰 ID"),
+                                fieldWithPath("bookSaleList[].packagingId").description("포장 ID"),
+                                fieldWithPath("bookSaleList[].quantity").description("도서 수량"),
+                                fieldWithPath("bookSaleList[].paymentAmount").description("도서 결제 금액"),
+                                fieldWithPath("memberId").description("주문하는 회원 ID").optional(),
+                                fieldWithPath("saleTitle").description("주문 제목 (책 제목 + 수량)"),
+                                fieldWithPath("saleOrdererName").description("주문자 이름"),
+                                fieldWithPath("saleOrdererContact").description("주문자 연락처"),
+                                fieldWithPath("saleReceiverName").description("수령자 이름"),
+                                fieldWithPath("saleReceiverContact").description("수령자 연락처"),
+                                fieldWithPath("deliveryFee").description("배송비"),
+                                fieldWithPath("saleDeliveryDate").description("배송 날짜"),
+                                fieldWithPath("postcode").description("우편번호"),
+                                fieldWithPath("address").description("주소"),
+                                fieldWithPath("detailAddress").description("상세주소"),
+                                fieldWithPath("pointUsage").description("포인트 사용량"),
+                                fieldWithPath("totalPrice").description("총 주문 금액")
+                        )
+                ));
 
         verify(saleFacade, times(1)).createSale(any());
     }
@@ -127,7 +173,9 @@ class SaleControllerTest {
         given(saleFacade.getSales(any()))
                 .willReturn(pagedResponse);
 
-        mockMvc.perform(get("/api/sales"))
+        mockMvc.perform(get("/api/sales")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -149,14 +197,46 @@ class SaleControllerTest {
                         jsonPath("$.pageInfo.page").value(pageInfo.getPage()),
                         jsonPath("$.pageInfo.size").value(pageInfo.getSize()),
                         jsonPath("$.pageInfo.totalElements").value(pageInfo.getTotalElements()),
-                        jsonPath("$.pageInfo.totalPages").value(pageInfo.getTotalPages())
-                ).andDo(print());
+                        jsonPath("$.pageInfo.totalPages").value(pageInfo.getTotalPages()))
+                .andDo(document("sale/getSaleList/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("data[].saleId").description("주문 ID"),
+                                fieldWithPath("data[].memberId").description("회원 ID"),
+                                fieldWithPath("data[].title").description("주문명"),
+                                fieldWithPath("data[].memberEmail").description("회원 이메일"),
+                                fieldWithPath("data[].saleNumber").description("주문 번호"),
+                                fieldWithPath("data[].saleOrdererName").description("주문자 이름"),
+                                fieldWithPath("data[].saleOrdererContact").description("주문자 연락처"),
+                                fieldWithPath("data[].saleReceiverName").description("수령자 이름"),
+                                fieldWithPath("data[].saleReceiverContact").description("수령자 연락처"),
+                                fieldWithPath("data[].saleReceiverAddress").description("배송지"),
+                                fieldWithPath("data[].saleDate").description("주문 일자"),
+                                fieldWithPath("data[].saleShippingDate").description("출고 일자"),
+                                fieldWithPath("data[].saleDeliveryDate").description("배송 일자"),
+                                fieldWithPath("data[].saleDeliveryStatus").description("배송 상태"),
+                                fieldWithPath("data[].saleDeliveryFee").description("배송비"),
+                                fieldWithPath("data[].salePointUsage").description("포인트 사용량"),
+                                fieldWithPath("data[].saleTotalPrice").description("총 주문 금액"),
+                                fieldWithPath("data[].salePaymentStatus").description("결제 상태"),
+                                fieldWithPath("data[].saleShippingPostCode").description("배송지 우편번호"),
+                                fieldWithPath("pageInfo.page").description("페이지 번호"),
+                                fieldWithPath("pageInfo.size").description("페이지 크기"),
+                                fieldWithPath("pageInfo.totalElements").description("총 주문 수"),
+                                fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
+                        )
+                ));
 
         verify(saleFacade, times(1)).getSales(any());
     }
 
     @Test
-    @DisplayName("주문 상세 조회 테스트")
+    @DisplayName("주문 ID로 주문 상세 조회 - 관리자 페이지")
     void testGetSaleDetail() throws Exception {
         SaleResponseDto sale =
                 new SaleResponseDto(
@@ -193,7 +273,7 @@ class SaleControllerTest {
         BookAndBookSaleResponseDto bookSale =
                 new BookAndBookSaleResponseDto(
                         1L,
-                        "testimg.com",
+                        "test-img.com",
                         "홍길동전",
                         5,
                         3L,
@@ -207,7 +287,7 @@ class SaleControllerTest {
         given(saleFacade.getSaleDetail(anyLong()))
                 .willReturn(saleDetailResponseDto);
 
-        mockMvc.perform(get("/api/sales/{saleId}", 1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/sales/{saleId}", 1L))
 
                 .andExpectAll(
                         status().isOk(),
@@ -243,8 +323,50 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus().name()),
                         jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
-                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
-                );
+                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl()))
+                .andDo(document("sale/getSaleDetail_admin/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("saleId").description("주문 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("bookSaleList[].bookId").description("도서 ID"),
+                                fieldWithPath("bookSaleList[].fileUrl").description("도서 이미지 URL"),
+                                fieldWithPath("bookSaleList[].bookTitle").description("도서 제목"),
+                                fieldWithPath("bookSaleList[].quantity").description("도서 수량"),
+                                fieldWithPath("bookSaleList[].couponId").description("적용된 쿠폰 ID"),
+                                fieldWithPath("bookSaleList[].packagingType").description("포장 타입"),
+                                fieldWithPath("bookSaleList[].packagingPrice").description("포장 가격"),
+                                fieldWithPath("bookSaleList[].paymentAmount").description("결제 금액"),
+                                fieldWithPath("saleResponseDto.saleId").description("주문 ID"),
+                                fieldWithPath("saleResponseDto.memberId").description("회원 ID"),
+                                fieldWithPath("saleResponseDto.title").description("주문명"),
+                                fieldWithPath("saleResponseDto.memberEmail").description("회원 이메일"),
+                                fieldWithPath("saleResponseDto.saleNumber").description("주문 번호"),
+                                fieldWithPath("saleResponseDto.saleOrdererName").description("주문자 이름"),
+                                fieldWithPath("saleResponseDto.saleOrdererContact").description("주문자 연락처"),
+                                fieldWithPath("saleResponseDto.saleReceiverName").description("수령자 이름"),
+                                fieldWithPath("saleResponseDto.saleReceiverContact").description("수령자 연락처"),
+                                fieldWithPath("saleResponseDto.saleReceiverAddress").description("배송지"),
+                                fieldWithPath("saleResponseDto.saleDate").description("주문 일자"),
+                                fieldWithPath("saleResponseDto.saleShippingDate").description("출고 일자"),
+                                fieldWithPath("saleResponseDto.saleDeliveryDate").description("배송 일자"),
+                                fieldWithPath("saleResponseDto.saleDeliveryStatus").description("배송 상태"),
+                                fieldWithPath("saleResponseDto.saleDeliveryFee").description("배송비"),
+                                fieldWithPath("saleResponseDto.salePointUsage").description("포인트 사용량"),
+                                fieldWithPath("saleResponseDto.saleTotalPrice").description("총 주문 금액"),
+                                fieldWithPath("saleResponseDto.salePaymentStatus").description("결제 상태"),
+                                fieldWithPath("saleResponseDto.saleShippingPostCode").description("배송지 우편번호"),
+                                fieldWithPath("paymentResponseDto.paymentId").description("결제 ID"),
+                                fieldWithPath("paymentResponseDto.saleId").description("주문 ID"),
+                                fieldWithPath("paymentResponseDto.paymentKey").description("결제 키"),
+                                fieldWithPath("paymentResponseDto.paymentStatus").description("결제 상태"),
+                                fieldWithPath("paymentResponseDto.requestedAt").description("결제 요청 일자"),
+                                fieldWithPath("paymentResponseDto.approvedAt").description("결제 승인 일자"),
+                                fieldWithPath("paymentResponseDto.receiptUrl").description("영수증 URL")
+                        )
+                ));
 
 
         verify(saleFacade, times(1)).getSaleDetail(anyLong());
@@ -252,8 +374,18 @@ class SaleControllerTest {
 
 
     @Test
-    @DisplayName("주문 ID로 주문 상세 정보와 주문한 책 정보 조회 테스트")
+    @DisplayName("주문 번호로 주문 상세 정보와 주문한 책 정보 조회 - 회원 페이지")
     void testGetSaleWithBooks() throws Exception {
+
+        BookSaleResponseDto bookSale =
+                new BookSaleResponseDto(
+                        1L,
+                        1L,
+                        null,
+                        "꽃무늬 포장",
+                        3000,
+                        3,
+                        50000);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
                 "홍길동전",
@@ -273,10 +405,13 @@ class SaleControllerTest {
                 10000
         );
 
+        responseDto.addBookSale(bookSale);
+
 
         given(saleFacade.getSaleWithBookResponseDto(anyString()))
                 .willReturn(responseDto);
-        mockMvc.perform(get("/api/sales/{saleNumber}/books", "ABC1234DEF"))
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/sales/{saleNumber}/books", "ABC1234DEF"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -293,7 +428,13 @@ class SaleControllerTest {
                         jsonPath("$.address").value(responseDto.getAddress()),
                         jsonPath("$.pointUsage").value(responseDto.getPointUsage()),
                         jsonPath("$.totalPrice").value(responseDto.getTotalPrice())
-                ).andDo(print());
+                ).andDo(document("sale/getSaleBySaleNumber/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("saleNumber").description("주문 번호")
+                        )
+                ));
 
         verify(saleFacade, times(1)).getSaleWithBookResponseDto(anyString());
     }
@@ -316,7 +457,7 @@ class SaleControllerTest {
         given(saleFacade.getSalePaymentInfo(anyString()))
                 .willReturn(responseDto);
 
-        mockMvc.perform(get("/api/sales/{saleNumber}/paymentInfo", "ABC1234DEF"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/sales/{saleNumber}/paymentInfo", "ABC1234DEF"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -325,14 +466,30 @@ class SaleControllerTest {
                         jsonPath("$.memberEmail").value(responseDto.getMemberEmail()),
                         jsonPath("$.saleOrdererName").value(responseDto.getSaleOrdererName()),
                         jsonPath("$.saleOrdererContact").value(responseDto.getSaleOrdererContact()),
-                        jsonPath("$.totalPrice").value(responseDto.getTotalPrice())
-                ).andDo(print());
+                        jsonPath("$.totalPrice").value(responseDto.getTotalPrice()),
+                        jsonPath("$.saleDate").isNotEmpty()
+                ).andDo(document("sale/getSalePaymentInfoBySaleNumber/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("saleNumber").description("주문 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("saleTitle").description("주문 제목"),
+                                fieldWithPath("saleNumber").description("주문 번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
+                                fieldWithPath("saleOrdererName").description("주문자 이름"),
+                                fieldWithPath("saleOrdererContact").description("주문자 연락처"),
+                                fieldWithPath("totalPrice").description("총 주문 금액"),
+                                fieldWithPath("saleDate").description("주문 일자")
+                        )
+                ));
 
         verify(saleFacade, times(1)).getSalePaymentInfo(anyString());
     }
 
     @Test
-    @DisplayName("비회원 주문 상세 정보를 조회 테스트")
+    @DisplayName("주문 상세 정보를 조회 테스트 - 비회원")
     void testGetSaleDetailBySaleNumber() throws Exception {
 
         BookAndBookSaleResponseDto bookSale =
@@ -424,12 +581,25 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.paymentStatus").value(payment.getPaymentStatus().name()),
                         jsonPath("$.paymentResponseDto.requestedAt").isNotEmpty(),
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
-                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
-                );
+                        jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl()))
+                .andDo(document("sale/getSaleDetail_guest/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("saleNumber").description("주문 번호"),
+                                parameterWithName("ordererContact").description("주문자 연락처")
+                        ),
+                        responseFields(
+                                subsectionWithPath("bookSaleList").description("주문한 책 정보"),
+                                subsectionWithPath("saleResponseDto").description("주문 정보"),
+                                subsectionWithPath("paymentResponseDto").description("결제 정보")
+                        )));
+
+        verify(saleFacade, times(1)).getGuestSaleDetailBySaleNumber(anyString(), anyString());
     }
 
     @Test
-    @DisplayName("회원의 ID와 주분 번호를 통해 주문 상세 정보 조회")
+    @DisplayName("회원의 ID와 주문 번호를 통해 주문 상세 정보 조회 - 회원 조회")
     void testGetMemberSaleDetailBySaleNumber() throws Exception {
 
         BookAndBookSaleResponseDto bookSale =
@@ -485,6 +655,8 @@ class SaleControllerTest {
                         .param("saleNumber", "1234")
                         .param("memberId", "1"))
                 .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$.bookSaleList[0].bookId").value(bookSale.getBookId()),
                         jsonPath("$.bookSaleList[0].fileUrl").value(bookSale.getFileUrl()),
                         jsonPath("$.bookSaleList[0].bookTitle").value(bookSale.getBookTitle()),
@@ -521,7 +693,21 @@ class SaleControllerTest {
                         jsonPath("$.paymentResponseDto.approvedAt").isNotEmpty(),
                         jsonPath("paymentResponseDto.receiptUrl").value(payment.getReceiptUrl())
                 )
-                .andDo(print());
+                .andDo(document("sale/getSaleDetail_member/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("saleNumber").description("주문 번호"),
+                                parameterWithName("memberId").description("회원 ID")
+                        ),
+                        responseFields(
+                                subsectionWithPath("bookSaleList").description("주문한 책 정보"),
+                                subsectionWithPath("saleResponseDto").description("주문 정보"),
+                                subsectionWithPath("paymentResponseDto").description("결제 정보")
+                        )
+                ));
+
+        verify(saleFacade, times(1)).getMemberSaleDetailBySaleNumber(anyString(), anyLong());
     }
 
     @Test
@@ -546,7 +732,7 @@ class SaleControllerTest {
         given(saleFacade.getSalesByMemberId(anyLong(), any()))
                 .willReturn(pagedResponse);
 
-        mockMvc.perform(get("/api/sales/member/{memberId}", 1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/sales/member/{memberId}", 1L))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
@@ -558,8 +744,29 @@ class SaleControllerTest {
                         jsonPath("$.data[0].totalPrice").value(saleInfo.getTotalPrice()),
                         jsonPath("$.data[0].saleDate").isNotEmpty(),
                         jsonPath("$.pageInfo.page").value(pageInfo.getPage()),
-                        jsonPath("$.pageInfo.size").value(pageInfo.getSize())
-                );
+                        jsonPath("$.pageInfo.size").value(pageInfo.getSize()))
+                .andDo(document("sale/getSaleListByMemberId/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("data[].saleTitle").description("주문 제목"),
+                                fieldWithPath("data[].saleNumber").description("주문 번호"),
+                                fieldWithPath("data[].memberEmail").description("회원 이메일"),
+                                fieldWithPath("data[].saleOrdererName").description("주문자 이름"),
+                                fieldWithPath("data[].saleOrdererContact").description("주문자 연락처"),
+                                fieldWithPath("data[].totalPrice").description("총 주문 금액"),
+                                fieldWithPath("data[].saleDate").description("주문 일자"),
+                                fieldWithPath("pageInfo.page").description("페이지 번호"),
+                                fieldWithPath("pageInfo.size").description("페이지 크기"),
+                                fieldWithPath("pageInfo.totalElements").description("총 주문 수"),
+                                fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
+                        )
+                ));
+
+        verify(saleFacade, times(1)).getSalesByMemberId(anyLong(), any());
     }
 
     @Test
@@ -570,11 +777,20 @@ class SaleControllerTest {
 
         String json = objectMapper.writeValueAsString(deliveryStatus);
 
-        mockMvc.perform(put("/api/sales/{saleId}/delivery/status", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/sales/{saleId}/delivery/status", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(document("sale/updateSaleDeliveryStatus/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("saleId").description("주문 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("deliveryStatus").description("배송 상태").type(Enum.class)
+                        ))
+                );
 
         verify(saleFacade, times(1)).updateSaleDeliveryStatus(anyLong(), any());
     }
@@ -582,9 +798,15 @@ class SaleControllerTest {
     @Test
     @DisplayName("주문 상태를 취소로 변경하는 테스트")
     void testCancelSale() throws Exception {
-        mockMvc.perform(put("/api/sales/{saleId}/cancel", 1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/sales/{saleId}/cancel", 1L))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(document("sale/updateSaleStatus/cancel",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("saleId").description("주문 ID")
+                        )
+                ));
 
         verify(saleFacade, times(1)).cancelSale(anyLong());
     }
