@@ -1,5 +1,9 @@
 package store.ckin.api.grade.domain.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,11 +16,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GradeCreateRequestDto {
+    @NotNull
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @Min(0)
+    @Max(100)
     private Integer pointRatio;
 
+    @NotNull
     private Integer condition;
 }
