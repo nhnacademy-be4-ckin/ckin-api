@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.ckin.api.grade.domain.request.GradeCreateRequestDto;
 import store.ckin.api.grade.domain.request.GradeUpdateRequestDto;
 
 /**
