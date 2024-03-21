@@ -58,8 +58,8 @@ public class GradeServiceImpl implements GradeService {
     @Transactional
     @Override
     public void deleteGrade(Long gradeId) {
-        if (gradeRepository.existsById(gradeId)) {
-            throw new GradeAlreadyExistsException();
+        if (!gradeRepository.existsById(gradeId)) {
+            throw new GradeNotFoundException();
         }
 
         gradeRepository.deleteById(gradeId);
