@@ -13,7 +13,9 @@ import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
+import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.service.MemberService;
 
@@ -106,26 +108,40 @@ public class MemberController {
     }
 
     /**
-     * MemberController 에서 MemberAlreadyExistsException 이 발생 시 처리하는 Method 입니다.
-     *
-     * @param exception MemberAlreadyExistsException
-     * @return 409 (Conflict) : 예외 발생 시 계정 생성 실패
+     * 계정을 활성화하는 메서드 입니다.
      */
-    @ExceptionHandler({MemberAlreadyExistsException.class})
-    public ResponseEntity<Void> memberAlreadyExistsExceptionHandler(MemberAlreadyExistsException exception) {
+    @PutMapping("/members/{memberId}/active")
+    public ResponseEntity<Void> setActiveMember(@PathVariable("memberId") Long memberId) {
+        memberService.changeState(memberId, Member.State.ACTIVE);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 휴면 계정으로 전환하는 메서드 입니다.
+     */
+    @PutMapping("/members/{memberId}/dormant")
+    public ResponseEntity<Void> setDormantMember(@PathVariable("memberId") Long memberId) {
+        memberService.changeState(memberId, Member.State.DORMANT);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 409 Code 로 응답을 보내는 ExceptionHandler 입니다.
+     */
+    @ExceptionHandler({MemberAlreadyExistsException.class, MemberCannotChangeStateException.class})
+    public ResponseEntity<Void> conflictExceptionHandler(Exception exception) {
         log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     /**
-     * MemberController 에서 LoginFailedException 발생 시 처리하는 Method 입니다.
-     *
-     * @param exception LoginFailedException
-     * @return 403 (Unauthorized) : 로그인 정보 불일치
+     * 404 Code 로 응답을 보내는 ExceptionHandler 입니다.
      */
     @ExceptionHandler({MemberNotFoundException.class})
-    public ResponseEntity<Void> memberNotFoundExceptionHandler(MemberNotFoundException exception) {
+    public ResponseEntity<Void> notFoundExceptionHandler(MemberNotFoundException exception) {
         log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -7,6 +7,7 @@ import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.entity.Member;
 
 /**
  * Member 의 관한 로직을 처리하는 서비스 인터페이스 입니다.
@@ -66,4 +67,6 @@ public interface MemberService {
     void updateCancelSalePoint(Long saleId, String memberEmail);
 
     void updateLatestLoginAt(Long memberId);
+
+    void changeState(Long memberId, Member.State state);
 }
