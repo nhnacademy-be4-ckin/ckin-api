@@ -3,7 +3,6 @@ package store.ckin.api.payment.dto.response;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import store.ckin.api.payment.entity.PaymentStatus;
 
 /**
@@ -13,7 +12,6 @@ import store.ckin.api.payment.entity.PaymentStatus;
  * @version 2024. 03. 12.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class PaymentResponseDto {
