@@ -1,0 +1,21 @@
+== 결제
+
+=== 결제 생성
+
+> 토스 페이먼츠 API를 호출한 후 받아온 정보를 DB에 저장합니다.
+
+==== Request
+
+include::{snippets}/payment/create/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/payment/create/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/payment/create/success/request-fields.adoc[]
+
+==== Response Fields
+
+include::{snippets}/payment/create/success/response-fields.adoc[]

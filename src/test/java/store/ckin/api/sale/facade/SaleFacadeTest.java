@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,11 +30,13 @@ import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.SalePaymentStatus;
+import store.ckin.api.sale.exception.SaleMemberNotMatchException;
 import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
@@ -66,11 +67,6 @@ class SaleFacadeTest {
 
     @Mock
     PointHistoryService pointHistoryService;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     @DisplayName("주문 생성 테스트")
@@ -142,6 +138,7 @@ class SaleFacadeTest {
         verify(saleService, times(1)).createSale(any());
         verify(bookSaleService, times(1)).createBookSale(anyLong(), any());
         verify(memberService, times(1)).updatePoint(anyLong(), any());
+        verify(pointHistoryService, times(1)).createPointHistory(any());
     }
 
     @Test
@@ -338,5 +335,189 @@ class SaleFacadeTest {
     void testGetSalesByMemberId() {
         saleFacade.getSalesByMemberId(1L, Pageable.ofSize(10));
         verify(saleService, times(1)).getSalesByMemberId(1L, Pageable.ofSize(10));
+    }
+
+    @Test
+    @DisplayName("회원 ID와 주문 번호를 통해 주문 상세 정보 조회 - 실패 (회원 정보가 다른 경우)")
+    void testGetMemberSaleDetailBySaleNumber_Fail_NotMatchException() {
+        SaleResponseDto saleResponseDto =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(saleResponseDto);
+
+        assertThrows(SaleMemberNotMatchException.class,
+                () -> saleFacade.getMemberSaleDetailBySaleNumber("1234", 5L));
+
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
+        verify(bookSaleService, times(0)).getBookSaleDetail(anyLong());
+        verify(paymentService, times(0)).getPayment(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원 ID와 주문 번호를 통해 주문 상세 정보 조회 - 성공")
+    void testGetMemberSaleDetailBySaleNumber_Success() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "testimg.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+        given(bookSaleService.getBookSaleDetail(anyLong()))
+                .willReturn(List.of(bookSale));
+
+        PaymentResponseDto payment = new PaymentResponseDto(
+                1L,
+                1L,
+                "1232321",
+                PaymentStatus.DONE,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "test.com");
+
+        given(paymentService.getPayment(anyLong()))
+                .willReturn(payment);
+
+
+        SaleDetailResponseDto actual = saleFacade.getMemberSaleDetailBySaleNumber("1234", 1L);
+
+        assertAll(
+                () -> assertEquals(sale, actual.getSaleResponseDto()),
+                () -> assertEquals(bookSale, actual.getBookSaleList().get(0)),
+                () -> assertEquals(payment, actual.getPaymentResponseDto())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 배송 상태 변경 테스트")
+    void testUpdateSaleDeliveryStatus() {
+        SaleDeliveryUpdateRequestDto delivery = new SaleDeliveryUpdateRequestDto();
+        ReflectionTestUtils.setField(delivery, "deliveryStatus", DeliveryStatus.IN_PROGRESS);
+
+        saleFacade.updateSaleDeliveryStatus(1L, delivery);
+        verify(saleService, times(1)).updateSaleDeliveryStatus(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 비회원")
+    void testCancelSale_Anonymous() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        null,
+                        "테스트 제목",
+                        null,
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleDetail(1L))
+                .willReturn(sale);
+
+        saleFacade.cancelSale(1L);
+
+        verify(saleService, times(1)).cancelSale(anyLong());
+        verify(saleService, times(1)).getSaleDetail(anyLong());
+        verify(memberService, times(0)).updateCancelSalePoint(anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 포인트를 사용한 회원")
+    void testCancelSale_Member_UsePoint() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        3000,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleDetail(anyLong()))
+                .willReturn(sale);
+
+        saleFacade.cancelSale(1L);
+
+        verify(saleService, times(1)).cancelSale(anyLong());
+        verify(saleService, times(1)).getSaleDetail(anyLong());
+        verify(memberService, times(1)).updateCancelSalePoint(anyLong(), anyString());
     }
 }

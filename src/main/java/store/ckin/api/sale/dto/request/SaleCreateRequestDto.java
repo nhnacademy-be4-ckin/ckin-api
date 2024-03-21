@@ -1,5 +1,6 @@
 package store.ckin.api.sale.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class SaleCreateRequestDto {
     private Integer deliveryFee;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "배송 날짜를 선택해주세요.")
     private LocalDate saleDeliveryDate;
 

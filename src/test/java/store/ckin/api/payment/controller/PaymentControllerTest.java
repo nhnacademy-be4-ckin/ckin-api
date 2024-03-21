@@ -4,8 +4,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,10 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -35,7 +41,7 @@ import store.ckin.api.payment.facade.PaymentFacade;
  * @version 2024. 03. 11.
  */
 
-@Slf4j
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(PaymentController.class)
 class PaymentControllerTest {
 
@@ -88,7 +94,27 @@ class PaymentControllerTest {
                         jsonPath("$.deliveryDate").value(successResponseDto.getDeliveryDate().toString()),
                         jsonPath("$.saleTotalPrice").value(successResponseDto.getSaleTotalPrice()),
                         jsonPath("$.receiptUrl").value(successResponseDto.getReceiptUrl()))
-                .andDo(print());
+                .andDo(document("payment/create/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("paymentKey").description("토스 페이먼츠 결제 키"),
+                                fieldWithPath("saleNumber").description("주문 고유 키 (UUID)"),
+                                fieldWithPath("paymentStatus").description("결제 상태"),
+                                fieldWithPath("requestedAt").description("결제 요청 시간"),
+                                fieldWithPath("approvedAt").description("결제 승인 시간"),
+                                fieldWithPath("amount").description("결제 총 금액"),
+                                fieldWithPath("receiptUrl").description("결제 영수증 URL")
+                        ),
+                        responseFields(
+                                fieldWithPath("saleNumber").description("주문 고유 키 (UUID)"),
+                                fieldWithPath("receiverName").description("수령자 이름"),
+                                fieldWithPath("receiverContact").description("수령자 전화번호"),
+                                fieldWithPath("address").description("배송지 정보"),
+                                fieldWithPath("deliveryDate").description("배송 예정일"),
+                                fieldWithPath("saleTotalPrice").description("주문 총 금액"),
+                                fieldWithPath("receiptUrl").description("결제 영수증 URL")
+                        )));
 
         verify(paymentFacade, times(1)).createPayment(any());
     }

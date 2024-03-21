@@ -6,10 +6,16 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -36,6 +43,7 @@ import store.ckin.api.deliverypolicy.service.DeliveryPolicyService;
  * @version 2024. 02. 16.
  */
 
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(DeliveryPolicyController.class)
 class DeliveryPolicyControllerTest {
 
@@ -63,10 +71,20 @@ class DeliveryPolicyControllerTest {
                         jsonPath("$.deliveryPolicyFee", equalTo(deliveryPolicy.getDeliveryPolicyFee())),
                         jsonPath("$.deliveryPolicyCondition", equalTo(deliveryPolicy.getDeliveryPolicyCondition())),
                         jsonPath("$.deliveryPolicyState", equalTo(deliveryPolicy.getDeliveryPolicyState())))
-                .andDo(print());
+                .andDo(document("delivery-policy/getDeliveryPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("deliveryPolicyId").description("배송비 정책 ID"),
+                                fieldWithPath("deliveryPolicyFee").description("배송비"),
+                                fieldWithPath("deliveryPolicyCondition").description("무료 배송 최소 금액"),
+                                fieldWithPath("deliveryPolicyState").description("배송비 정책 활성화 여부")
+                        ))
+                );
 
         verify(deliveryPolicyService, times(1)).getDeliveryPolicy(anyLong());
     }
+
 
     @Test
     @DisplayName("배송비 정책 리스트 조회")
@@ -89,8 +107,17 @@ class DeliveryPolicyControllerTest {
                         jsonPath("$[0].deliveryPolicyFee", equalTo(5000)),
                         jsonPath("$[1].deliveryPolicyCondition", equalTo(3000)),
                         jsonPath("$[0].deliveryPolicyState", equalTo(true)),
-                        jsonPath("$[1].deliveryPolicyState", equalTo(false))
-                );
+                        jsonPath("$[1].deliveryPolicyState", equalTo(false)))
+                .andDo(document("delivery-policy/getDeliveryPolicyList/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].deliveryPolicyId").description("배송비 정책 ID"),
+                                fieldWithPath("[].deliveryPolicyFee").description("배송비"),
+                                fieldWithPath("[].deliveryPolicyCondition").description("무료 배송 최소 금액"),
+                                fieldWithPath("[].deliveryPolicyState").description("배송비 정책 활성화 여부")
+                        )
+                ));
 
         verify(deliveryPolicyService, times(1)).getDeliveryPolicies();
     }
@@ -110,7 +137,15 @@ class DeliveryPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(document("delivery-policy/createDeliveryPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("deliveryPolicyFee").description("배송비"),
+                                fieldWithPath("deliveryPolicyCondition").description("무료 배송 최소 금액"),
+                                fieldWithPath("deliveryPolicyState").description("배송비 정책 활성화 여부")
+                        )
+                ));
 
         verify(deliveryPolicyService, times(1)).createDeliveryPolicy(any());
     }
@@ -130,7 +165,11 @@ class DeliveryPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andDo(document("delivery-policy/createDeliveryPolicy/validation-fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+
 
         verify(deliveryPolicyService, times(0)).createDeliveryPolicy(any());
     }
@@ -151,7 +190,15 @@ class DeliveryPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(document("delivery-policy/updateDeliveryPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("deliveryPolicyFee").description("배송비"),
+                                fieldWithPath("deliveryPolicyCondition").description("무료 배송 최소 금액"),
+                                fieldWithPath("deliveryPolicyState").description("배송비 정책 활성화 여부")
+                        )
+                ));
 
         verify(deliveryPolicyService, times(1))
                 .updateDeliveryPolicy(anyLong(), any());
@@ -172,7 +219,10 @@ class DeliveryPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andDo(document("delivery-policy/updateDeliveryPolicy/validation-fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
 
         verify(deliveryPolicyService, times(0))
                 .updateDeliveryPolicy(anyLong(), any());
@@ -202,7 +252,16 @@ class DeliveryPolicyControllerTest {
                         jsonPath("$.deliveryPolicyCondition").value(deliveryPolicy.getDeliveryPolicyCondition()),
                         jsonPath("$.deliveryPolicyState").value(deliveryPolicy.getDeliveryPolicyState())
                 )
-                .andDo(print());
+                .andDo(document("delivery-policy/getActiveDeliveryPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("deliveryPolicyId").description("배송비 정책 ID"),
+                                fieldWithPath("deliveryPolicyFee").description("배송비"),
+                                fieldWithPath("deliveryPolicyCondition").description("무료 배송 최소 금액"),
+                                fieldWithPath("deliveryPolicyState").description("배송비 정책 활성화 여부")
+                        )
+                ));
 
         verify(deliveryPolicyService, times(1)).getActiveDeliveryPolicy();
     }
