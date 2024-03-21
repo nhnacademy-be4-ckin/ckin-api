@@ -228,13 +228,14 @@ public class SaleFacade {
      */
     @Transactional
     public void cancelSale(Long saleId) {
-        // 주문 및 결제 상태 변경
-        saleService.cancelSale(saleId);
 
         // 회원 포인트 변경 및 포인트 이력 생성
         SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
         if (Objects.nonNull(saleDetail.getMemberEmail()) && saleDetail.getSalePointUsage() > 0) {
             memberService.updateCancelSalePoint(saleId, saleDetail.getMemberEmail());
         }
+
+        // 주문 및 결제 상태 변경
+        saleService.cancelSale(saleId);
     }
 }
