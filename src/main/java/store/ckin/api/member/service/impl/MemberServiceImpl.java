@@ -3,7 +3,6 @@ package store.ckin.api.member.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -168,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(email));
 
-        Grade grade = gradeRepository.findById(member.getGrade().getGradeId())
+        Grade grade = gradeRepository.findById(member.getGrade().getId())
                 .orElseThrow(GradeNotFoundException::new);
 
         Sale sale = saleRepository.findById(saleId)
