@@ -53,8 +53,10 @@ class PaymentRepositoryTest {
     void setUp() {
 
         grade = Grade.builder()
+                .id(1L)
                 .name("GOLD")
                 .pointRatio(10)
+                .condition(0)
                 .build();
 
         entityManager.persist(grade);

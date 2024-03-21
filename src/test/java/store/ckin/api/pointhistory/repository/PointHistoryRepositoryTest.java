@@ -44,10 +44,13 @@ class PointHistoryRepositoryTest {
     void setUp() {
 
         grade = Grade.builder()
+                .id(1L)
                 .name("Member")
                 .pointRatio(10)
+                .condition(0)
                 .build();
 
+        System.out.println("grade = " + grade);
         entityManager.persist(grade);
 
         member = Member.builder()
