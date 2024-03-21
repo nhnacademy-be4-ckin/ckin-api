@@ -9,8 +9,8 @@ import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
-import store.ckin.api.wishlist.domain.request.WishListRequestDto;
 import store.ckin.api.wishlist.entity.WishList;
+import store.ckin.api.wishlist.exception.WishListAlreadyExistsException;
 import store.ckin.api.wishlist.repository.WishListRepository;
 import store.ckin.api.wishlist.service.WishListService;
 
@@ -31,19 +31,23 @@ public class WishListServiceImpl implements WishListService {
 
     @Transactional
     @Override
-    public void createWishList(WishListRequestDto wishListRequestDto) {
-        Member member = memberRepository.findById(wishListRequestDto.getMemberId())
+    public void createWishList(Long memberId, Long bookId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Book book = bookRepository.findByBookId(wishListRequestDto.getBookId())
+        Book book = bookRepository.findByBookId(bookId)
                 .orElseThrow(BookNotFoundException::new);
+
+        WishList.Pk pk = new WishList.Pk(bookId, memberId);
+
+        if (wishListRepository.existsByPk(pk)) {
+            throw new WishListAlreadyExistsException();
+        }
 
         WishList wishList = WishList.builder()
                 .member(member)
                 .book(book)
-                .pk(new WishList.PK(
-                        wishListRequestDto.getBookId(),
-                        wishListRequestDto.getMemberId()))
+                .pk(pk)
                 .build();
 
         wishListRepository.save(wishList);
@@ -51,18 +55,15 @@ public class WishListServiceImpl implements WishListService {
 
     @Transactional
     @Override
-    public void deleteWishList(WishListRequestDto wishListRequestDto) {
-        if (!memberRepository.existsById(wishListRequestDto.getMemberId())) {
+    public void deleteWishList(Long memberId, Long bookId) {
+        if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
 
-        if (!bookRepository.existsById(wishListRequestDto.getBookId())) {
+        if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException();
         }
 
-        wishListRepository.deleteByPk(
-                new WishList.PK(
-                        wishListRequestDto.getBookId(),
-                        wishListRequestDto.getMemberId()));
+        wishListRepository.deleteByPk(new WishList.Pk(bookId, memberId));
     }
 }

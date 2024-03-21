@@ -29,10 +29,10 @@ import store.ckin.api.member.entity.Member;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Member")
+@Entity(name = "Wishlist")
 public class WishList {
     @EmbeddedId
-    private PK pk;
+    private Pk pk;
 
     @MapsId("bookId")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,12 +44,15 @@ public class WishList {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    /**
+     * The type Pk.
+     */
     @Getter
     @Embeddable
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PK implements Serializable {
+    public static class Pk implements Serializable {
         @Column(name = "book_id")
         private Long bookId;
 

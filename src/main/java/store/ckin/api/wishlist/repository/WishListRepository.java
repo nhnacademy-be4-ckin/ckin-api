@@ -10,5 +10,7 @@ import store.ckin.api.wishlist.entity.WishList;
  * @version : 2024. 03. 21.
  */
 public interface WishListRepository extends JpaRepository<WishList, Long> {
-    void deleteByPk(WishList.PK pk);
+    void deleteByPk(WishList.Pk pk);
+
+    boolean existsByPk(WishList.Pk pk);
 }
