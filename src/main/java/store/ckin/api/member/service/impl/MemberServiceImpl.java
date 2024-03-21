@@ -18,6 +18,7 @@ import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
+import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
@@ -57,6 +58,7 @@ public class MemberServiceImpl implements MemberService {
     private static final Long NORMAL_GRADE_ID = 1L;
 
     @Override
+    @Transactional(readOnly = true)
     public boolean alreadyExistsEmail(MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
         return memberRepository.existsByEmail(memberEmailOnlyRequestDto.getEmail());
     }
@@ -227,5 +229,28 @@ public class MemberServiceImpl implements MemberService {
 
             pointHistoryRepository.save(createPointHistory);
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateLatestLoginAt(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.updateLatestLoginAt();
+    }
+
+    @Override
+    @Transactional
+    public void changeState(Long memberId, Member.State state) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+
+        if (member.getState().equals(state)) {
+            throw new MemberCannotChangeStateException();
+        }
+
+        member.changeState(state);
     }
 }
