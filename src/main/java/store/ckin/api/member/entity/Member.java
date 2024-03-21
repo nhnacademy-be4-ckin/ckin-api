@@ -111,4 +111,8 @@ public class Member {
     public void updatePoint(Integer pointUsage) {
         this.point += pointUsage;
     }
+
+    public void updateLatestLoginAt() {
+        this.latestLoginAt = LocalDateTime.now();
+    }
 }

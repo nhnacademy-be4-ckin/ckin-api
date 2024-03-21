@@ -228,4 +228,13 @@ public class MemberServiceImpl implements MemberService {
             pointHistoryRepository.save(createPointHistory);
         }
     }
+
+    @Transactional
+    @Override
+    public void updateLatestLoginAt(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.updateLatestLoginAt();
+    }
 }

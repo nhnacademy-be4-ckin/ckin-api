@@ -64,4 +64,6 @@ public interface MemberService {
      * @param memberEmail    회원 이메일
      */
     void updateCancelSalePoint(Long saleId, String memberEmail);
+
+    void updateLatestLoginAt(Long memberId);
 }
