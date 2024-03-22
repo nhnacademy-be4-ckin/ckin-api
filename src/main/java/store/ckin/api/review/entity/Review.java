@@ -45,4 +45,9 @@ public class Review extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    public void updateReviewComment(String reviewComment, Integer reviewRate) {
+        this.reviewComment = reviewComment;
+        this.reviewRate = reviewRate;
+    }
 }

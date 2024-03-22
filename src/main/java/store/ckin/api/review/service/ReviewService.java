@@ -36,5 +36,5 @@ public interface ReviewService {
     Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId);
     Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable);
 
-    void updateReview(Long reviewId, ReviewUpdateRequestDto updateRequestDto);
+    void updateReview(ReviewUpdateRequestDto updateRequestDto,Long memberId);
 }
