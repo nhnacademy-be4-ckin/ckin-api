@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
@@ -25,6 +26,7 @@ import store.ckin.api.category.service.CategoryService;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
     private static final int DEFAULT_CATEGORY_PRIORITY = 1;
 
     /**
@@ -106,6 +108,27 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CategoryNotFoundException(categoryId);
         }
         categoryRepository.deleteById(categoryId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCategoryName(Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+
+        return category.getCategoryName();
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Long> getParentIds(List<Long> bookIds) {
+        return categoryRepository.getParentIds(bookIds);
     }
 
 

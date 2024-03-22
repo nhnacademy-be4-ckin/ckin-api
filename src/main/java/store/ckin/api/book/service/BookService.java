@@ -9,6 +9,7 @@ import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 
 /**
@@ -23,7 +24,7 @@ public interface BookService {
      * 작가 이름으로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param authorName 작가 이름
-     * @param pageable 페이징 정보
+     * @param pageable   페이징 정보
      * @return 작가 이름으로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable);
@@ -32,7 +33,7 @@ public interface BookService {
      * 도서 제목으로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param bookTitle 도서 제목
-     * @param pageable 페이징 정보
+     * @param pageable  페이징 정보
      * @return 도서 제목으로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByBookTitle(String bookTitle, Pageable pageable);
@@ -41,7 +42,7 @@ public interface BookService {
      * 카테고리 ID로 도서를 검색하고 페이징된 결과를 반환합니다.
      *
      * @param categoryId 카테고리 ID
-     * @param pageable 페이징 정보
+     * @param pageable   페이징 정보
      * @return 카테고리 ID로 검색된 도서 목록에 대한 페이지 객체
      */
     Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable);
@@ -58,7 +59,7 @@ public interface BookService {
      * 새로운 도서를 생성합니다.
      *
      * @param requestDto 도서 생성 요청 DTO
-     * @param file 도서 썸네일 이미지 파일
+     * @param file       도서 썸네일 이미지 파일
      * @throws IOException 파일 처리 중 발생하는 예외
      */
     void createBook(BookCreateRequestDto requestDto, MultipartFile file) throws IOException;
@@ -66,7 +67,7 @@ public interface BookService {
     /**
      * 주어진 ID의 도서 정보를 수정합니다.
      *
-     * @param bookId 도서 ID
+     * @param bookId     도서 ID
      * @param requestDto 도서 수정 요청 DTO
      */
     void updateBook(Long bookId, BookModifyRequestDto requestDto);
@@ -98,11 +99,33 @@ public interface BookService {
     /**
      * 주어진 ID의 도서 썸네일을 업데이트합니다.
      *
-     * @param bookId 도서 ID
+     * @param bookId       도서 ID
      * @param newThumbnail 새 도서 썸네일 이미지 파일
      * @throws IOException 파일 처리 중 발생하는 예외
      */
     void updateBookThumbnail(Long bookId, MultipartFile newThumbnail) throws IOException;
+
+    List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit);
+
+    List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit);
+
+
+    /**
+     * 주어진 태그를 가지고 있는 메인 페이지 도서 목록을 반환합니다.
+     *
+     * @param limit   반환할 도서의 수
+     * @param tagName 태그 이름
+     * @return 해당하는 도서 목록
+     */
+    List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName);
+
+    /**
+     * 신간도서 페이지, 메인 페이지에 들어갈 신간 도서 목록을 페이지로 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 신간 도서 페이지 목록
+     */
+    Page<BookResponseDto> getRecentPublished(Pageable pageable);
 }
 
 

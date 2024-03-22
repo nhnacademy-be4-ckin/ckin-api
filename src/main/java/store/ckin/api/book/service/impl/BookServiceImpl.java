@@ -18,6 +18,7 @@ import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
@@ -198,12 +199,12 @@ public class BookServiceImpl implements BookService {
         File thumbnailFile = book.getThumbnail();
         File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
 
-        File updateThumbnailFile = thumbnailFile.toBuilder()
+        thumbnailFile.toBuilder()
                 .fileOriginName(uploadFile.getFileOriginName())
                 .fileUrl(uploadFile.getFileUrl())
                 .build();
-        fileRepository.save(updateThumbnailFile);
     }
+
 
     /**
      * {@inheritDoc}
@@ -227,6 +228,26 @@ public class BookServiceImpl implements BookService {
     public List<BookExtractionResponseDto> getExtractBookListByBookIds(List<Long> bookIds) {
         return bookRepository.getExtractBookListByBookIds(bookIds);
     }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit) {
+        return bookRepository.getMainPageResponseDtoByCategoryId(categoryId,limit);
+    }
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate( Integer limit) {
+        return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
+    }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
+        return bookRepository.getMainPageBooksByTagName(limit, tagName);
+    }
+
+    @Override
+    public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
+        return bookRepository.getRecentPublished(pageable);
+    }
+
 
     /**
      * {@inheritDoc}

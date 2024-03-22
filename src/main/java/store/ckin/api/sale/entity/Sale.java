@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,26 +33,10 @@ import store.ckin.api.member.entity.Member;
 @Getter
 @Entity
 @Table(name = "Sale")
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sale {
-
-
-    /**
-     * 주문의 배송 상태를 나타내는 Enum.
-     */
-    public enum DeliveryStatus {
-        READY,
-        IN_PROGRESS,
-        DONE
-    }
-
-    /**
-     * 주문의 결제 상태를 나타내는 Enum.
-     */
-    public enum PaymentStatus {
-        WAITING,
-        PAID
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +49,9 @@ public class Sale {
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     private Set<BookSale> bookSales;
+
+    @Column(name = "sale_title")
+    private String saleTitle;
 
     @Column(name = "sale_number")
     private String saleNumber;
@@ -107,40 +95,16 @@ public class Sale {
 
     @Column(name = "sale_payment_status")
     @Enumerated(EnumType.STRING)
-    private PaymentStatus salePaymentStatus;
+    private SalePaymentStatus salePaymentStatus;
 
     @Column(name = "sale_shipping_post_code")
     private String saleShippingPostCode;
 
-    @Builder
-    public Sale(Long saleId, Member member, Set<BookSale> bookSales, String saleNumber, String saleOrdererName,
-                String saleOrdererContact, String saleReceiverName, String saleReceiverContact,
-                String saleReceiverAddress,
-                LocalDateTime saleDate, LocalDateTime saleShippingDate, LocalDate saleDeliveryDate,
-                DeliveryStatus saleDeliveryStatus, Integer saleDeliveryFee, Integer salePointUsage,
-                Integer saleTotalPrice,
-                PaymentStatus salePaymentStatus, String saleShippingPostCode) {
-        this.saleId = saleId;
-        this.member = member;
-        this.bookSales = bookSales;
-        this.saleNumber = saleNumber;
-        this.saleOrdererName = saleOrdererName;
-        this.saleOrdererContact = saleOrdererContact;
-        this.saleReceiverName = saleReceiverName;
-        this.saleReceiverContact = saleReceiverContact;
-        this.saleReceiverAddress = saleReceiverAddress;
-        this.saleDate = saleDate;
-        this.saleShippingDate = saleShippingDate;
-        this.saleDeliveryDate = saleDeliveryDate;
-        this.saleDeliveryStatus = saleDeliveryStatus;
-        this.saleDeliveryFee = saleDeliveryFee;
-        this.salePointUsage = salePointUsage;
-        this.saleTotalPrice = saleTotalPrice;
-        this.salePaymentStatus = salePaymentStatus;
-        this.saleShippingPostCode = saleShippingPostCode;
+    public void updatePaymentStatus(SalePaymentStatus paymentStatus) {
+        this.salePaymentStatus = paymentStatus;
     }
 
-    public void updatePaymentStatus(PaymentStatus paymentStatus) {
-        this.salePaymentStatus = paymentStatus;
+    public void updateSaleDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.saleDeliveryStatus = deliveryStatus;
     }
 }

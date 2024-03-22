@@ -2,10 +2,8 @@ package store.ckin.api.book.dto.response;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 도서 추출 정보 응답 DTO 클래스입니다.
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class BookExtractionResponseDto {
 
     private Long bookId;
@@ -30,7 +28,7 @@ public class BookExtractionResponseDto {
 
     private Integer bookStock;
 
-    private List<Long> categoryIds;
+    private final List<Long> categoryIds = new ArrayList<>();
 
     public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
                                      Integer bookSalePrice, Integer bookStock) {
@@ -40,18 +38,5 @@ public class BookExtractionResponseDto {
         this.bookPackaging = bookPackaging;
         this.bookSalePrice = bookSalePrice;
         this.bookStock = bookStock;
-        this.categoryIds = new ArrayList<>();
-    }
-
-    @Builder
-    public BookExtractionResponseDto(Long bookId, String bookImageUrl, String bookTitle, Boolean bookPackaging,
-                                     Integer bookSalePrice, Integer bookStock, List<Long> categoryIds) {
-        this.bookId = bookId;
-        this.bookImageUrl = bookImageUrl;
-        this.bookTitle = bookTitle;
-        this.bookPackaging = bookPackaging;
-        this.bookSalePrice = bookSalePrice;
-        this.bookStock = bookStock;
-        this.categoryIds = categoryIds;
     }
 }

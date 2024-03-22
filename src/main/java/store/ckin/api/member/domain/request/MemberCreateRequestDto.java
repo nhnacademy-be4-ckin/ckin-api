@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 /**
  * Member 생성을 할 때 필요한 정보를 가져오는 DTO 입니다.
@@ -36,4 +37,7 @@ public class MemberCreateRequestDto {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
+
+    @Nullable
+    private String oauthId;
 }

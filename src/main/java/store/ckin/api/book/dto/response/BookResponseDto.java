@@ -1,5 +1,6 @@
 package store.ckin.api.book.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -34,6 +35,29 @@ public class BookResponseDto {
     private List<String> categoryNames;
     private List<String> tagNames;
 
+
+    @QueryProjection
+    public BookResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription, String bookPublisher,
+                           LocalDate bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
+                           Integer bookRegularPrice, Integer bookDiscountRate, String bookState, Integer bookSalePrice,
+                           String bookReviewRate, String thumbnail) {
+        this.bookId = bookId;
+        this.bookIsbn = bookIsbn;
+        this.bookTitle = bookTitle;
+        this.bookDescription = bookDescription;
+        this.bookPublisher = bookPublisher;
+        this.bookPublicationDate = bookPublicationDate;
+        this.bookIndex = bookIndex;
+        this.bookPackaging = bookPackaging;
+        this.bookStock = bookStock;
+        this.bookRegularPrice = bookRegularPrice;
+        this.bookDiscountRate = bookDiscountRate;
+        this.bookState = bookState;
+        this.bookSalePrice = bookSalePrice;
+        this.bookReviewRate = bookReviewRate;
+        this.thumbnail = thumbnail;
+    }
+
     @Builder
     public BookResponseDto(Long bookId, String bookIsbn, String bookTitle, String bookDescription, String bookPublisher,
                            LocalDate bookPublicationDate, String bookIndex, Boolean bookPackaging, Integer bookStock,
@@ -56,6 +80,12 @@ public class BookResponseDto {
         this.bookSalePrice = bookSalePrice;
         this.bookReviewRate = bookReviewRate;
         this.thumbnail = thumbnail;
+        this.authorNames = authorNames;
+        this.categoryNames = categoryNames;
+        this.tagNames = tagNames;
+    }
+
+    public void updateList(List<String> authorNames, List<String> categoryNames, List<String> tagNames) {
         this.authorNames = authorNames;
         this.categoryNames = categoryNames;
         this.tagNames = tagNames;

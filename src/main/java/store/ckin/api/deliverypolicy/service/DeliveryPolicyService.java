@@ -38,8 +38,8 @@ public interface DeliveryPolicyService {
     /**
      * 배송비 정책을 수정하는 메서드입니다.
      *
-     * @param id                    수정할 배송비 정책 ID
-     * @param updateDeliveryPolicy  수정할 배송비 정책 DTO
+     * @param id                   수정할 배송비 정책 ID
+     * @param updateDeliveryPolicy 수정할 배송비 정책 DTO
      */
     void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy);
 

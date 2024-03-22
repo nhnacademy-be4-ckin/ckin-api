@@ -2,6 +2,7 @@ package store.ckin.api.payment.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
@@ -29,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createPayment(Long saleId, PaymentRequestDto requestDto) {
 
         Sale sale = saleRepository.findById(saleId)
@@ -49,6 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PaymentResponseDto getPayment(Long saleId) {
 
         if (!saleRepository.existsById(saleId)) {

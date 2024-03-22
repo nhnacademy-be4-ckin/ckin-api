@@ -8,18 +8,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.ReflectionUtils;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
 import store.ckin.api.book.relationship.bookcategory.entity.BookCategory;
@@ -35,7 +36,6 @@ import store.ckin.api.tag.entity.Tag;
  * @version 2024. 02. 29.
  */
 @DataJpaTest
-@Import(BookRepositoryImpl.class)
 class BookRepositoryImplTest {
     @Autowired
     private BookRepository bookRepository;
@@ -72,8 +72,10 @@ class BookRepositoryImplTest {
                 .bookPublicationDate(LocalDate.now())
                 .bookRegularPrice(10000)
                 .build();
-        testBook = entityManager.persist(testBook);
-
+        BookCategory bookCategory =
+                new BookCategory(new BookCategory.PK(testBook.getBookId(), category.getCategoryId()), testBook,
+                        category);
+        entityManager.persist(bookCategory);
         BookAuthor bookAuthor =
                 new BookAuthor(new BookAuthor.PK(testBook.getBookId(), author.getAuthorId()), testBook, author);
         entityManager.persist(bookAuthor);
@@ -81,10 +83,9 @@ class BookRepositoryImplTest {
         BookTag bookTag = new BookTag(new BookTag.PK(testBook.getBookId(), tag.getTagId()), testBook, tag);
         entityManager.persist(bookTag);
 
-        BookCategory bookCategory =
-                new BookCategory(new BookCategory.PK(testBook.getBookId(), category.getCategoryId()), testBook,
-                        category);
-        entityManager.persist(bookCategory);
+
+        testBook = entityManager.persist(testBook);
+
 
         Field authorsField = ReflectionUtils.findField(Book.class, "authors");
         if (authorsField != null) {
@@ -93,6 +94,21 @@ class BookRepositoryImplTest {
             authors.add(bookAuthor);
             ReflectionUtils.setField(authorsField, testBook, authors);
         }
+        Field categoriesField = ReflectionUtils.findField(Book.class, "categories");
+        if (categoriesField != null) {
+            categoriesField.setAccessible(true);
+            Set<BookCategory> categories = new HashSet<>();
+            categories.add(bookCategory);
+            ReflectionUtils.setField(categoriesField, testBook, categories);
+        }
+        Field tagsField = ReflectionUtils.findField(Book.class, "tags");
+        if (tagsField != null) {
+            tagsField.setAccessible(true);
+            Set<BookTag> tags = new HashSet<>();
+            tags.add(bookTag);
+            ReflectionUtils.setField(tagsField, testBook, tags);
+        }
+
         entityManager.flush();
     }
 
@@ -147,5 +163,37 @@ class BookRepositoryImplTest {
                 .contains(testBook);
     }
 
+    @Test
+    @DisplayName("카테고리 ID별 메인 페이지 책 목록 조회")
+    void getMainPageResponseDtoByCategoryIdTest() {
+        // Given
+        Long categoryId = category.getCategoryId();
+        Integer limit = 5;
+
+        // When
+        List<BookMainPageResponseDto> mainPageBooks =
+                bookRepository.getMainPageResponseDtoByCategoryId(categoryId, limit);
+
+        // Then
+        assertThat(mainPageBooks)
+                .isNotEmpty()
+                .hasSizeLessThanOrEqualTo(limit)
+                .allSatisfy(book -> assertThat(book.getBookId()).isNotNull());
+    }
+
+
+    @Test
+    @DisplayName("출판 날짜별 책 목록 조회")
+    void getMainPageResponseDtoOrderByBookPublicationDateTest() {
+        Integer limit = 5;
+
+        List<BookMainPageResponseDto> result = bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
+
+        Assertions.assertNotNull(result, "결과 목록은 null이 아니어야 합니다.");
+        Assertions.assertTrue(result.size() <= limit, "결과 목록의 크기가 limit을 초과하지 않아야 합니다.");
+
+    }
+
 
 }
+

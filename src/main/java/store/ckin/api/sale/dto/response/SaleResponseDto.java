@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.entity.Sale;
 
 /**
@@ -15,12 +16,15 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 03. 03.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class SaleResponseDto {
 
     private Long saleId;
+
+    private Long memberId;
+
+    private String title;
 
     private String memberEmail;
 
@@ -42,7 +46,7 @@ public class SaleResponseDto {
 
     private LocalDate saleDeliveryDate;
 
-    private Sale.DeliveryStatus saleDeliveryStatus;
+    private DeliveryStatus saleDeliveryStatus;
 
     private Integer saleDeliveryFee;
 
@@ -50,7 +54,7 @@ public class SaleResponseDto {
 
     private Integer saleTotalPrice;
 
-    private Sale.PaymentStatus salePaymentStatus;
+    private SalePaymentStatus salePaymentStatus;
 
     private String saleShippingPostCode;
 
@@ -58,6 +62,8 @@ public class SaleResponseDto {
 
         return new SaleResponseDto(
                 sale.getSaleId(),
+                Objects.nonNull(sale.getMember()) ? sale.getMember().getId() : null,
+                sale.getSaleTitle(),
                 Objects.nonNull(sale.getMember()) ? sale.getMember().getEmail() : "비회원",
                 sale.getSaleNumber(),
                 sale.getSaleOrdererName(),

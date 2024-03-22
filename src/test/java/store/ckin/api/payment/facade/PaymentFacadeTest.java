@@ -17,12 +17,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.exception.PaymentAmountNotCorrectException;
 import store.ckin.api.payment.exception.PaymentNotCompleteException;
 import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
-import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -44,6 +48,9 @@ class PaymentFacadeTest {
     @Mock
     SaleService saleService;
 
+    @Mock
+    MemberService memberService;
+
     PaymentRequestDto failPayment;
 
     PaymentRequestDto successPayment;
@@ -51,26 +58,23 @@ class PaymentFacadeTest {
 
     @BeforeEach
     void setUp() {
-        failPayment = new PaymentRequestDto(
-                "12341234",
-                "423421432",
-                "FAIL",
-                LocalDateTime.now().minusMinutes(10),
-                LocalDateTime.now(),
-                15000,
-                "https://test.com"
-        );
+        failPayment = new PaymentRequestDto();
+        ReflectionTestUtils.setField(failPayment, "paymentKey", "12341234");
+        ReflectionTestUtils.setField(failPayment, "saleNumber", "423421432");
+        ReflectionTestUtils.setField(failPayment, "paymentStatus", PaymentStatus.CANCEL);
+        ReflectionTestUtils.setField(failPayment, "requestedAt", LocalDateTime.now().minusMinutes(10));
+        ReflectionTestUtils.setField(failPayment, "approvedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(failPayment, "amount", 15000);
+        ReflectionTestUtils.setField(failPayment, "receiptUrl", "https://test.com");
 
-        successPayment = new PaymentRequestDto(
-                "12341234",
-                "423421432",
-                "DONE",
-                LocalDateTime.now().minusMinutes(10),
-                LocalDateTime.now(),
-                15000,
-                "https://test.com"
-        );
-
+        successPayment = new PaymentRequestDto();
+        ReflectionTestUtils.setField(successPayment, "paymentKey", "12341234");
+        ReflectionTestUtils.setField(successPayment, "saleNumber", "423421432");
+        ReflectionTestUtils.setField(successPayment, "paymentStatus", PaymentStatus.DONE);
+        ReflectionTestUtils.setField(successPayment, "requestedAt", LocalDateTime.now().minusMinutes(10));
+        ReflectionTestUtils.setField(successPayment, "approvedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(successPayment, "amount", 15000);
+        ReflectionTestUtils.setField(successPayment, "receiptUrl", "https://test.com");
 
     }
 
@@ -83,7 +87,7 @@ class PaymentFacadeTest {
                 () -> paymentFacade.createPayment(failPayment)
         );
 
-        verify(saleService, times(0)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(0)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(0)).createPayment(anyLong(), any());
     }
 
@@ -94,6 +98,8 @@ class PaymentFacadeTest {
         SaleResponseDto saleResponseDto =
                 new SaleResponseDto(
                         1L,
+                        1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -104,15 +110,15 @@ class PaymentFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
-        given(saleService.getSaleDetailBySaleNumber(anyString()))
+        given(saleService.getSaleBySaleNumber(anyString()))
                 .willReturn(saleResponseDto);
 
         Assertions.assertThrows(
@@ -120,7 +126,7 @@ class PaymentFacadeTest {
                 () -> paymentFacade.createPayment(successPayment)
         );
 
-        verify(saleService, times(1)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(0)).createPayment(anyLong(), any());
     }
 
@@ -131,6 +137,8 @@ class PaymentFacadeTest {
         SaleResponseDto saleResponseDto =
                 new SaleResponseDto(
                         1L,
+                        1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -141,20 +149,20 @@ class PaymentFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         15000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
-        given(saleService.getSaleDetailBySaleNumber(anyString()))
+        given(saleService.getSaleBySaleNumber(anyString()))
                 .willReturn(saleResponseDto);
 
         paymentFacade.createPayment(successPayment);
 
-        verify(saleService, times(1)).getSaleDetailBySaleNumber(anyString());
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
         verify(paymentService, times(1)).createPayment(anyLong(), any());
     }
 }

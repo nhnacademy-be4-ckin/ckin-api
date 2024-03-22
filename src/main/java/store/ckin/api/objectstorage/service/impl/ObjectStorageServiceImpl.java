@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +65,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         String identityUrl = keyManager.keyStore(properties.getIdentity()) + "/tokens";
 
         if (Objects.isNull(tokenId)
-                || expires.minusMinutes(1).isAfter(LocalDateTime.now())) {
+                || expires.minusMinutes(1).isBefore(LocalDateTime.now())) {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
@@ -102,12 +101,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
         String fileExtension = getContentTypeFromFileName(originalFileName);
 
-        // 확장자를 제외한 파일 이름 추출
-        String fileNameWithoutExtension = originalFileName;
-        int posImage = originalFileName.lastIndexOf(".");
-        if (posImage > 0) {
-            fileNameWithoutExtension = originalFileName.substring(0, posImage);
-        }
 
         // UUID를 추가하여 저장될 파일 이름 생성
         String fileId = UUID.randomUUID().toString();
@@ -159,13 +152,10 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         // REST API 호출을 통한 파일 삭제 요청
         this.restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
 
-        Optional<File> fileOptional = fileRepository.findByFileUrl(url);
+        File file = fileRepository.findByFileUrl(url)
+                .orElseThrow(() -> new FileNotFoundException(url));
 
-        if (fileOptional.isPresent()) {
-            fileRepository.delete(fileOptional.get());
-        } else {
-            throw new FileNotFoundException("File not found with URL: " + url);
-        }
+        fileRepository.delete(file);
     }
 
 

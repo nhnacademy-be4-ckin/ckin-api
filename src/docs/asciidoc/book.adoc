@@ -1,0 +1,80 @@
+== 책
+
+=== 책 Id로 책 정보 조회
+
+==== Request
+
+include::{snippets}/book/getBookById/success/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/book/getBookById/success/path-parameters.adoc[]
+
+
+==== Response
+
+include::{snippets}/book/getBookById/success/http-response.adoc[]
+
+==== Response fields
+
+include::{snippets}/book/getBookById/success/response-fields.adoc[]
+
+{empty} +
+
+=== 책 생성 요청 성공
+
+==== Request
+
+include::{snippets}/book/createBook/success/http-request.adoc[]
+
+==== Request Parts
+
+include::{snippets}/book/createBook/success/request-parts.adoc[]
+
+
+==== Request Parts
+
+include::{snippets}/book/createBook/success/request-part-requestDto-fields.adoc[]
+
+==== Response
+
+include::{snippets}/book/createBook/success/http-response.adoc[]
+
+=== 책 정보 업데이트
+
+==== Request
+
+include::{snippets}/book/updateBook/success/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/book/updateBook/success/path-parameters.adoc[]
+
+==== Request Fields
+
+include::{snippets}/book/updateBook/success/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/book/updateBook/success/http-response.adoc[]
+
+{empty} +
+
+=== 카테고리 ID로 책 검색
+
+==== Request
+
+include::{snippets}/book/findByCategoryId/http-request.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/book/findByCategoryId/request-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/book/findByCategoryId/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/book/findByCategoryId/response-fields.adoc[]
+

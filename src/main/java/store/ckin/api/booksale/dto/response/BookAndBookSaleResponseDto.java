@@ -2,7 +2,6 @@ package store.ckin.api.booksale.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * 도서 주문 리스트 정보 응답 DTO 입니다.
@@ -11,7 +10,6 @@ import lombok.ToString;
  * @version 2024. 03. 12.
  */
 
-@ToString
 @Getter
 @AllArgsConstructor
 public class BookAndBookSaleResponseDto {

@@ -4,6 +4,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,12 +25,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.common.domain.PageInfo;
@@ -35,11 +49,12 @@ import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.impl.TagServiceImpl;
 
 /**
- * description
+ * Tag Controller Test.
  *
  * @author 김준현
  * @version 2024. 02. 17
  */
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(TagController.class)
 class TagControllerTest {
     @Autowired
@@ -51,7 +66,7 @@ class TagControllerTest {
 
     @Test
     @DisplayName("태그 목록 가져오기 - 성공")
-    void getAllTagListTest() throws Exception{
+    void getAllTagListTest() throws Exception {
         // given
         List<TagResponseDto> allElements = List.of(
                 new TagResponseDto(1L, "태그1"),
@@ -76,12 +91,29 @@ class TagControllerTest {
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         content().json(objectMapper.writeValueAsString(expected))
-                );
+                )
+                .andDo(document("tag/getTagList/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("page").description("지정할 페이지"),
+                                parameterWithName("size").description("한 페이지 당 표시할 개수")
+                        ),
+                        responseFields(
+                                fieldWithPath("data.[].tagId").description("저장된 태그 아이디"),
+                                fieldWithPath("data.[].tagName").description("저장된 태그 이름"),
+                                fieldWithPath("pageInfo.page").description("현재 페이지 정보"),
+                                fieldWithPath("pageInfo.size").description("지정한 페이지 크기"),
+                                fieldWithPath("pageInfo.totalElements").description("총 데이터 수"),
+                                fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
+                        )
+
+                ));
     }
 
     @Test
     @DisplayName("태그 저장 - 실패(Validation Error)")
-    void saveTagTest_Failed_Validation() throws Exception{
+    void saveTagTest_Failed_Validation() throws Exception {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "12345678910");
@@ -90,7 +122,10 @@ class TagControllerTest {
         mockMvc.perform(post("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("tag/saveTag/validation-failed",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -99,7 +134,8 @@ class TagControllerTest {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "태그1");
-        TagNameAlreadyExistException expectedException = new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+        TagNameAlreadyExistException expectedException =
+                new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
         willThrow(expectedException).given(tagService).createTag(any());
 
         // when
@@ -107,11 +143,14 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
                 .andExpectAll(
-                        jsonPath("code", equalTo("TagName Already Exist")),
+                        jsonPath("code", equalTo("CONFLICT")),
                         jsonPath("message", equalTo(expectedException.getMessage())),
-                        status().isBadRequest()
-                );
+                        status().isConflict()
+                ).andDo(document("tag/saveTag/already-exist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
+
 
     @Test
     @DisplayName("태그 저장 - 성공")
@@ -122,14 +161,20 @@ class TagControllerTest {
 
         // when
         mockMvc.perform(post("/api/tags")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
-                .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
+                .andExpect(status().isCreated())
+                .andDo(document("tag/saveTag/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("tagName").description("저장할 태그 이름")
+                        )));
     }
 
     @Test
     @DisplayName("태그 수정 - 실패(Validation Error)")
-    void updateTagTest_Failed() throws Exception{
+    void updateTagTest_Failed() throws Exception {
         // given
         TagUpdateRequestDto tagUpdateRequestDto = new TagUpdateRequestDto();
         ReflectionTestUtils.setField(tagUpdateRequestDto, "tagId", 1L);
@@ -139,7 +184,10 @@ class TagControllerTest {
         mockMvc.perform(put("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagUpdateRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("tag/updateTag/validation-failed",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -154,11 +202,19 @@ class TagControllerTest {
         mockMvc.perform(put("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagUpdateRequestDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("tag/updateTag/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("tagId").description("태그 수정을 위한 태그 아이디"),
+                                fieldWithPath("tagName").description("태그 수정을 위한 태그 이름")
+                        )));
     }
+
     @Test
     @DisplayName("태그 삭제 - 실패(Validation Error)")
-    void deleteTagTest_Failed_Validation() throws Exception{
+    void deleteTagTest_Failed_Validation() throws Exception {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", null);
@@ -167,12 +223,15 @@ class TagControllerTest {
         mockMvc.perform(delete("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("tag/deleteTag/validation-failed",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
     @DisplayName("태그 삭제 - 실패(존재하지 않는 태그)")
-    void deleteTagTest_Failed_TagNotFoundException() throws Exception{
+    void deleteTagTest_Failed_TagNotFoundException() throws Exception {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", 1L);
@@ -184,9 +243,12 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
                 .andExpectAll(
-                        jsonPath("code", equalTo("Tag Not Found")),
+                        jsonPath("code", equalTo("NOT_FOUND")),
                         jsonPath("message", equalTo(expectedException.getMessage())),
-                        status().isNotFound());
+                        status().isNotFound())
+                .andDo(document("tag/deleteTag/not-found",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -200,6 +262,12 @@ class TagControllerTest {
         mockMvc.perform(delete("/api/tags")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("tag/deleteTag/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("tagId").description("삭제를 위한 태그 아이디")
+                        )));
     }
 }

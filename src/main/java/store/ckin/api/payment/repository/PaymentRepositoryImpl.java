@@ -7,7 +7,7 @@ import store.ckin.api.payment.entity.Payment;
 import store.ckin.api.payment.entity.QPayment;
 
 /**
- * {class name}.
+ * 결제 레포지토리 커스텀 구현 클래스. (Querydsl)
  *
  * @author 정승조
  * @version 2024. 03. 12.

@@ -25,15 +25,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
+import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
+import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.exception.SaleNotFoundExceptionBySaleNumber;
 import store.ckin.api.sale.exception.SaleNumberNotFoundException;
@@ -57,6 +63,9 @@ class SaleServiceImplTest {
 
     @Mock
     MemberRepository memberRepository;
+
+    @Mock
+    PaymentRepository paymentRepository;
 
     Grade grade;
 
@@ -98,11 +107,11 @@ class SaleServiceImplTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
                 .saleTotalPrice(10000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
     }
@@ -113,6 +122,7 @@ class SaleServiceImplTest {
         // given
         SaleCreateNoBookRequestDto requestDto = new SaleCreateNoBookRequestDto(
                 1L,
+                "홍길동전",
                 "정승조",
                 "01012345678",
                 "정승조",
@@ -158,11 +168,11 @@ class SaleServiceImplTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
                 .saleTotalPrice(10000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -230,7 +240,7 @@ class SaleServiceImplTest {
 
         saleService.updateSalePaymentPaidStatus(1L);
 
-        assertEquals(Sale.PaymentStatus.PAID, sale.getSalePaymentStatus());
+        assertEquals(SalePaymentStatus.PAID, sale.getSalePaymentStatus());
     }
 
     @Test
@@ -255,6 +265,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -263,7 +274,8 @@ class SaleServiceImplTest {
                 "Tester",
                 "01011112222",
                 3000,
-                LocalDate.now().plusDays(1),
+                LocalDate.of(2024, 3, 7).plusDays(1),
+                LocalDateTime.of(2024, 3, 7, 12, 0),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -316,6 +328,7 @@ class SaleServiceImplTest {
                 .willReturn(true);
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -325,6 +338,7 @@ class SaleServiceImplTest {
                 "01011112222",
                 3000,
                 LocalDate.now().plusDays(1),
+                LocalDateTime.now(),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -356,7 +370,7 @@ class SaleServiceImplTest {
         given(saleRepository.existsBySaleNumber(anyString()))
                 .willReturn(false);
 
-        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleDetailBySaleNumber("123456"));
+        assertThrows(SaleNumberNotFoundException.class, () -> saleService.getSaleBySaleNumber("123456"));
 
         verify(saleRepository, times(1)).existsBySaleNumber(anyString());
         verify(saleRepository, times(0)).findBySaleNumber(anyString());
@@ -372,7 +386,7 @@ class SaleServiceImplTest {
         given(saleRepository.findBySaleNumber(anyString()))
                 .willReturn(SaleResponseDto.toDto(sale));
 
-        SaleResponseDto saleDetail = saleService.getSaleDetailBySaleNumber("12345213");
+        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber("12345213");
 
         assertAll(
                 () -> assertEquals(saleDetail.getSaleId(), sale.getSaleId()),
@@ -391,6 +405,91 @@ class SaleServiceImplTest {
                 () -> assertEquals(saleDetail.getSaleShippingPostCode(), sale.getSaleShippingPostCode())
         );
 
+        verify(saleRepository, times(1)).existsBySaleNumber(anyString());
     }
 
+    @Test
+    @DisplayName("회원 ID로 주문 조회 테스트")
+    void testGetSalesByMemberId() {
+
+        SaleInfoResponseDto saleInfo
+                = new SaleInfoResponseDto("홍길동전 외 3권",
+                "123aqbc4",
+                "test@test.com",
+                "Tester",
+                "010123211234",
+                45000,
+                LocalDateTime.of(2024, 3, 7, 12, 0));
+
+
+        PageInfo pageInfo = new PageInfo(1, 10, 45, 5);
+        PagedResponse<List<SaleInfoResponseDto>> sales = new PagedResponse<>(List.of(saleInfo), pageInfo);
+
+        given(saleRepository.findAllByMemberId(anyLong(), any()))
+                .willReturn(sales);
+
+        PagedResponse<List<SaleInfoResponseDto>> responseDto =
+                saleService.getSalesByMemberId(1L, Pageable.ofSize(10));
+
+
+        assertAll(
+                () -> assertNotNull(responseDto),
+                () -> assertEquals(responseDto.getData().get(0), saleInfo),
+                () -> assertEquals(sales.getPageInfo(), pageInfo)
+        );
+
+        verify(saleRepository, times(1)).findAllByMemberId(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("주문 배송 상태 업데이트 - 실패")
+    void testUpdateSaleDeliveryStatus_Fail() {
+        given(saleRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        SaleDeliveryUpdateRequestDto delivery = new SaleDeliveryUpdateRequestDto();
+        ReflectionTestUtils.setField(delivery, "deliveryStatus", DeliveryStatus.IN_PROGRESS);
+
+        assertThrows(SaleNotFoundException.class,
+                () -> saleService.updateSaleDeliveryStatus(1L, delivery));
+    }
+
+    @Test
+    @DisplayName("주문 배송 상태 업데이트 - 성공")
+    void testUpdateSaleDeliveryStatus_Success() {
+        given(saleRepository.findById(anyLong()))
+                .willReturn(Optional.of(sale));
+
+        SaleDeliveryUpdateRequestDto delivery = new SaleDeliveryUpdateRequestDto();
+        ReflectionTestUtils.setField(delivery, "deliveryStatus", DeliveryStatus.IN_PROGRESS);
+
+        saleService.updateSaleDeliveryStatus(1L, delivery);
+
+        assertEquals(DeliveryStatus.IN_PROGRESS, sale.getSaleDeliveryStatus());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 실패 (존재하지 않는 주문)")
+    void testCancelSale_Fail() {
+        given(saleRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        assertThrows(SaleNotFoundException.class, () -> saleService.cancelSale(1L));
+
+        verify(saleRepository, times(1)).findById(anyLong());
+        verify(paymentRepository, times(0)).findBySale_SaleId(anyLong());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 성공")
+    void testCancelSale_Success() {
+        given(saleRepository.findById(anyLong()))
+                .willReturn(Optional.of(sale));
+
+        saleService.cancelSale(1L);
+        assertEquals(SalePaymentStatus.CANCEL, sale.getSalePaymentStatus());
+
+        verify(saleRepository, times(1)).findById(anyLong());
+        verify(paymentRepository, times(1)).findBySale_SaleId(anyLong());
+    }
 }

@@ -24,6 +24,7 @@ import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.service.BookService;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
@@ -54,33 +55,6 @@ public class BookController {
         return ResponseEntity.ok(bookResponseDto);
     }
 
-    /**
-     * 작가 이름으로 도서를 검색하고 페이징된 결과를 반환합니다.
-     *
-     * @param authorName 작가 이름
-     * @param pageable   페이징 정보
-     * @return 작가 이름으로 검색된 도서 목록에 대한 ResponseEntity 객체
-     */
-    @GetMapping("/search/by-author")
-    public ResponseEntity<Page<BookListResponseDto>> findByAuthorName(@RequestParam String authorName,
-                                                                      @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
-                                                                      Pageable pageable) {
-        return ResponseEntity.ok(bookService.findByAuthorName(authorName, pageable));
-    }
-
-    /**
-     * 도서 제목으로 도서를 검색하고 페이징된 결과를 반환합니다.
-     *
-     * @param title    도서 제목
-     * @param pageable 페이징 정보
-     * @return 도서 제목으로 검색된 도서 목록에 대한 ResponseEntity 객체
-     */
-    @GetMapping("/search/by-title")
-    public ResponseEntity<Page<BookListResponseDto>> findByBookTitle(@RequestParam String title,
-                                                                     @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
-                                                                     Pageable pageable) {
-        return ResponseEntity.ok(bookService.findByBookTitle(title, pageable));
-    }
 
     /**
      * 카테고리 ID로 도서를 검색하고 페이징된 결과를 반환합니다.
@@ -117,7 +91,6 @@ public class BookController {
      * @return 생성 성공시 상태 코드 201과 함께 ResponseEntity 반환
      * @throws IOException 파일 처리 중 발생하는 예외
      */
-
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Void> createBook(@Valid @RequestPart("requestDto") BookCreateRequestDto requestDto,
                                            @RequestPart("file") MultipartFile file)
@@ -194,6 +167,45 @@ public class BookController {
             throws IOException {
         bookService.updateBookThumbnail(bookId, thumbnail);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주어진 태그를 가지고 있는 메인 페이지 도서 목록을 반환합니다.
+     *
+     * @param limit   반환할 도서의 수
+     * @param tagName 태그 이름
+     * @return 해당하는 도서 목록
+     */
+    @GetMapping("/main-page/tag")
+    public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksByCategoryId(
+            @RequestParam(required = false, defaultValue = "8") Integer limit,
+            @RequestParam("tagName") String tagName) {
+
+        List<BookMainPageResponseDto> books = bookService.getMainPageBooksByTagName(limit, tagName);
+
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/main-page")
+    public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksOrderByBookPublicationDate(
+            @RequestParam(required = false, defaultValue = "8") Integer limit) {
+
+        List<BookMainPageResponseDto> books = bookService.getMainPageBookListOrderByBookPublicationDate(limit);
+
+        return ResponseEntity.ok(books);
+    }
+
+    /**
+     * 신간도서 페이지, 메인 페이지에 들어갈 신간 도서 목록을 페이지로 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 신간 도서 페이지 목록
+     */
+    @GetMapping("/recent")
+    public ResponseEntity<Page<BookResponseDto>> getRecentPublishedBook(@PageableDefault(size = 8) Pageable pageable) {
+        Page<BookResponseDto> recentBookPage = bookService.getRecentPublished(pageable);
+
+        return ResponseEntity.ok().body(recentBookPage);
     }
 
 

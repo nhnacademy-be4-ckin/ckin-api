@@ -15,7 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
@@ -43,15 +45,14 @@ class PaymentServiceImplTest {
     @Test
     @DisplayName("결제 생성 테스트 - 실패(saleId가 존재하지 않을 경우)")
     void testCreatePayment() {
-        PaymentRequestDto paymentRequestDto = new PaymentRequestDto(
-                "12341234",
-                "423421432",
-                "DONE",
-                LocalDateTime.now().minusMinutes(10),
-                LocalDateTime.now(),
-                15000,
-                "https://test.com"
-        );
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
+        ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", PaymentStatus.DONE);
+        ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
+        ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);
+        ReflectionTestUtils.setField(paymentRequestDto, "receiptUrl", "https://test.com");
 
         given(saleRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
@@ -67,15 +68,14 @@ class PaymentServiceImplTest {
     @Test
     @DisplayName("결제 생성 테스트 - 성공")
     void testCreatePaymentSuccess() {
-        PaymentRequestDto paymentRequestDto = new PaymentRequestDto(
-                "12341234",
-                "423421432",
-                "DONE",
-                LocalDateTime.now().minusMinutes(10),
-                LocalDateTime.now(),
-                15000,
-                "https://test.com"
-        );
+        PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentKey", "12341234");
+        ReflectionTestUtils.setField(paymentRequestDto, "saleNumber", "423421432");
+        ReflectionTestUtils.setField(paymentRequestDto, "paymentStatus", PaymentStatus.DONE);
+        ReflectionTestUtils.setField(paymentRequestDto, "requestedAt", LocalDateTime.now().minusMinutes(10));
+        ReflectionTestUtils.setField(paymentRequestDto, "approvedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(paymentRequestDto, "amount", 15000);
+        ReflectionTestUtils.setField(paymentRequestDto, "receiptUrl", "https://test.com");
 
 
         given(saleRepository.findById(anyLong()))

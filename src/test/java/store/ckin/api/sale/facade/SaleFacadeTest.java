@@ -2,6 +2,7 @@ package store.ckin.api.sale.facade;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -12,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,16 +23,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.booksale.dto.request.BookSaleCreateRequestDto;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
-import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
+import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.payment.service.PaymentService;
+import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
-import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
+import store.ckin.api.sale.exception.SaleMemberNotMatchException;
+import store.ckin.api.sale.exception.SaleOrdererContactNotMatchException;
 import store.ckin.api.sale.service.SaleService;
 
 /**
@@ -60,10 +65,8 @@ class SaleFacadeTest {
     @Mock
     PaymentService paymentService;
 
-    @BeforeEach
-    void setUp() {
-
-    }
+    @Mock
+    PointHistoryService pointHistoryService;
 
     @Test
     @DisplayName("주문 생성 테스트")
@@ -85,26 +88,27 @@ class SaleFacadeTest {
 
         List<BookSaleCreateRequestDto> bookSaleList = List.of(firstDto, secondDto);
 
-        SaleCreateRequestDto requestDto = new SaleCreateRequestDto(
-                1L,
-                "정승조",
-                "01012345678",
-                "정승조",
-                "01012345678",
-                3000,
-                LocalDate.of(2024, 3, 7),
-                "123456",
-                "광주광역시 동구 조선대 5길 ",
-                "IT 융합대학",
-                300,
-                10000
-        );
-
+        SaleCreateRequestDto requestDto = new SaleCreateRequestDto();
+        ReflectionTestUtils.setField(requestDto, "memberId", 1L);
+        ReflectionTestUtils.setField(requestDto, "saleTitle", "테스트 제목");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleOrdererContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverName", "정승조");
+        ReflectionTestUtils.setField(requestDto, "saleReceiverContact", "01012345678");
+        ReflectionTestUtils.setField(requestDto, "deliveryFee", 3000);
+        ReflectionTestUtils.setField(requestDto, "saleDeliveryDate", LocalDate.of(2024, 3, 7));
+        ReflectionTestUtils.setField(requestDto, "postcode", "123456");
+        ReflectionTestUtils.setField(requestDto, "address", "광주광역시 동구 조선대 5길 ");
+        ReflectionTestUtils.setField(requestDto, "detailAddress", "IT 융합대학");
+        ReflectionTestUtils.setField(requestDto, "pointUsage", 300);
+        ReflectionTestUtils.setField(requestDto, "totalPrice", 10000);
         ReflectionTestUtils.setField(requestDto, "bookSaleList", bookSaleList);
 
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -115,11 +119,11 @@ class SaleFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -127,12 +131,14 @@ class SaleFacadeTest {
                 .willReturn(sale);
 
         // when
-        saleFacade.createSale(requestDto);
+        String saleNumber = saleFacade.createSale(requestDto);
 
         // then
+        assertEquals(sale.getSaleNumber(), saleNumber);
         verify(saleService, times(1)).createSale(any());
         verify(bookSaleService, times(1)).createBookSale(anyLong(), any());
         verify(memberService, times(1)).updatePoint(anyLong(), any());
+        verify(pointHistoryService, times(1)).createPointHistory(any());
     }
 
     @Test
@@ -166,6 +172,8 @@ class SaleFacadeTest {
         SaleResponseDto sale =
                 new SaleResponseDto(
                         1L,
+                        1L,
+                        "테스트 제목",
                         "test@test.com",
                         "1234",
                         "정승조",
@@ -176,11 +184,11 @@ class SaleFacadeTest {
                         LocalDateTime.now(),
                         LocalDateTime.now().plusDays(1),
                         LocalDate.now().plusDays(3),
-                        Sale.DeliveryStatus.READY,
+                        DeliveryStatus.READY,
                         3000,
                         0,
                         10000,
-                        Sale.PaymentStatus.WAITING,
+                        SalePaymentStatus.WAITING,
                         "123456"
                 );
 
@@ -193,7 +201,7 @@ class SaleFacadeTest {
                         1L,
                         3L,
                         "12421312",
-                        "DONE",
+                        PaymentStatus.DONE,
                         LocalDateTime.now(),
                         LocalDateTime.now().plusMinutes(10),
                         "test.com"
@@ -206,20 +214,10 @@ class SaleFacadeTest {
 
         assertAll(
                 () -> assertEquals(saleDetail.getSaleResponseDto(), sale),
-                () -> assertEquals(saleDetail.getBooksaleList().get(0), bookSale),
+                () -> assertEquals(saleDetail.getBookSaleList().get(0), bookSale),
                 () -> assertEquals(saleDetail.getPaymentResponseDto(), payment));
 
         verify(saleService, times(1)).getSaleDetail(1L);
-    }
-
-    @Test
-    @DisplayName("주문 결제 상태 완료 변경 테스트")
-    void testUpdateSalePaymentPaidStatus() {
-
-        saleFacade.updateSalePaymentPaidStatus(1L);
-
-        verify(bookSaleService, times(1)).updateBookSaleState(1L, BookSale.BookSaleState.COMPLETE);
-        verify(saleService, times(1)).updateSalePaymentPaidStatus(1L);
     }
 
     @Test
@@ -227,6 +225,7 @@ class SaleFacadeTest {
     void testGetSaleWithBookResponse() {
 
         SaleWithBookResponseDto responseDto = new SaleWithBookResponseDto(
+                "홍길동전",
                 1L,
                 "ABC1234DEF",
                 "test@test.com",
@@ -236,6 +235,7 @@ class SaleFacadeTest {
                 "01011112222",
                 3000,
                 LocalDate.of(2024, 3, 7).plusDays(1),
+                LocalDateTime.of(2024, 3, 7, 12, 0),
                 "12345",
                 "광주광역시 동구 조선대 5길",
                 0,
@@ -260,5 +260,264 @@ class SaleFacadeTest {
         saleFacade.getSalePaymentInfo("123456");
 
         verify(saleService, times(1)).getSalePaymentInfo("123456");
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 상세 조회 테스트 - 실패 (주문자 전화번호와 넘겨받은 전화번호가 다른 경우)")
+    void testGetSaleDetailBySaleNumber_Fail_Contact_Different() {
+
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        assertThrows(SaleOrdererContactNotMatchException.class,
+                () -> saleFacade.getGuestSaleDetailBySaleNumber("1234", "010111111111"));
+    }
+
+    @Test
+    @DisplayName("주문 번호로 주문 상세 조회 테스트 - 성공")
+    void testGetSaleDetailBySaleNumber_Success() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0),
+                        LocalDateTime.of(2024, 3, 7, 12, 0, 0).plusDays(1),
+                        LocalDate.of(2024, 3, 7).plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        10000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        SaleDetailResponseDto actual = saleFacade.getGuestSaleDetailBySaleNumber("1234", "01012345678");
+
+        assertEquals(sale, actual.getSaleResponseDto());
+    }
+
+    @Test
+    @DisplayName("회원 ID로 회원의 모든 주문 내역 조회")
+    void testGetSalesByMemberId() {
+        saleFacade.getSalesByMemberId(1L, Pageable.ofSize(10));
+        verify(saleService, times(1)).getSalesByMemberId(1L, Pageable.ofSize(10));
+    }
+
+    @Test
+    @DisplayName("회원 ID와 주문 번호를 통해 주문 상세 정보 조회 - 실패 (회원 정보가 다른 경우)")
+    void testGetMemberSaleDetailBySaleNumber_Fail_NotMatchException() {
+        SaleResponseDto saleResponseDto =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(saleResponseDto);
+
+        assertThrows(SaleMemberNotMatchException.class,
+                () -> saleFacade.getMemberSaleDetailBySaleNumber("1234", 5L));
+
+        verify(saleService, times(1)).getSaleBySaleNumber(anyString());
+        verify(bookSaleService, times(0)).getBookSaleDetail(anyLong());
+        verify(paymentService, times(0)).getPayment(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원 ID와 주문 번호를 통해 주문 상세 정보 조회 - 성공")
+    void testGetMemberSaleDetailBySaleNumber_Success() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleBySaleNumber(anyString()))
+                .willReturn(sale);
+
+        BookAndBookSaleResponseDto bookSale =
+                new BookAndBookSaleResponseDto(
+                        1L,
+                        "testimg.com",
+                        "홍길동전",
+                        5,
+                        3L,
+                        "A 포장",
+                        1000,
+                        50000);
+
+        given(bookSaleService.getBookSaleDetail(anyLong()))
+                .willReturn(List.of(bookSale));
+
+        PaymentResponseDto payment = new PaymentResponseDto(
+                1L,
+                1L,
+                "1232321",
+                PaymentStatus.DONE,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "test.com");
+
+        given(paymentService.getPayment(anyLong()))
+                .willReturn(payment);
+
+
+        SaleDetailResponseDto actual = saleFacade.getMemberSaleDetailBySaleNumber("1234", 1L);
+
+        assertAll(
+                () -> assertEquals(sale, actual.getSaleResponseDto()),
+                () -> assertEquals(bookSale, actual.getBookSaleList().get(0)),
+                () -> assertEquals(payment, actual.getPaymentResponseDto())
+        );
+    }
+
+    @Test
+    @DisplayName("주문 배송 상태 변경 테스트")
+    void testUpdateSaleDeliveryStatus() {
+        SaleDeliveryUpdateRequestDto delivery = new SaleDeliveryUpdateRequestDto();
+        ReflectionTestUtils.setField(delivery, "deliveryStatus", DeliveryStatus.IN_PROGRESS);
+
+        saleFacade.updateSaleDeliveryStatus(1L, delivery);
+        verify(saleService, times(1)).updateSaleDeliveryStatus(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 비회원")
+    void testCancelSale_Anonymous() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        null,
+                        "테스트 제목",
+                        null,
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        0,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleDetail(1L))
+                .willReturn(sale);
+
+        saleFacade.cancelSale(1L);
+
+        verify(saleService, times(1)).cancelSale(anyLong());
+        verify(saleService, times(1)).getSaleDetail(anyLong());
+        verify(memberService, times(0)).updateCancelSalePoint(anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트 - 포인트를 사용한 회원")
+    void testCancelSale_Member_UsePoint() {
+        SaleResponseDto sale =
+                new SaleResponseDto(
+                        1L,
+                        1L,
+                        "테스트 제목",
+                        "test@test.com",
+                        "1234",
+                        "정승조",
+                        "01012345678",
+                        "정승조",
+                        "01012345678",
+                        "광주광역시 동구 조선대 5길",
+                        LocalDateTime.now(),
+                        LocalDateTime.now().plusDays(1),
+                        LocalDate.now().plusDays(3),
+                        DeliveryStatus.READY,
+                        3000,
+                        3000,
+                        15000,
+                        SalePaymentStatus.WAITING,
+                        "123456"
+                );
+
+        given(saleService.getSaleDetail(anyLong()))
+                .willReturn(sale);
+
+        saleFacade.cancelSale(1L);
+
+        verify(saleService, times(1)).cancelSale(anyLong());
+        verify(saleService, times(1)).getSaleDetail(anyLong());
+        verify(memberService, times(1)).updateCancelSalePoint(anyLong(), anyString());
     }
 }

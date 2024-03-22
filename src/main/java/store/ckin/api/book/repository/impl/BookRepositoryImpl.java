@@ -2,6 +2,7 @@ package store.ckin.api.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +14,9 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
+import store.ckin.api.book.dto.response.BookResponseDto;
+import store.ckin.api.book.dto.response.QBookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
@@ -53,16 +57,24 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookListResponseDto> findByAuthorName(String authorName, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.authors, bookAuthor)
+                .join(bookAuthor.author, author)
+                .where(author.authorName.eq(authorName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
-                .where(author.authorName.eq(authorName))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
+
 
         Long total = Optional.ofNullable(queryFactory
                         .select(book.count())
@@ -89,15 +101,23 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findByBookTitleContaining(String bookTitle, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .where(book.bookTitle.containsIgnoreCase(bookTitle))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.thumbnail, file)
-                .where(book.bookTitle.containsIgnoreCase(bookTitle))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
+
 
         Long total = Optional.ofNullable(queryFactory
                         .select(book.count())
@@ -120,14 +140,26 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findByCategoryId(Long categoryId, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        List<Book> books = queryFactory
-                .selectFrom(book)
-                .leftJoin(book.authors, bookAuthor).fetchJoin()
-                .leftJoin(book.categories, bookCategory).fetchJoin()
-                .leftJoin(book.thumbnail, file)
+// 먼저 페이징된 ID를 가져옵니다.
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.categories, bookCategory)
                 .where(bookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
@@ -152,13 +184,20 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookListResponseDto> findAllBooks(Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
         List<Book> books = queryFactory
                 .selectFrom(book)
                 .leftJoin(book.authors, bookAuthor).fetchJoin()
                 .leftJoin(bookAuthor.author, author).fetchJoin()
-                .leftJoin(book.thumbnail, file)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
                 .fetch();
 
         Long total = Optional.ofNullable(queryFactory
@@ -239,6 +278,157 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return bookInfoList;
     }
 
+    @Override
+    public List<BookMainPageResponseDto> getMainPageResponseDtoByCategoryId(Long categoryId, Integer limit) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .join(book.categories, bookCategory)
+                .where(bookCategory.category.categoryId.eq(categoryId))
+                .orderBy(book.bookPublicationDate.desc())
+                .limit(limit)
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageResponseDtoOrderByBookPublicationDate(Integer limit) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Long> bookIds = queryFactory
+                .select(book.bookId)
+                .from(book)
+                .orderBy(book.bookPublicationDate.desc())
+                .limit(limit)
+                .fetch();
+
+// 이후에 해당 ID를 가진 책들을 조회합니다.
+        List<Book> books = queryFactory
+                .selectFrom(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(book.bookId.in(bookIds))
+                .distinct()
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
+        List<Book> books = from(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(tag.tagName.eq(tagName))
+                .distinct()
+                .limit(limit)
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
+        List<String> authorNames = from(book)
+                .leftJoin(bookAuthor)
+                .on(book.bookId.eq(bookAuthor.book.bookId))
+                .select(author.authorName)
+                .fetch();
+
+        List<String> categoryNames = from(book)
+                .leftJoin(bookCategory)
+                .on(book.bookId.eq(bookCategory.book.bookId))
+                .select(category.categoryName)
+                .fetch();
+
+        List<String> tagNames = from(book)
+                .leftJoin(bookTag)
+                .on(book.bookId.eq(bookTag.book.bookId))
+                .select(tag.tagName)
+                .fetch();
+
+        List<BookResponseDto> results = from(book)
+                .leftJoin(book.authors, bookAuthor)
+                .leftJoin(bookAuthor.author, author)
+                .leftJoin(book.categories, bookCategory)
+                .leftJoin(bookCategory.category, category)
+                .leftJoin(book.tags, bookTag)
+                .leftJoin(bookTag.tag, tag)
+                .leftJoin(book.thumbnail, file)
+                .select(new QBookResponseDto(
+                        book.bookId,
+                        book.bookIsbn,
+                        book.bookTitle,
+                        book.bookDescription,
+                        book.bookPublisher,
+                        book.bookPublicationDate,
+                        book.bookIndex,
+                        book.bookPackaging,
+                        book.bookStock,
+                        book.bookRegularPrice,
+                        book.bookDiscountRate,
+                        book.bookState,
+                        book.bookSalePrice,
+                        book.bookReviewRate,
+                        file.fileUrl
+                ))
+                .orderBy(book.bookPublicationDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        results.forEach(bookResponseDto -> bookResponseDto.updateList(authorNames, categoryNames, tagNames));
+
+        long count = from(book)
+                .leftJoin(book.authors, bookAuthor)
+                .leftJoin(bookAuthor.author, author)
+                .leftJoin(book.categories, bookCategory)
+                .leftJoin(bookCategory.category, category)
+                .leftJoin(book.tags, bookTag)
+                .leftJoin(bookTag.tag, tag)
+                .leftJoin(book.thumbnail, file)
+                .select(book.count())
+                .orderBy(book.bookPublicationDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchOne();
+
+        return new PageImpl<>(results, pageable, count);
+    }
+
 
     private BookListResponseDto convertToBookListResponseDto(Book book) {
         List<String> authorNames = book.getAuthors().stream()
@@ -264,6 +454,32 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .bookReviewRate(book.getBookReviewRate())
                 .authorNames(authorNames)
                 .thumbnail(thumbnailUrl) // 썸네일 URL 추가
+                .build();
+    }
+
+    private BookMainPageResponseDto convertToBookMainPageResponseDto(Book book) {
+        List<String> authorNames = book.getAuthors().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getAuthor().getAuthorName())
+                .collect(Collectors.toList());
+        List<String> categoryNames = book.getCategories().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getCategory().getCategoryName())
+                .collect(Collectors.toList());
+        List<String> tagNames = book.getTags().stream()
+                .map(bookAuthorElement -> bookAuthorElement.getTag().getTagName())
+                .collect(Collectors.toList());
+
+        String thumbnailUrl = book.getThumbnail() != null ? book.getThumbnail().getFileUrl() : null;
+
+        return BookMainPageResponseDto.builder()
+                .bookId(book.getBookId())
+                .bookTitle(book.getBookTitle())
+                .bookRegularPrice(book.getBookRegularPrice())
+                .bookDiscountRate(book.getBookDiscountRate())
+                .bookSalePrice(book.getBookSalePrice())
+                .productCategories(categoryNames)
+                .productAuthorNames(authorNames)
+                .productTags(tagNames)
+                .thumbnail(thumbnailUrl)
                 .build();
     }
 }

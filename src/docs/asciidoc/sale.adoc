@@ -1,0 +1,166 @@
+== 주문
+
+=== 주문 생성 - 성공
+
+==== Request
+
+include::{snippets}/sale/createSale/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/sale/createSale/success/http-response.adoc[]
+
+- 반환 값은 생성된 주문 번호 (UUID) 입니다.
+
+{empty} +
+
+> 주문 조회 응답 정보는 아래와 같습니다.
+
+include::{snippets}/sale/getSaleDetail_admin/success/response-fields.adoc[]
+
+{empty} +
+
+=== 주문 조회 - 관리자
+
+==== Request
+
+include::{snippets}/sale/getSaleDetail_admin/success/http-request.adoc[]
+
+==== Request Path Parameters
+
+include::{snippets}/sale/getSaleDetail_admin/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSaleDetail_admin/success/http-response.adoc[]
+
+{empty} +
+
+=== 주문 조회 - 회원
+
+==== Request
+
+include::{snippets}/sale/getSaleDetail_member/success/http-request.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/sale/getSaleDetail_member/success/request-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSaleDetail_member/success/http-response.adoc[]
+
+{empty} +
+
+=== 주문 조회 - 비회원
+
+==== Request
+
+include::{snippets}/sale/getSaleDetail_guest/success/http-request.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/sale/getSaleDetail_guest/success/request-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSaleDetail_guest/success/http-response.adoc[]
+
+{empty} +
+
+> 주문 전체 조회 응답 정보는 아래와 같습니다.
+
+==== Response Fields
+
+include::{snippets}/sale/getSaleList/success/response-fields.adoc[]
+
+
+=== 주문 전체 조회 (관리자 페이지)
+
+==== Request
+
+include::{snippets}/sale/getSaleList/success/http-request.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/sale/getSaleList/success/request-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSaleList/success/http-response.adoc[]
+
+{empty} +
+
+=== 회원의 주문 전체 조회
+
+==== Request
+
+include::{snippets}/sale/getSaleListByMemberId/success/http-request.adoc[]
+
+==== Request Path Parameters
+
+include::{snippets}/sale/getSaleListByMemberId/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSaleListByMemberId/success/http-response.adoc[]
+
+{empty} +
+
+
+=== 주문의 결제 정보 조회
+
+==== Request
+
+include::{snippets}/sale/getSalePaymentInfoBySaleNumber/success/http-request.adoc[]
+
+==== Request Path Parameters
+
+include::{snippets}/sale/getSalePaymentInfoBySaleNumber/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/getSalePaymentInfoBySaleNumber/success/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/sale/getSalePaymentInfoBySaleNumber/success/response-fields.adoc[]
+
+{empty} +
+
+=== 주문의 배송 상태 변경
+
+==== Request
+
+include::{snippets}/sale/updateSaleDeliveryStatus/success/http-request.adoc[]
+
+==== Request Path Parameters
+
+include::{snippets}/sale/updateSaleDeliveryStatus/success/path-parameters.adoc[]
+
+==== Request Fields
+
+include::{snippets}/sale/updateSaleDeliveryStatus/success/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/sale/updateSaleDeliveryStatus/success/http-response.adoc[]
+
+{empty} +
+
+=== 주문의 상태 취소로 변경
+
+==== Request
+
+include::{snippets}/sale/updateSaleStatus/cancel/http-request.adoc[]
+
+==== Request Path Parameters
+
+include::{snippets}/sale/updateSaleStatus/cancel/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/sale/updateSaleStatus/cancel/http-response.adoc[]
+
+{empty} +
+

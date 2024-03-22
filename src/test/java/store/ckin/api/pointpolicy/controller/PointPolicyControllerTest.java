@@ -1,11 +1,17 @@
 package store.ckin.api.pointpolicy.controller;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +26,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -37,6 +44,7 @@ import store.ckin.api.pointpolicy.service.PointPolicyService;
  * @version 2024. 02. 16.
  */
 
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(PointPolicyController.class)
 class PointPolicyControllerTest {
 
@@ -52,17 +60,27 @@ class PointPolicyControllerTest {
     @DisplayName("포인트 정책 개별 조회")
     void testGetPointPolicy() throws Exception {
 
+        PointPolicyResponseDto pointPolicy = new PointPolicyResponseDto(1L, "회원가입", 3000);
+
         given(pointPolicyService.getPointPolicy(anyLong()))
-                .willReturn(new PointPolicyResponseDto(1L, "정책1", 3000));
+                .willReturn(pointPolicy);
 
         mockMvc.perform(get("/api/point-policies/{id}", 1L))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.pointPolicyId", equalTo(1)),
-                        jsonPath("$.pointPolicyName", equalTo("정책1")),
-                        jsonPath("$.pointPolicyReserve", equalTo(3000)))
-                .andDo(print());
+                        jsonPath("$.pointPolicyId").value(pointPolicy.getPointPolicyId()),
+                        jsonPath("$.pointPolicyName").value(pointPolicy.getPointPolicyName()),
+                        jsonPath("$.pointPolicyReserve").value(pointPolicy.getPointPolicyReserve()))
+                .andDo(document("point-policy/getPointPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("pointPolicyId").description("포인트 정책 ID"),
+                                fieldWithPath("pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )
+                ));
 
         verify(pointPolicyService, times(1)).getPointPolicy(anyLong());
     }
@@ -71,19 +89,31 @@ class PointPolicyControllerTest {
     @DisplayName("포인트 정책 리스트 조회")
     void testGetPointPolicies() throws Exception {
 
+        PointPolicyResponseDto firstPointPolicy = new PointPolicyResponseDto(1L, "회원가입", 5000);
+        PointPolicyResponseDto secondPointPolicy = new PointPolicyResponseDto(2L, "리뷰작성", 300);
+
         given(pointPolicyService.getPointPolicies())
-                .willReturn(List.of(new PointPolicyResponseDto(1L, "정책1", 300),
-                        new PointPolicyResponseDto(2L, "정책2", 666)));
+                .willReturn(List.of(firstPointPolicy, secondPointPolicy));
 
         mockMvc.perform(get("/api/point-policies"))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$[0].pointPolicyId", equalTo(1)),
-                        jsonPath("$[0].pointPolicyName", equalTo("정책1")),
-                        jsonPath("$[1].pointPolicyId", equalTo(2)),
-                        jsonPath("$[1].pointPolicyReserve", equalTo(666)))
-                .andDo(print());
+                        jsonPath("$[0].pointPolicyId").value(firstPointPolicy.getPointPolicyId()),
+                        jsonPath("$[0].pointPolicyName").value(firstPointPolicy.getPointPolicyName()),
+                        jsonPath("$[0].pointPolicyReserve").value(firstPointPolicy.getPointPolicyReserve()),
+                        jsonPath("$[1].pointPolicyId").value(secondPointPolicy.getPointPolicyId()),
+                        jsonPath("$[1].pointPolicyName").value(secondPointPolicy.getPointPolicyName()),
+                        jsonPath("$[1].pointPolicyReserve").value(secondPointPolicy.getPointPolicyReserve()))
+                .andDo(document("point-policy/getPointPolicyList/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].pointPolicyId").description("포인트 정책 ID"),
+                                fieldWithPath("[].pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("[].pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )
+                ));
 
         verify(pointPolicyService, times(1)).getPointPolicies();
 
@@ -104,7 +134,14 @@ class PointPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(document("point-policy/createPointPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("pointPolicyId").description("포인트 정책 ID"),
+                                fieldWithPath("pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )));
 
         verify(pointPolicyService, times(1)).createPointPolicy(any());
     }
@@ -124,7 +161,16 @@ class PointPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andDo(document("point-policy/createPointPolicy/validation-fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("pointPolicyId").description("포인트 정책 ID"),
+                                fieldWithPath("pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )));
+
+        verify(pointPolicyService, times(0)).createPointPolicy(any());
     }
 
     @Test
@@ -141,7 +187,13 @@ class PointPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(document("point-policy/updatePointPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )));
 
         verify(pointPolicyService, times(1)).updatePointPolicy(anyLong(), any());
     }
@@ -160,7 +212,16 @@ class PointPolicyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andDo(document("point-policy/updatePointPolicy/validation-fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("pointPolicyName").description("포인트 정책 명"),
+                                fieldWithPath("pointPolicyReserve").description("포인트 정책 적립 금액")
+                        )
+                ));
+
+        verify(pointPolicyService, times(0)).updatePointPolicy(anyLong(), any());
     }
 
     @Test
@@ -169,7 +230,10 @@ class PointPolicyControllerTest {
 
         mockMvc.perform(delete("/api/point-policies/{id}", 1L))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(document("point-policy/deletePointPolicy/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()))
+                );
 
         verify(pointPolicyService, times(1)).deletePointPolicy(anyLong());
     }

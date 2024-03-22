@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 포인트 정책 수정 요청 DTO.
@@ -14,8 +15,9 @@ import lombok.Getter;
  */
 
 @Getter
+@NoArgsConstructor
 public class PointPolicyUpdateRequestDto {
-    
+
     @Size(min = 1, max = 15, message = "포인트 정책 이름은 1자 이상 15자 이하로 입력해주세요.")
     @NotBlank(message = "포인트 정책 이름을 입력해주세요.")
     private String pointPolicyName;
