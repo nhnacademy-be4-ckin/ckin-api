@@ -8,6 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookMainPageResponseDto;
+import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
 
 /**
@@ -73,4 +74,21 @@ public interface BookRepositoryCustom {
     List<BookMainPageResponseDto> getMainPageResponseDtoByCategoryId(Long categoryId, Integer limit);
 
     List<BookMainPageResponseDto> getMainPageResponseDtoOrderByBookPublicationDate(Integer limit);
+
+    /**
+     * 태그 이름을 가진 도서 목록을 가져옵니다.
+     *
+     * @param limit 최대로 가져올 도서의 개수
+     * @param tagName 태그 이름
+     * @return 도서 목록
+     */
+    List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName);
+
+    /**
+     * 신간도서 페이지, 메인 페이지에 들어갈 신간 도서 목록을 페이지로 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 신간 도서 페이지 목록
+     */
+    Page<BookResponseDto> getRecentPublished(Pageable pageable);
 }

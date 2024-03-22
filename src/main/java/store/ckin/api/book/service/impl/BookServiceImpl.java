@@ -239,6 +239,16 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
     }
 
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
+        return bookRepository.getMainPageBooksByTagName(limit, tagName);
+    }
+
+    @Override
+    public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
+        return bookRepository.getRecentPublished(pageable);
+    }
+
 
     /**
      * {@inheritDoc}

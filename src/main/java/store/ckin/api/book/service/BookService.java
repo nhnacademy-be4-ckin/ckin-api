@@ -110,6 +110,22 @@ public interface BookService {
     List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit);
 
 
+    /**
+     * 주어진 태그를 가지고 있는 메인 페이지 도서 목록을 반환합니다.
+     *
+     * @param limit   반환할 도서의 수
+     * @param tagName 태그 이름
+     * @return 해당하는 도서 목록
+     */
+    List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName);
+
+    /**
+     * 신간도서 페이지, 메인 페이지에 들어갈 신간 도서 목록을 페이지로 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 신간 도서 페이지 목록
+     */
+    Page<BookResponseDto> getRecentPublished(Pageable pageable);
 }
 
 
