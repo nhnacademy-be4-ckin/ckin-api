@@ -23,7 +23,6 @@ import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
-import store.ckin.api.pointhistory.exception.PointHistoryNotFoundException;
 import store.ckin.api.pointhistory.repository.PointHistoryRepository;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
@@ -211,10 +210,11 @@ public class MemberServiceImpl implements MemberService {
 
             pointHistoryRepository.save(createPointHistory);
         } else {
-            // 결제를 진행한 주문인 경우
-            PointHistory pointHistory = pointHistoryRepository.findBySale_SaleId(sale.getSaleId())
-                    .orElseThrow(PointHistoryNotFoundException::new);
-            Integer pointHistoryPoint = pointHistory.getPointHistoryPoint();
+
+            // 주문할 떄 포인트를 사용한 경우 포인트를 환불해줘야함
+            int pointHistoryPoint = pointHistoryRepository.findBySale_SaleId(sale.getSaleId())
+                    .map(PointHistory::getPointHistoryPoint)
+                    .orElse(0);
 
             int totalPoint = (sale.getSaleTotalPrice() + sale.getSalePointUsage()) - pointHistoryPoint;
             member.updatePoint(totalPoint);
