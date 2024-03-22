@@ -199,11 +199,10 @@ public class BookServiceImpl implements BookService {
         File thumbnailFile = book.getThumbnail();
         File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
 
-        File updateThumbnailFile = thumbnailFile.toBuilder()
+        thumbnailFile.toBuilder()
                 .fileOriginName(uploadFile.getFileOriginName())
                 .fileUrl(uploadFile.getFileUrl())
                 .build();
-        fileRepository.save(updateThumbnailFile);
     }
 
 
