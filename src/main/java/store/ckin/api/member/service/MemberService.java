@@ -61,8 +61,8 @@ public interface MemberService {
     /**
      * 취소된 주문의 포인트를 업데이트하는 메서드입니다.
      *
-     * @param saleId         주문 ID
-     * @param memberEmail    회원 이메일
+     * @param saleId      주문 ID
+     * @param memberEmail 회원 이메일
      */
     void updateCancelSalePoint(Long saleId, String memberEmail);
 

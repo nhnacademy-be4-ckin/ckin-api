@@ -26,7 +26,6 @@ import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
-import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.service.BookService;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 

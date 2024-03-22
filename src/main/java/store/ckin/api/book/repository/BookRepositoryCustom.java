@@ -78,7 +78,7 @@ public interface BookRepositoryCustom {
     /**
      * 태그 이름을 가진 도서 목록을 가져옵니다.
      *
-     * @param limit 최대로 가져올 도서의 개수
+     * @param limit   최대로 가져올 도서의 개수
      * @param tagName 태그 이름
      * @return 도서 목록
      */

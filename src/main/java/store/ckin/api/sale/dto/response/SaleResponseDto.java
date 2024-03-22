@@ -6,8 +6,8 @@ import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import store.ckin.api.sale.entity.DeliveryStatus;
-import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 
 /**
  * 주문 조회 응답 DTO.

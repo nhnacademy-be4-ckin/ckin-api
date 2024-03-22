@@ -91,7 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
         Author existingAuthor = authorRepository.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException(authorId));
 
-              existingAuthor.updateAuthor(authorModifyRequestDto.getAuthorName());
+        existingAuthor.updateAuthor(authorModifyRequestDto.getAuthorName());
 
         return AuthorResponseDto.builder()
                 .authorId(existingAuthor.getAuthorId())
