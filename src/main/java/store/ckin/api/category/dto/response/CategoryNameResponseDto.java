@@ -1,6 +1,5 @@
 package store.ckin.api.category.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

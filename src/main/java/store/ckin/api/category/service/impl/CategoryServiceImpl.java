@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
-import store.ckin.api.category.dto.response.CategoryNameResponseDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;

@@ -1,5 +1,9 @@
 package store.ckin.api.review.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import lombok.Data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -24,6 +29,8 @@ import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
+import store.ckin.api.review.dto.request.ReviewUpdateRequestDto;
+import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
 import store.ckin.api.review.repository.ReviewRepository;
@@ -36,6 +43,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -207,6 +216,66 @@ class ReviewServiceTest {
 
         Assertions.assertThrows(BookNotFoundException.class, () -> reviewService.getReviewPageList(Pageable.ofSize(5), 1L));
 
+    }
+
+    @Test
+    void findReviewsByMemberWithPaginationTest() {
+        // Given
+        Long memberId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+        MyPageReviewResponseDto dto = MyPageReviewResponseDto.builder()
+                .reviewId(1L)
+                .author("Author")
+                .message("Review Message")
+                .reviewRate(5)
+                .reviewDate("2024-03-14")
+                .thumbnailPath("path/to/thumbnail")
+                .bookId(1L)
+                .bookTitle("Book Title")
+                .build();
+        List<MyPageReviewResponseDto> content = Collections.singletonList(dto);
+        Page<MyPageReviewResponseDto> page = new PageImpl<>(content, pageable, content.size());
+        List<String> filePaths = Arrays.asList("path/to/file1", "path/to/file2");
+
+        when(memberRepository.existsById(memberId)).thenReturn(true);
+        when(reviewRepository.findReviewsByMemberWithPagination(memberId, pageable)).thenReturn(page);
+        when(fileRepository.findFilePathByReviewId(dto.getReviewId())).thenReturn(filePaths);
+
+        // When
+        Page<MyPageReviewResponseDto> result = reviewService.findReviewsByMemberWithPagination(memberId, pageable);
+
+        // Then
+        verify(memberRepository).existsById(memberId);
+        verify(reviewRepository).findReviewsByMemberWithPagination(memberId, pageable);
+        verify(fileRepository, times(content.size())).findFilePathByReviewId(anyLong());
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(filePaths, result.getContent().get(0).getFilePath());
+    }
+
+
+    @Test
+    void updateReviewTest() {
+        // Given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewUpdateRequestDto updateRequestDto = new ReviewUpdateRequestDto();
+        ReflectionTestUtils.setField(updateRequestDto, "reviewId", reviewId);
+        ReflectionTestUtils.setField(updateRequestDto, "reviewRate", 5);
+        ReflectionTestUtils.setField(updateRequestDto, "reviewComment", "Updated comment");
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        // When
+        reviewService.updateReview(updateRequestDto, memberId);
+
+        // Then
+        verify(reviewRepository).findById(reviewId);
+        verify(memberRepository).findById(memberId);
+        assertEquals("Updated comment", review.getReviewComment());
+        assertEquals(5, review.getReviewRate());
     }
 
 }

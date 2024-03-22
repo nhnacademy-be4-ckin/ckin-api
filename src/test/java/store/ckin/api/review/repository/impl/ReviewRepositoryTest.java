@@ -109,7 +109,6 @@ class ReviewRepositoryTest {
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getContent()).isNotEmpty();
-        Assertions.assertThat(result.getContent().size()).isGreaterThan(0);
 
 
         Assertions.assertThat(result).isNotNull();

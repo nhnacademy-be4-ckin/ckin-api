@@ -91,14 +91,11 @@ public class AuthorServiceImpl implements AuthorService {
         Author existingAuthor = authorRepository.findById(authorId)
                 .orElseThrow(() -> new AuthorNotFoundException(authorId));
 
-        Author updatedAuthor = existingAuthor.toBuilder()
-                .authorName(authorModifyRequestDto.getAuthorName())
-                .build();
-        updatedAuthor = authorRepository.save(updatedAuthor);
+              existingAuthor.updateAuthor(authorModifyRequestDto.getAuthorName());
 
         return AuthorResponseDto.builder()
-                .authorId(updatedAuthor.getAuthorId())
-                .authorName(updatedAuthor.getAuthorName())
+                .authorId(existingAuthor.getAuthorId())
+                .authorName(existingAuthor.getAuthorName())
                 .build();
     }
 

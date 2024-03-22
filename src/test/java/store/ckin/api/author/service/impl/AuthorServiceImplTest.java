@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -99,8 +100,8 @@ class AuthorServiceImplTest {
                 .build();
         AuthorModifyRequestDto authorModifyRequestDto = new AuthorModifyRequestDto();
         ReflectionTestUtils.setField(authorModifyRequestDto, "authorName", "업데이트된 이름");
-        when(authorRepository.findById(authorId)).thenReturn(Optional.of(existingAuthor));
-        when(authorRepository.save(any(Author.class))).thenReturn(Author.builder()
+        Mockito.lenient().when(authorRepository.findById(authorId)).thenReturn(Optional.of(existingAuthor));
+        Mockito.lenient().when(authorRepository.save(any(Author.class))).thenReturn(Author.builder()
                 .authorId(authorId)
                 .authorName("업데이트된 이름")
                 .build());

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,13 +86,12 @@ public class ReviewController {
         return ResponseEntity.ok().body(content);
     }
 
-    @PutMapping("/members/review/{reviewId}")
-    public ResponseEntity<Void> updateReview(@RequestPart ReviewUpdateRequestDto updateRequestDto,
-                                             @PathVariable Long reviewId) {
+    @PutMapping("/members/review/{memberId}")
+    public ResponseEntity<Void> updateReview(@RequestBody ReviewUpdateRequestDto updateRequestDto,
+                                             @PathVariable Long memberId) {
 
-        reviewFacade.updateReview(reviewId, updateRequestDto);
+        reviewFacade.updateReview(updateRequestDto,memberId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

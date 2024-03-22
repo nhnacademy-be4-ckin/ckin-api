@@ -5,12 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +33,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.author.entity.Author;
 import store.ckin.api.author.repository.AuthorRepository;
 import store.ckin.api.book.dto.request.BookCreateRequestDto;
 import store.ckin.api.book.dto.request.BookModifyRequestDto;
+import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
+import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
@@ -41,6 +52,9 @@ import store.ckin.api.book.relationship.booktag.entity.BookTag;
 import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.repository.CategoryRepository;
+import store.ckin.api.file.entity.File;
+import store.ckin.api.file.repository.FileRepository;
+import store.ckin.api.objectstorage.service.ObjectStorageService;
 import store.ckin.api.tag.entity.Tag;
 import store.ckin.api.tag.repository.TagRepository;
 
@@ -63,10 +77,21 @@ class BookServiceImplTest {
     private CategoryRepository categoryRepository;
     @Mock
     private TagRepository tagRepository;
+    @Mock
+    private ObjectStorageService objectStorageService;
+    @Mock
+    private FileRepository fileRepository;
+
     private Pageable pageable;
     BookListResponseDto book1;
     BookListResponseDto book2;
     private Page<BookListResponseDto> bookPage;
+
+    private Book book;
+    private Category category1, category2;
+    private BookCategory bookCategory1, bookCategory2;
+
+    MockMultipartFile mockImageFile;
 
 
     @BeforeEach
@@ -109,44 +134,70 @@ class BookServiceImplTest {
                 .authorNames(List.of("작가2"))
                 .build();
         bookPage = new PageImpl<>(List.of(book1, book2), pageable, 2);
+        byte[] content = new byte[] { /* 이미지 데이터 */};
+        mockImageFile = new MockMultipartFile("file", "filename.jpg", "image/jpeg", content);
+
+
+        category1 = new Category(1L, null, "소설", 1, null);
+        category2 = new Category(2L, null, "과학", 2, null);
+
+        book = new Book(1L, "123456789", "샘플 책", "설명", "출판사",
+                LocalDate.now(), "목차", true, "판매 중", 10, 100, 10, 90, "0",
+                LocalDateTime.now(), null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
+        book = new Book(1L, "123456789", "샘플 책", "설명", "출판사",
+                LocalDate.now(), "목차", true, "판매 중", 10, 100, 10, 90, "0",
+                LocalDateTime.now(), null, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
+
+        bookCategory1 = new BookCategory(new BookCategory.PK(1L, 1L), book, category1);
+        bookCategory2 = new BookCategory(new BookCategory.PK(1L, 2L), book, category2);
+
+        book.getCategories().addAll(Arrays.asList(bookCategory1, bookCategory2));
 
 
     }
 
-//    @Test
-//    @DisplayName("책 생성 성공")
-//    void givenNewBookInfo_whenCreateBook_thenBookIsSuccessfullyCreated() {
-//
-//        Author author = Author.builder().authorId(1L).authorName("테스트 작가").build();
-//        Category category = Category.builder().categoryId(1L).categoryName("테스트 카테고리").build();
-//        Tag tag = Tag.builder().tagId(1L).tagName("테스트 태그").build();
-//
-//        BookCreateRequestDto requestDto = new BookCreateRequestDto();
-//
-//        ReflectionTestUtils.setField(requestDto, "bookIsbn", "1234567890123");
-//        ReflectionTestUtils.setField(requestDto, "bookTitle", "테스트 책 제목");
-//        ReflectionTestUtils.setField(requestDto, "bookDescription", "테스트 책 설명");
-//        ReflectionTestUtils.setField(requestDto, "bookPublisher", "테스트 출판사");
-//        ReflectionTestUtils.setField(requestDto, "bookPublicationDate", LocalDate.now());
-//        ReflectionTestUtils.setField(requestDto, "bookRegularPrice", 10000);
-//        ReflectionTestUtils.setField(requestDto, "bookDiscountRate", 10);
-//        ReflectionTestUtils.setField(requestDto, "authorIds", new HashSet<>(Set.of(1L)));
-//        ReflectionTestUtils.setField(requestDto, "categoryIds", new HashSet<>(Set.of(1L)));
-//        ReflectionTestUtils.setField(requestDto, "tagIds", new HashSet<>(Set.of(1L)));
-//
-//        when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
-//        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
-//        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
-//        when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
-//
-//
-////        bookService.createBook(requestDto,);
-//
-//        verify(bookRepository).save(any(Book.class));
-//        verify(authorRepository).findById(anyLong());
-//        verify(categoryRepository).findById(anyLong());
-//        verify(tagRepository).findById(anyLong());
-//    }
+    @Test
+    @DisplayName("책 생성 성공")
+    void givenNewBookInfo_whenCreateBook_thenBookIsSuccessfullyCreated() throws IOException {
+
+        Author author = Author.builder().authorId(1L).authorName("테스트 작가").build();
+        Category category = Category.builder().categoryId(1L).categoryName("테스트 카테고리").build();
+        Tag tag = Tag.builder().tagId(1L).tagName("테스트 태그").build();
+
+        BookCreateRequestDto requestDto = new BookCreateRequestDto();
+
+        ReflectionTestUtils.setField(requestDto, "bookIsbn", "1234567890123");
+        ReflectionTestUtils.setField(requestDto, "bookTitle", "테스트 책 제목");
+        ReflectionTestUtils.setField(requestDto, "bookDescription", "테스트 책 설명");
+        ReflectionTestUtils.setField(requestDto, "bookPublisher", "테스트 출판사");
+        ReflectionTestUtils.setField(requestDto, "bookPublicationDate", LocalDate.now());
+        ReflectionTestUtils.setField(requestDto, "bookRegularPrice", 10000);
+        ReflectionTestUtils.setField(requestDto, "bookDiscountRate", 10);
+        ReflectionTestUtils.setField(requestDto, "authorIds", new HashSet<>(Set.of(1L)));
+        ReflectionTestUtils.setField(requestDto, "categoryIds", new HashSet<>(Set.of(1L)));
+        ReflectionTestUtils.setField(requestDto, "tagIds", new HashSet<>(Set.of(1L)));
+
+        when(authorRepository.findById(anyLong())).thenReturn(Optional.of(author));
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
+        when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        File mockStoredFile = File.builder()
+                .fileId("some-id")
+                .fileOriginName("filename.jpg")
+                .fileUrl("http://example.com/filename.jpg")
+                .fileExtension(".jpg")
+                .fileCategory("book")
+                .build();
+        when(objectStorageService.saveFile(any(MockMultipartFile.class), eq("book"))).thenReturn(mockStoredFile);
+
+
+        bookService.createBook(requestDto, mockImageFile);
+
+        verify(bookRepository).save(any(Book.class));
+        verify(authorRepository).findById(anyLong());
+        verify(categoryRepository).findById(anyLong());
+        verify(tagRepository).findById(anyLong());
+    }
 
     @Test
     @DisplayName("책 정보 수정 성공")
@@ -303,6 +354,161 @@ class BookServiceImplTest {
         assertThrows(BookNotFoundException.class, () -> bookService.findBookById(bookID));
 
         verify(bookRepository).findByBookId(bookID);
+    }
+
+    @Test
+    @DisplayName("카테고리 Id로 메인페이지 북리스트 가져오기")
+    void getMainPageBookListByCategoryIdTest() {
+        Long categoryId = 1L;
+        Integer limit = 10;
+
+        // Mock 객체 생성
+        BookMainPageResponseDto mockDto = BookMainPageResponseDto.builder()
+                .bookId(1L)
+                .bookTitle("Mock Book")
+                .bookRegularPrice(20000)
+                .bookDiscountRate(10)
+                .bookSalePrice(18000)
+                .thumbnail("http://example.com/thumbnail.jpg")
+                .productCategories(List.of("Category 1", "Category 2"))
+                .productAuthorNames(List.of("Author 1", "Author 2"))
+                .productTags(List.of("Tag 1", "Tag 2"))
+                .build();
+        when(bookRepository.getMainPageResponseDtoByCategoryId(eq(1L), anyInt())).thenReturn(List.of(mockDto));
+        List<BookMainPageResponseDto> result = bookService.getMainPageBookListByCategoryId(categoryId, limit);
+
+
+        assertEquals(1, result.size());
+        BookMainPageResponseDto retrievedDto = result.get(0);
+        assertEquals(mockDto.getBookId(), retrievedDto.getBookId());
+
+        verify(bookRepository, times(1)).getMainPageResponseDtoByCategoryId(categoryId, limit);
+    }
+
+//    @Test
+//    @DisplayName("주어진 책 ID들로 카테고리 ID들 가져오기")
+//    void givenBookIds_whenGetBookCategoryIdsByBookIds_thenReturnsCategoryIds() {
+//
+//    }
+
+
+    @Test
+    @DisplayName("최신 출판일순으로 메인페이지 북리스트 가져오기")
+    void givenLimit_whenGetMainPageBookListOrderByPublicationDate_thenReturnsBooks() {
+        // Given
+        Integer limit = 10;
+        List<BookMainPageResponseDto> expectedBooks = Collections.singletonList(
+                BookMainPageResponseDto.builder()
+                        .bookId(1L)
+                        .bookTitle("Test Book")
+                        .bookRegularPrice(20000)
+                        .bookDiscountRate(10)
+                        .bookSalePrice(18000)
+                        .thumbnail("http://example.com/thumbnail.jpg")
+                        .productCategories(Collections.singletonList("Category 1"))
+                        .productAuthorNames(Collections.singletonList("Author 1"))
+                        .productTags(Collections.singletonList("Tag 1"))
+                        .build()
+        );
+        when(bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit)).thenReturn(expectedBooks);
+
+        List<BookMainPageResponseDto> actualBooks = bookService.getMainPageBookListOrderByBookPublicationDate(limit);
+
+        assertEquals(expectedBooks.size(), actualBooks.size());
+
+        verify(bookRepository).getMainPageResponseDtoOrderByBookPublicationDate(limit);
+    }
+
+    @Test
+    @DisplayName("Update book thumbnail")
+    void givenBookIdAndFile_whenUpdateBookThumbnail_thenThumbnailIsUpdated() throws IOException {
+        Long bookId = 1L;
+        MultipartFile file = new MockMultipartFile("file", "filename.jpg", "image/jpeg", new byte[] {});
+        File thumbnailFile = File.builder()
+                .fileId("thumbnail-file-id")
+                .fileOriginName("thumbnail.jpg")
+                .fileUrl("http://example.com/thumbnail.jpg")
+                .fileExtension(".jpg")
+                .fileCategory("thumbnail")
+                .build();
+        Book book = Book.builder().bookId(bookId)
+                .thumbnail(thumbnailFile).build();
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(objectStorageService.saveFile(file, "book")).thenReturn(thumbnailFile);
+
+        bookService.updateBookThumbnail(bookId, file);
+
+        verify(bookRepository).findById(bookId);
+        verify(objectStorageService).saveFile(file, "book");
+        assertEquals("thumbnail.jpg", thumbnailFile.getFileOriginName());
+        assertEquals("http://example.com/thumbnail.jpg", thumbnailFile.getFileUrl());
+    }
+
+
+    @Test
+    @DisplayName("주어진 도서 ID에 따른 된 도서 목록이 반환")
+    void givenBookIds_whenGetExtractBookListByBookIds_thenExtractedBookListReturned() {
+        // Given
+        List<Long> bookIds = List.of(1L, 2L, 3L);
+        List<BookExtractionResponseDto> expectedResponse = new ArrayList<>();
+        expectedResponse.add(BookExtractionResponseDto.builder()
+                .bookId(1L)
+                .bookImageUrl("image1.jpg")
+                .bookTitle("Book 1")
+                .bookPackaging(true)
+                .bookSalePrice(10000)
+                .bookStock(50)
+//                .categoryIds(List.of(1L, 2L))
+                .build());
+        expectedResponse.add(BookExtractionResponseDto.builder()
+                .bookId(2L)
+                .bookImageUrl("image2.jpg")
+                .bookTitle("Book 2")
+                .bookPackaging(false)
+                .bookSalePrice(15000)
+                .bookStock(30)
+//                .categoryIds(List.of(3L, 4L))
+                .build());
+        expectedResponse.add(BookExtractionResponseDto.builder()
+                .bookId(3L)
+                .bookImageUrl("image3.jpg")
+                .bookTitle("Book 3")
+                .bookPackaging(true)
+                .bookSalePrice(20000)
+                .bookStock(20)
+//                .categoryIds(List.of(5L, 6L))
+                .build());
+
+        when(bookRepository.getExtractBookListByBookIds(bookIds)).thenReturn(expectedResponse);
+
+        // When
+        List<BookExtractionResponseDto> actualResponse = bookService.getExtractBookListByBookIds(bookIds);
+
+        // Then
+        assertEquals(expectedResponse.size(), actualResponse.size());
+        for (int i = 0; i < expectedResponse.size(); i++) {
+            assertEquals(expectedResponse.get(i), actualResponse.get(i));
+        }
+    }
+
+
+    @Test
+    void whenValidBookIds_thenCategoryIdsShouldBeReturned() {
+        when(bookRepository.findByBookId(1L)).thenReturn(Optional.of(book));
+
+        List<Long> bookIds = Arrays.asList(1L);
+        List<Long> expectedCategoryIds = Arrays.asList(1L, 2L);
+
+        List<Long> result = bookService.getBookCategoryIdsByBookIds(bookIds);
+        assertEquals(expectedCategoryIds, result);
+    }
+
+    @Test
+    void whenBookNotFound_thenThrowException() {
+        when(bookRepository.findByBookId(3L)).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () -> bookService.getBookCategoryIdsByBookIds(Arrays.asList(3L)));
     }
 
 

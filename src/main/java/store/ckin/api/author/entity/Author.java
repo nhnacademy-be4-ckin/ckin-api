@@ -39,5 +39,8 @@ public class Author {
     @OneToMany(mappedBy = "author")
     private Set<BookAuthor> books;
 
+    public void updateAuthor(String authorName) {
+        this.authorName = authorName;
+    }
 
 }

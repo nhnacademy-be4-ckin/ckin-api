@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ReviewUpdateRequestDto {
+    private Long reviewId;
     private Integer reviewRate;
     private String reviewComment;
 }
