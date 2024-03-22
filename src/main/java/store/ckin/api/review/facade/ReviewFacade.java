@@ -70,7 +70,7 @@ public class ReviewFacade {
         return reviewService.findReviewsByMemberWithPagination(memberId, pageable);
     }
 
-    public void updateReview(Long reviewId, ReviewUpdateRequestDto updateRequestDto) {
-        reviewService.updateReview(reviewId, updateRequestDto);
+    public void updateReview(ReviewUpdateRequestDto updateRequestDto, Long memberId) {
+        reviewService.updateReview(updateRequestDto, memberId);
     }
 }
