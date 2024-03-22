@@ -55,33 +55,6 @@ public class BookController {
         return ResponseEntity.ok(bookResponseDto);
     }
 
-    /**
-     * 작가 이름으로 도서를 검색하고 페이징된 결과를 반환합니다.
-     *
-     * @param authorName 작가 이름
-     * @param pageable   페이징 정보
-     * @return 작가 이름으로 검색된 도서 목록에 대한 ResponseEntity 객체
-     */
-    @GetMapping("/search/by-author")
-    public ResponseEntity<Page<BookListResponseDto>> findByAuthorName(@RequestParam String authorName,
-                                                                      @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
-                                                                      Pageable pageable) {
-        return ResponseEntity.ok(bookService.findByAuthorName(authorName, pageable));
-    }
-
-    /**
-     * 도서 제목으로 도서를 검색하고 페이징된 결과를 반환합니다.
-     *
-     * @param title    도서 제목
-     * @param pageable 페이징 정보
-     * @return 도서 제목으로 검색된 도서 목록에 대한 ResponseEntity 객체
-     */
-    @GetMapping("/search/by-title")
-    public ResponseEntity<Page<BookListResponseDto>> findByBookTitle(@RequestParam String title,
-                                                                     @PageableDefault(sort = "bookPublicationDate", direction = Sort.Direction.DESC)
-                                                                     Pageable pageable) {
-        return ResponseEntity.ok(bookService.findByBookTitle(title, pageable));
-    }
 
     /**
      * 카테고리 ID로 도서를 검색하고 페이징된 결과를 반환합니다.
@@ -118,7 +91,6 @@ public class BookController {
      * @return 생성 성공시 상태 코드 201과 함께 ResponseEntity 반환
      * @throws IOException 파일 처리 중 발생하는 예외
      */
-
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Void> createBook(@Valid @RequestPart("requestDto") BookCreateRequestDto requestDto,
                                            @RequestPart("file") MultipartFile file)
