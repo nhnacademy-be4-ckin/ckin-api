@@ -2,6 +2,7 @@ package store.ckin.api.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import store.ckin.api.author.entity.QAuthor;
 import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookMainPageResponseDto;
+import store.ckin.api.book.dto.response.BookResponseDto;
+import store.ckin.api.book.dto.response.QBookResponseDto;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.entity.QBook;
 import store.ckin.api.book.relationship.bookauthor.entity.QBookAuthor;
@@ -295,7 +298,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(bookAuthor.author, author).fetchJoin()
                 .leftJoin(book.categories, bookCategory).fetchJoin()
                 .leftJoin(bookCategory.category, category).fetchJoin()
-                .leftJoin(book.tags,bookTag).fetchJoin()
+                .leftJoin(book.tags, bookTag).fetchJoin()
                 .leftJoin(bookTag.tag, tag).fetchJoin()
                 .leftJoin(book.thumbnail, file).fetchJoin()
                 .where(book.bookId.in(bookIds))
@@ -335,6 +338,95 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return books.stream()
                 .map(this::convertToBookMainPageResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
+        List<Book> books = from(book)
+                .leftJoin(book.authors, bookAuthor).fetchJoin()
+                .leftJoin(bookAuthor.author, author).fetchJoin()
+                .leftJoin(book.categories, bookCategory).fetchJoin()
+                .leftJoin(bookCategory.category, category).fetchJoin()
+                .leftJoin(book.tags, bookTag).fetchJoin()
+                .leftJoin(bookTag.tag, tag).fetchJoin()
+                .leftJoin(book.thumbnail, file).fetchJoin()
+                .where(tag.tagName.eq(tagName))
+                .distinct()
+                .limit(limit)
+                .fetch();
+
+        return books.stream()
+                .map(this::convertToBookMainPageResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
+        List<String> authorNames = from(book)
+                .leftJoin(bookAuthor)
+                .on(book.bookId.eq(bookAuthor.book.bookId))
+                .select(author.authorName)
+                .fetch();
+
+        List<String> categoryNames = from(book)
+                .leftJoin(bookCategory)
+                .on(book.bookId.eq(bookCategory.book.bookId))
+                .select(category.categoryName)
+                .fetch();
+
+        List<String> tagNames = from(book)
+                .leftJoin(bookTag)
+                .on(book.bookId.eq(bookTag.book.bookId))
+                .select(tag.tagName)
+                .fetch();
+
+        List<BookResponseDto> results = from(book)
+                .leftJoin(book.authors, bookAuthor)
+                .leftJoin(bookAuthor.author, author)
+                .leftJoin(book.categories, bookCategory)
+                .leftJoin(bookCategory.category, category)
+                .leftJoin(book.tags, bookTag)
+                .leftJoin(bookTag.tag, tag)
+                .leftJoin(book.thumbnail, file)
+                .select(new QBookResponseDto(
+                        book.bookId,
+                        book.bookIsbn,
+                        book.bookTitle,
+                        book.bookDescription,
+                        book.bookPublisher,
+                        book.bookPublicationDate,
+                        book.bookIndex,
+                        book.bookPackaging,
+                        book.bookStock,
+                        book.bookRegularPrice,
+                        book.bookDiscountRate,
+                        book.bookState,
+                        book.bookSalePrice,
+                        book.bookReviewRate,
+                        file.fileUrl
+                ))
+                .orderBy(book.bookPublicationDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        results.forEach(bookResponseDto -> bookResponseDto.updateList(authorNames, categoryNames, tagNames));
+
+        long count = from(book)
+                .leftJoin(book.authors, bookAuthor)
+                .leftJoin(bookAuthor.author, author)
+                .leftJoin(book.categories, bookCategory)
+                .leftJoin(bookCategory.category, category)
+                .leftJoin(book.tags, bookTag)
+                .leftJoin(bookTag.tag, tag)
+                .leftJoin(book.thumbnail, file)
+                .select(book.count())
+                .orderBy(book.bookPublicationDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchOne();
+
+        return new PageImpl<>(results, pageable, count);
     }
 
 

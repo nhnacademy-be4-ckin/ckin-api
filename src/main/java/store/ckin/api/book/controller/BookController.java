@@ -198,26 +198,42 @@ public class BookController {
     }
 
     /**
-     * 주어진 카테고리 ID에 해당하는 메인 페이지 도서 목록을 반환합니다.
+     * 주어진 태그를 가지고 있는 메인 페이지 도서 목록을 반환합니다.
      *
-     * @param categoryId 카테고리 ID
-     * @param limit      반환할 도서의 수
-     * @return 카테고리에 해당하는 도서 목록
+     * @param limit   반환할 도서의 수
+     * @param tagName 태그 이름
+     * @return 해당하는 도서 목록
      */
-    @GetMapping("/main-page/category/{categoryId}")
+    @GetMapping("/main-page/tag")
     public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksByCategoryId(
-            @PathVariable Long categoryId,
-            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+            @RequestParam(required = false, defaultValue = "8") Integer limit,
+            @RequestParam("tagName") String tagName) {
 
-        List<BookMainPageResponseDto> books = bookService.getMainPageBookListByCategoryId(categoryId, limit);
+        List<BookMainPageResponseDto> books = bookService.getMainPageBooksByTagName(limit, tagName);
+
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/main-page")
     public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksOrderByBookPublicationDate(
-            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+            @RequestParam(required = false, defaultValue = "8") Integer limit) {
+
         List<BookMainPageResponseDto> books = bookService.getMainPageBookListOrderByBookPublicationDate(limit);
+
         return ResponseEntity.ok(books);
+    }
+
+    /**
+     * 신간도서 페이지, 메인 페이지에 들어갈 신간 도서 목록을 페이지로 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 신간 도서 페이지 목록
+     */
+    @GetMapping("/recent")
+    public ResponseEntity<Page<BookResponseDto>> getRecentPublishedBook(@PageableDefault(size = 8) Pageable pageable) {
+        Page<BookResponseDto> recentBookPage = bookService.getRecentPublished(pageable);
+
+        return ResponseEntity.ok().body(recentBookPage);
     }
 
 
