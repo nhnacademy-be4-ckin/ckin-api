@@ -26,6 +26,7 @@ import store.ckin.api.book.dto.response.BookExtractionResponseDto;
 import store.ckin.api.book.dto.response.BookListResponseDto;
 import store.ckin.api.book.dto.response.BookMainPageResponseDto;
 import store.ckin.api.book.dto.response.BookResponseDto;
+import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.service.BookService;
 import store.ckin.api.objectstorage.service.ObjectStorageService;
 
@@ -208,5 +209,17 @@ public class BookController {
         return ResponseEntity.ok().body(recentBookPage);
     }
 
+    /**
+     * 인기도서, 추천도서 등을 태그 이름을 통해 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 도서 페이지 목록
+     */
+    @GetMapping("/tag/{tagName}")
+    public ResponseEntity<Page<BookResponseDto>> getBookPageByTagName(@PageableDefault(size = 8) Pageable pageable,
+                                                                      @PathVariable("tagName") String tagName) {
+        Page<BookResponseDto> bookPageByTagName = bookService.getBookPageByTagName(pageable, tagName);
 
+        return ResponseEntity.ok().body(bookPageByTagName);
+    }
 }

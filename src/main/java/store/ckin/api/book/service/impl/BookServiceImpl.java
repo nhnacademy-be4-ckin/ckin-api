@@ -248,6 +248,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getRecentPublished(pageable);
     }
 
+    @Override
+    public Page<BookResponseDto> getBookPageByTagName(Pageable pageable, String tagName) {
+        return bookRepository.getBookPageByTagName(pageable, tagName);
+    }
+
 
     /**
      * {@inheritDoc}

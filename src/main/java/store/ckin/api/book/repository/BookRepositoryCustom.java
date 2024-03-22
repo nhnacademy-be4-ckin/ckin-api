@@ -91,4 +91,13 @@ public interface BookRepositoryCustom {
      * @return 신간 도서 페이지 목록
      */
     Page<BookResponseDto> getRecentPublished(Pageable pageable);
+
+
+    /**
+     * 인기도서, 추천도서 등을 태그 이름을 통해 가져옵니다.
+     *
+     * @param pageable 페이지 정보
+     * @return 도서 페이지 목록
+     */
+    Page<BookResponseDto> getBookPageByTagName(Pageable pageable, String tagName);
 }
