@@ -385,11 +385,11 @@ class BookServiceImplTest {
         verify(bookRepository, times(1)).getMainPageResponseDtoByCategoryId(categoryId, limit);
     }
 
-    @Test
-    @DisplayName("주어진 책 ID들로 카테고리 ID들 가져오기")
-    void givenBookIds_whenGetBookCategoryIdsByBookIds_thenReturnsCategoryIds() {
-
-    }
+//    @Test
+//    @DisplayName("주어진 책 ID들로 카테고리 ID들 가져오기")
+//    void givenBookIds_whenGetBookCategoryIdsByBookIds_thenReturnsCategoryIds() {
+//
+//    }
 
 
     @Test
@@ -441,8 +441,8 @@ class BookServiceImplTest {
 
         verify(bookRepository).findById(bookId);
         verify(objectStorageService).saveFile(file, "book");
-        assertEquals(thumbnailFile.getFileOriginName(), "thumbnail.jpg");
-        assertEquals(thumbnailFile.getFileUrl(), "http://example.com/thumbnail.jpg");
+        assertEquals("thumbnail.jpg", thumbnailFile.getFileOriginName());
+        assertEquals("http://example.com/thumbnail.jpg", thumbnailFile.getFileUrl());
     }
 
 

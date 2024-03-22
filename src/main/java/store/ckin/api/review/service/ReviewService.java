@@ -3,7 +3,6 @@ package store.ckin.api.review.service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.review.dto.request.ReviewCreateRequestDto;
 import store.ckin.api.review.dto.request.ReviewUpdateRequestDto;
@@ -34,7 +33,8 @@ public interface ReviewService {
      * @return 리뷰 DTO 페이지
      */
     Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId);
+
     Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable);
 
-    void updateReview(ReviewUpdateRequestDto updateRequestDto,Long memberId);
+    void updateReview(ReviewUpdateRequestDto updateRequestDto, Long memberId);
 }

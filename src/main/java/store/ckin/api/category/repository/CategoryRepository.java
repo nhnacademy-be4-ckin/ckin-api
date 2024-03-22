@@ -3,7 +3,6 @@ package store.ckin.api.category.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import store.ckin.api.category.dto.response.CategoryNameResponseDto;
 import store.ckin.api.category.entity.Category;
 
 /**
