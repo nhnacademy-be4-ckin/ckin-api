@@ -202,7 +202,9 @@ public class SaleFacade {
 
         // 회원 포인트 변경 및 포인트 이력 생성
         SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
-        if (Objects.nonNull(saleDetail.getMemberEmail()) && saleDetail.getSalePointUsage() > 0) {
+
+        // 회원인 경우 포인트를 적립해줬기 때문에 해당 포인트를 회수해야 함.
+        if (Objects.nonNull(saleDetail.getMemberEmail())) {
             memberService.updateCancelSalePoint(saleId, saleDetail.getMemberEmail());
         }
 

@@ -32,6 +32,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -48,7 +49,7 @@ import store.ckin.api.tag.exception.TagNotFoundException;
 import store.ckin.api.tag.service.impl.TagServiceImpl;
 
 /**
- * description
+ * Tag Controller Test.
  *
  * @author 김준현
  * @version 2024. 02. 17
@@ -142,9 +143,9 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
                 .andExpectAll(
-                        jsonPath("code", equalTo("TagName Already Exist")),
+                        jsonPath("code", equalTo("CONFLICT")),
                         jsonPath("message", equalTo(expectedException.getMessage())),
-                        status().isBadRequest()
+                        status().isConflict()
                 ).andDo(document("tag/saveTag/already-exist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
@@ -242,7 +243,7 @@ class TagControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
                 .andExpectAll(
-                        jsonPath("code", equalTo("Tag Not Found")),
+                        jsonPath("code", equalTo("NOT_FOUND")),
                         jsonPath("message", equalTo(expectedException.getMessage())),
                         status().isNotFound())
                 .andDo(document("tag/deleteTag/not-found",

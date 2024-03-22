@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -153,13 +152,10 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         // REST API 호출을 통한 파일 삭제 요청
         this.restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
 
-        Optional<File> fileOptional = fileRepository.findByFileUrl(url);
+        File file = fileRepository.findByFileUrl(url)
+                .orElseThrow(() -> new FileNotFoundException(url));
 
-        if (fileOptional.isPresent()) {
-            fileRepository.delete(fileOptional.get());
-        } else {
-            throw new FileNotFoundException("File not found with URL: " + url);
-        }
+        fileRepository.delete(file);
     }
 
 
