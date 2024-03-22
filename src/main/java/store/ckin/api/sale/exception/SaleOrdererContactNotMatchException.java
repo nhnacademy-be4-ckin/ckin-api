@@ -11,6 +11,7 @@ import store.ckin.api.advice.exception.GeneralForbiddenException;
 public class SaleOrdererContactNotMatchException extends GeneralForbiddenException {
 
     public SaleOrdererContactNotMatchException(String saleNumber, String ordererContact) {
-        super(String.format("주문 번호 (%s)의 주문자 연락처 (%s)가 일치하지 않습니다.", saleNumber, ordererContact));
+        super(String.format("주문 번호의 주문자 연락처 가 일치하지 않습니다. [saleNumber = %s, ordererContact = %s",
+                saleNumber, ordererContact));
     }
 }

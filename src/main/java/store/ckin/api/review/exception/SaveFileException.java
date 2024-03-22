@@ -9,6 +9,6 @@ package store.ckin.api.review.exception;
 public class SaveFileException extends RuntimeException {
 
     public SaveFileException() {
-        super("Failed to save image.");
+        super("이미지 저장에 실패하였습니다.");
     }
 }

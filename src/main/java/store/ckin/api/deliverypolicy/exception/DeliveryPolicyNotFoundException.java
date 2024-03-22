@@ -11,6 +11,6 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
 public class DeliveryPolicyNotFoundException extends GeneralNotFoundException {
 
     public DeliveryPolicyNotFoundException(Long id) {
-        super(String.format("Delivery Policy Not Found [id = %d]", id));
+        super(String.format("배송비 정책이 존재하지 않습니다. [id = %d]", id));
     }
 }

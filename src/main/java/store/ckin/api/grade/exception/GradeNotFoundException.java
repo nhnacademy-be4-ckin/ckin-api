@@ -11,6 +11,6 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
 public class GradeNotFoundException extends GeneralNotFoundException {
 
     public GradeNotFoundException(Long id) {
-        super(String.format("Grade not found for this id [%s]", id));
+        super(String.format("등급을 찾을 수 없습니다. [id = %s]", id));
     }
 }

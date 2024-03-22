@@ -12,6 +12,6 @@ import store.ckin.api.member.entity.Member;
 public class MemberCannotChangeStateException extends GeneralBadRequestException {
 
     public MemberCannotChangeStateException(Long memberId, Member.State state) {
-        super(String.format("Member cannot change state [memberId: %d, state: %s]", memberId, state));
+        super(String.format("계정의 상태를 바꿀 수 없습니다. [memberId = %d, state = %s]", memberId, state));
     }
 }

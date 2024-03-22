@@ -10,6 +10,6 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class ReviewNotFoundException extends GeneralNotFoundException {
     public ReviewNotFoundException(Long reviewId) {
-        super(String.format("Review not found: %d", reviewId));
+        super(String.format("리뷰를 찾을 수 없습니다. [id = %d]", reviewId));
     }
 }

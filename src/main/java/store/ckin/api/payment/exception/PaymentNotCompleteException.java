@@ -11,6 +11,6 @@ import store.ckin.api.advice.exception.GeneralBadRequestException;
 public class PaymentNotCompleteException extends GeneralBadRequestException {
 
     public PaymentNotCompleteException() {
-        super("Payment is not complete.");
+        super("결제가 완료되지 않았습니다.");
     }
 }

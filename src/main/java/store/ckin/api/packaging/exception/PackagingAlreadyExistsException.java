@@ -10,6 +10,6 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  */
 public class PackagingAlreadyExistsException extends GeneralAlreadyExistsException {
     public PackagingAlreadyExistsException(String packagingType) {
-        super(String.format("Packaging already exists [packaging type = %s]", packagingType));
+        super(String.format("포장지 종류가 이미 존재합니다. [packaging type = %s]", packagingType));
     }
 }

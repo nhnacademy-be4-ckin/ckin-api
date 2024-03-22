@@ -11,6 +11,6 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
 public class WishListAlreadyExistsException extends GeneralAlreadyExistsException {
 
     public WishListAlreadyExistsException(Long memberId, Long bookId) {
-        super(String.format("이미 위시리스트에 추가된 책입니다. (memberId: %d, bookId: %d)", memberId, bookId));
+        super(String.format("이미 위시리스트에 추가된 책입니다. [memberId: %d, bookId: %d]", memberId, bookId));
     }
 }

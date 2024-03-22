@@ -10,11 +10,11 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class MemberNotFoundException extends GeneralNotFoundException {
     public MemberNotFoundException(Long id) {
-        super(String.format("Member not found for this id [%s]", id));
+        super(String.format("회원을 찾을 수 없습니다. [id = %d]", id));
     }
 
     public MemberNotFoundException(String email) {
-        super(String.format("Member not found for this email [%s]", email));
+        super(String.format("회원을 찾을 수 없습니다. [id = %s]", email));
     }
 
 }

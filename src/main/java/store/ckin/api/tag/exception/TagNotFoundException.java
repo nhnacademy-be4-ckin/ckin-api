@@ -10,6 +10,6 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class TagNotFoundException extends GeneralNotFoundException {
     public TagNotFoundException(Long tagId) {
-        super(String.format("태그(id: %d)를 찾을 수 없습니다", tagId));
+        super(String.format("태그를 찾을 수 없습니다. [id: %d]", tagId));
     }
 }

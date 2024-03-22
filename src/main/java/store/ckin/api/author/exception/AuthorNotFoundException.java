@@ -17,7 +17,7 @@ public class AuthorNotFoundException extends GeneralNotFoundException {
      * @param authorId the author id
      */
     public AuthorNotFoundException(Long authorId) {
-        super(String.format("Author not found: %s", authorId));
+        super(String.format("작가를 찾을 수 없습니다 [ID = %d]", authorId));
     }
 
 }

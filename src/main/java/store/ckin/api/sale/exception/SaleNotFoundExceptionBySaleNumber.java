@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class SaleNotFoundExceptionBySaleNumber extends GeneralNotFoundException {
 
-    public SaleNotFoundExceptionBySaleNumber(String number) {
-        super(String.format("주문 번호(%s)에 해당하는 주문이 존재하지 않습니다.", number));
+    public SaleNotFoundExceptionBySaleNumber(String saleNumber) {
+        super(String.format("주문 번호에 해당하는 주문이 존재하지 않습니다. [saleNumber = %s]", saleNumber));
     }
 }
