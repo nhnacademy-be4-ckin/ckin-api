@@ -34,13 +34,14 @@ public class AddressServiceImpl implements AddressService {
     public void addAddress(Long memberId,
                            AddressAddRequestDto addressAddRequestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         if (addressRepository.existsByMemberIdAndBaseAndDetail(
                 memberId,
                 addressAddRequestDto.getBase(),
                 addressAddRequestDto.getDetail())) {
-            throw new AddressAlreadyExistsException();
+            throw new AddressAlreadyExistsException(memberId, addressAddRequestDto.getBase(),
+                    addressAddRequestDto.getDetail());
         }
 
         Address address = Address.builder()
@@ -58,7 +59,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<MemberAddressResponseDto> getMemberAddressList(Long memberId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(memberId);
         }
 
         return addressRepository.getMemberAddressList(memberId);
@@ -69,12 +70,13 @@ public class AddressServiceImpl implements AddressService {
     public void updateAddress(Long memberId,
                               Long addressId,
                               AddressUpdateRequestDto addressUpdateRequestDto) {
+
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(memberId);
         }
 
         Address address = addressRepository.findByIdAndMember_Id(addressId, memberId)
-                .orElseThrow(AddressNotFoundException::new);
+                .orElseThrow(() -> new AddressNotFoundException(memberId, addressId));
 
         address.update(addressUpdateRequestDto);
     }
@@ -83,15 +85,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void setDefaultAddress(Long memberId, Long addressId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(memberId);
         }
 
         Address address = addressRepository.findByIdAndMember_Id(addressId, memberId)
-                .orElseThrow(AddressNotFoundException::new);
+                .orElseThrow(() -> new AddressNotFoundException(memberId, addressId));
 
         if (!address.getIsDefault()) {
             addressRepository.findDefaultAddressByMemberId(memberId)
-                            .ifPresent(Address::toggleDefault);
+                    .ifPresent(Address::toggleDefault);
 
             address.toggleDefault();
         }
@@ -101,11 +103,11 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void deleteAddress(Long memberId, Long addressId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(memberId);
         }
 
         if (!addressRepository.existsByIdAndMember_Id(addressId, memberId)) {
-            throw new AddressNotFoundException();
+            throw new AddressNotFoundException(memberId, addressId);
         }
 
         addressRepository.deleteById(addressId);

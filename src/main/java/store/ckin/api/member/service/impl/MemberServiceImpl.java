@@ -20,10 +20,10 @@ import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
+import store.ckin.api.member.exception.MemberOauthNotFoundException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
-import store.ckin.api.pointhistory.exception.PointHistoryNotFoundException;
 import store.ckin.api.pointhistory.repository.PointHistoryRepository;
 import store.ckin.api.pointpolicy.entity.PointPolicy;
 import store.ckin.api.pointpolicy.exception.PointPolicyNotFoundException;
@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Grade grade = gradeRepository.findById(NORMAL_GRADE_ID)
-                .orElseThrow(GradeNotFoundException::new);
+                .orElseThrow(() -> new GradeNotFoundException(NORMAL_GRADE_ID));
 
         // 회원가입 포인트 정책 조회
         PointPolicy registerPolicy = pointPolicyRepository.findById(REGISTER_POINT_POLICY_ID)
@@ -148,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
         String oauthId = memberOauthIdOnlyRequestDto.getOauthId();
 
         if (!memberRepository.existsByOauthId(oauthId)) {
-            throw new MemberNotFoundException();
+            throw new MemberOauthNotFoundException(oauthId);
         }
 
         return memberRepository.getOauthMemberInfo(oauthId);
@@ -170,7 +170,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(email));
 
         Grade grade = gradeRepository.findById(member.getGrade().getId())
-                .orElseThrow(GradeNotFoundException::new);
+                .orElseThrow(() -> new GradeNotFoundException(member.getGrade().getId()));
 
         Sale sale = saleRepository.findById(saleId)
                 .orElseThrow(() -> new SaleNotFoundException(saleId));
@@ -211,10 +211,11 @@ public class MemberServiceImpl implements MemberService {
 
             pointHistoryRepository.save(createPointHistory);
         } else {
-            // 결제를 진행한 주문인 경우
-            PointHistory pointHistory = pointHistoryRepository.findBySale_SaleId(sale.getSaleId())
-                    .orElseThrow(PointHistoryNotFoundException::new);
-            Integer pointHistoryPoint = pointHistory.getPointHistoryPoint();
+
+            // 주문할 떄 포인트를 사용한 경우 포인트를 환불해줘야함
+            int pointHistoryPoint = pointHistoryRepository.findBySale_SaleId(sale.getSaleId())
+                    .map(PointHistory::getPointHistoryPoint)
+                    .orElse(0);
 
             int totalPoint = (sale.getSaleTotalPrice() + sale.getSalePointUsage()) - pointHistoryPoint;
             member.updatePoint(totalPoint);
@@ -235,7 +236,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updateLatestLoginAt(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateLatestLoginAt();
     }
@@ -244,11 +245,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void changeState(Long memberId, Member.State state) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
 
         if (member.getState().equals(state)) {
-            throw new MemberCannotChangeStateException();
+            throw new MemberCannotChangeStateException(memberId, state);
         }
 
         member.changeState(state);
