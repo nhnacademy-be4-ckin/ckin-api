@@ -113,4 +113,8 @@ public class Book {
     public void updateBookReviewRate(Integer reviewRate) {
         this.bookReviewRate = String.valueOf(Integer.parseInt(this.bookReviewRate) + reviewRate);
     }
+
+    public void updateBookStock(Integer stock) {
+        this.bookStock -= stock;
+    }
 }

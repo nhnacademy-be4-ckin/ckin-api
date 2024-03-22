@@ -74,6 +74,8 @@ public class BookSaleServiceImpl implements BookSaleService {
                     .build();
 
             bookSaleRepository.save(bookSale);
+
+            book.updateBookStock(bookSaleDto.getQuantity());
         }
     }
 
