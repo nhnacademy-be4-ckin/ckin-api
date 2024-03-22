@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -82,4 +83,20 @@ public interface SaleService {
      * @return 페이징 처리된 주문 응답 DTO 리스트
      */
     PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable);
+
+    /**
+     * 주문 배송 상태를 업데이트합니다.
+     *
+     * @param saleId         주문 ID
+     * @param deliveryStatus 배송 상태
+     */
+    void updateSaleDeliveryStatus(Long saleId, SaleDeliveryUpdateRequestDto deliveryStatus);
+
+    /**
+     * 주문을 취소 상태로 변경합니다.
+     *
+     * @param saleId 주문 ID
+     */
+    void cancelSale(Long saleId);
+
 }

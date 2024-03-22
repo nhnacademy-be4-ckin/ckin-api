@@ -1,0 +1,44 @@
+== 포인트 내역
+
+=== 포인트 내역 생성 - 성공
+
+==== Request
+
+include::{snippets}/point-history/create/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/point-history/create/success/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point-history/create/success/request-fields.adoc[]
+
+{empty} +
+
+
+=== 포인트 내역 생성 - 실패 (Validation Error)
+
+==== Request
+
+include::{snippets}/point-history/create/validation-fail/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/point-history/create/validation-fail/http-response.adoc[]
+
+{empty} +
+
+=== 회원의 포인트 내역 조회
+
+==== Request
+
+include::{snippets}/point-history/get/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/point-history/get/success/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/point-history/get/success/response-fields.adoc[]

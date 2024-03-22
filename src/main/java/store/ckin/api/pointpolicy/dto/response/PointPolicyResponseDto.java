@@ -1,9 +1,8 @@
 package store.ckin.api.pointpolicy.dto.response;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 포인트 정책 응답 DTO.
@@ -13,7 +12,8 @@ import lombok.NoArgsConstructor;
  */
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class PointPolicyResponseDto {
 
     private Long pointPolicyId;
@@ -21,11 +21,4 @@ public class PointPolicyResponseDto {
     private String pointPolicyName;
 
     private Integer pointPolicyReserve;
-
-    @Builder
-    public PointPolicyResponseDto(Long pointPolicyId, String pointPolicyName, Integer pointPolicyReserve) {
-        this.pointPolicyId = pointPolicyId;
-        this.pointPolicyName = pointPolicyName;
-        this.pointPolicyReserve = pointPolicyReserve;
-    }
 }

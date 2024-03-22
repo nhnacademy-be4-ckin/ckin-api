@@ -16,11 +16,16 @@ import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.repository.MemberRepository;
+import store.ckin.api.payment.entity.Payment;
+import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.exception.SaleNotFoundExceptionBySaleNumber;
 import store.ckin.api.sale.exception.SaleNumberNotFoundException;
@@ -42,6 +47,8 @@ public class SaleServiceImpl implements SaleService {
     private final SaleRepository saleRepository;
 
     private final MemberRepository memberRepository;
+
+    private final PaymentRepository paymentRepository;
 
     /**
      * {@inheritDoc}
@@ -72,11 +79,11 @@ public class SaleServiceImpl implements SaleService {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now().plusDays(1))
                 .saleDeliveryDate(requestDto.getSaleDeliveryDate())
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(requestDto.getDeliveryFee())
                 .salePointUsage(requestDto.getPointUsage())
                 .saleTotalPrice(requestDto.getTotalPrice())
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode(requestDto.getPostcode())
                 .build();
 
@@ -139,7 +146,7 @@ public class SaleServiceImpl implements SaleService {
         Sale sale = saleRepository.findById(saleId)
                 .orElseThrow(() -> new SaleNotFoundException(saleId));
 
-        sale.updatePaymentStatus(Sale.PaymentStatus.PAID);
+        sale.updatePaymentStatus(SalePaymentStatus.PAID);
     }
 
 
@@ -209,5 +216,39 @@ public class SaleServiceImpl implements SaleService {
     @Transactional(readOnly = true)
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
         return saleRepository.findAllByMemberId(memberId, pageable);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleId         주문 ID
+     * @param deliveryStatus 배송 상태
+     */
+    @Override
+    @Transactional
+    public void updateSaleDeliveryStatus(Long saleId, SaleDeliveryUpdateRequestDto deliveryStatus) {
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new SaleNotFoundException(saleId));
+
+        sale.updateSaleDeliveryStatus(deliveryStatus.getDeliveryStatus());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param saleId 주문 ID
+     */
+    @Override
+    @Transactional
+    public void cancelSale(Long saleId) {
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new SaleNotFoundException(saleId));
+
+        sale.updatePaymentStatus(SalePaymentStatus.CANCEL);
+
+        paymentRepository.findBySale_SaleId(saleId)
+                .ifPresent(Payment::cancelPayment);
+
     }
 }

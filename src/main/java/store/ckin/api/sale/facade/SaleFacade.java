@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.booksale.dto.response.BookAndBookSaleResponseDto;
-import store.ckin.api.booksale.entity.BookSale;
 import store.ckin.api.booksale.service.BookSaleService;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.service.MemberService;
@@ -17,6 +16,7 @@ import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.pointhistory.dto.request.PointHistoryCreateRequestDto;
 import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
+import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -97,25 +97,11 @@ public class SaleFacade {
 
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleId);
 
-        log.info("bookSale = {}", bookSale);
-
         SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
         PaymentResponseDto payment = paymentService.getPayment(saleId);
 
 
         return new SaleDetailResponseDto(bookSale, saleDetail, payment);
-    }
-
-    /**
-     * 주문의 결제 상태를 결제 완료(PAID)로 업데이트하는 메서드입니다.
-     * 주문의 상태를 업데이트하고, 책 주문의 상태를 완료(COMPLETE)로 업데이트합니다.
-     *
-     * @param saleId 주문 ID
-     */
-    @Transactional
-    public void updateSalePaymentPaidStatus(Long saleId) {
-        bookSaleService.updateBookSaleState(saleId, BookSale.BookSaleState.COMPLETE);
-        saleService.updateSalePaymentPaidStatus(saleId);
     }
 
     /**
@@ -162,7 +148,7 @@ public class SaleFacade {
     }
 
     /**
-     * 회원의 주문 번호를 통해 주문 상세 정보를 조회하는 메서드입니다.
+     * 회원 ID와 주문 번호를 통해 주문 상세 정보를 조회하는 메서드입니다.
      *
      * @param saleNumber 주문 번호
      * @param memberId   회원 ID
@@ -172,7 +158,7 @@ public class SaleFacade {
     public SaleDetailResponseDto getMemberSaleDetailBySaleNumber(String saleNumber, Long memberId) {
 
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
-      
+
         if (!Objects.equals(memberId, saleDetail.getMemberId())) {
             throw new SaleMemberNotMatchException(saleNumber);
         }
@@ -184,35 +170,6 @@ public class SaleFacade {
     }
 
     /**
-     * 주문 번호로 주문 상세 정보를 조회하는 메서드입니다.
-     *
-     * @param saleNumber     주문 번호
-     * @param memberId       회원 ID
-     * @param ordererContact 주문자 연락처
-     * @return 주문 상세 정보 응답 DTO
-     */
-    @Transactional(readOnly = true)
-    public SaleDetailResponseDto getSaleDetailBySaleNumber(String saleNumber, Long memberId, String ordererContact) {
-        SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
-
-        if (memberId != null) { // 회원인 경우
-            if (!Objects.equals(memberId, saleDetail.getSaleId())) {
-                throw new SaleMemberNotMatchException(saleNumber);
-            }
-        } else { // 비회원인 경우
-            if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
-                throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
-            }
-        }
-
-        List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
-        PaymentResponseDto payment = paymentService.getPayment(saleDetail.getSaleId());
-
-        return new SaleDetailResponseDto(bookSale, saleDetail, payment);
-    }
-
-
-    /**
      * 회원 ID를 통해 해당 회원의 모든 주문 내역을 조회하는 메서드입니다.
      *
      * @param memberId 회원 ID
@@ -222,5 +179,34 @@ public class SaleFacade {
     @Transactional(readOnly = true)
     public PagedResponse<List<SaleInfoResponseDto>> getSalesByMemberId(Long memberId, Pageable pageable) {
         return saleService.getSalesByMemberId(memberId, pageable);
+    }
+
+    /**
+     * 주문 배송 상태를 업데이트하는 메서드입니다.
+     *
+     * @param saleId         주문 ID
+     * @param deliveryStatus 배송 상태
+     */
+    @Transactional
+    public void updateSaleDeliveryStatus(Long saleId, SaleDeliveryUpdateRequestDto deliveryStatus) {
+        saleService.updateSaleDeliveryStatus(saleId, deliveryStatus);
+    }
+
+    /**
+     * 주문을 취소하는 메서드입니다.
+     *
+     * @param saleId 주문 ID
+     */
+    @Transactional
+    public void cancelSale(Long saleId) {
+
+        // 회원 포인트 변경 및 포인트 이력 생성
+        SaleResponseDto saleDetail = saleService.getSaleDetail(saleId);
+        if (Objects.nonNull(saleDetail.getMemberEmail()) && saleDetail.getSalePointUsage() > 0) {
+            memberService.updateCancelSalePoint(saleId, saleDetail.getMemberEmail());
+        }
+
+        // 주문 및 결제 상태 변경
+        saleService.cancelSale(saleId);
     }
 }

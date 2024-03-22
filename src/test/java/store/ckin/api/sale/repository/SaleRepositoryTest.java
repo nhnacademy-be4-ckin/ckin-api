@@ -25,7 +25,9 @@ import store.ckin.api.member.entity.Member;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
+import store.ckin.api.sale.entity.DeliveryStatus;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 
 /**
  * 주문 레포지토리 테스트.
@@ -57,8 +59,10 @@ class SaleRepositoryTest {
     void setUp() {
 
         grade = Grade.builder()
+                .id(1L)
                 .name("GOLD")
                 .pointRatio(10)
+                .condition(0)
                 .build();
 
         entityManager.persist(grade);
@@ -117,10 +121,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -162,10 +166,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -184,10 +188,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -214,10 +218,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -259,10 +263,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -320,10 +324,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 
@@ -366,10 +370,10 @@ class SaleRepositoryTest {
                 .saleDate(LocalDateTime.now())
                 .saleShippingDate(LocalDateTime.now())
                 .saleDeliveryDate(LocalDate.now().plusDays(2))
-                .saleDeliveryStatus(Sale.DeliveryStatus.READY)
+                .saleDeliveryStatus(DeliveryStatus.READY)
                 .saleDeliveryFee(3000)
                 .salePointUsage(1000)
-                .salePaymentStatus(Sale.PaymentStatus.WAITING)
+                .salePaymentStatus(SalePaymentStatus.WAITING)
                 .saleShippingPostCode("123456")
                 .build();
 

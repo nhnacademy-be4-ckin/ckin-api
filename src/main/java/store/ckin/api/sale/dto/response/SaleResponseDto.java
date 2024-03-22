@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import store.ckin.api.sale.entity.DeliveryStatus;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.entity.Sale;
 
 /**
@@ -45,7 +46,7 @@ public class SaleResponseDto {
 
     private LocalDate saleDeliveryDate;
 
-    private Sale.DeliveryStatus saleDeliveryStatus;
+    private DeliveryStatus saleDeliveryStatus;
 
     private Integer saleDeliveryFee;
 
@@ -53,7 +54,7 @@ public class SaleResponseDto {
 
     private Integer saleTotalPrice;
 
-    private Sale.PaymentStatus salePaymentStatus;
+    private SalePaymentStatus salePaymentStatus;
 
     private String saleShippingPostCode;
 

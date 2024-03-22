@@ -32,8 +32,10 @@ class MemberRepositoryTest {
     @DisplayName("이메일로 계정 존재 여부 테스트")
     void testExistsByEmail() {
         Grade grade = Grade.builder()
+                .id(1L)
                 .name("test")
                 .pointRatio(20)
+                .condition(0)
                 .build();
 
         Grade mergedGrade = entityManager.merge(grade);

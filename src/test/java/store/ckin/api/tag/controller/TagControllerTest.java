@@ -53,7 +53,7 @@ import store.ckin.api.tag.service.impl.TagServiceImpl;
  * @author 김준현
  * @version 2024. 02. 17
  */
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriHost = "133.186.247.149", uriPort = 7030)
 @WebMvcTest(TagController.class)
 class TagControllerTest {
     @Autowired
@@ -65,7 +65,7 @@ class TagControllerTest {
 
     @Test
     @DisplayName("태그 목록 가져오기 - 성공")
-    void getAllTagListTest() throws Exception{
+    void getAllTagListTest() throws Exception {
         // given
         List<TagResponseDto> allElements = List.of(
                 new TagResponseDto(1L, "태그1"),
@@ -112,7 +112,7 @@ class TagControllerTest {
 
     @Test
     @DisplayName("태그 저장 - 실패(Validation Error)")
-    void saveTagTest_Failed_Validation() throws Exception{
+    void saveTagTest_Failed_Validation() throws Exception {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "12345678910");
@@ -133,7 +133,8 @@ class TagControllerTest {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "태그1");
-        TagNameAlreadyExistException expectedException = new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+        TagNameAlreadyExistException expectedException =
+                new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
         willThrow(expectedException).given(tagService).createTag(any());
 
         // when
@@ -159,8 +160,8 @@ class TagControllerTest {
 
         // when
         mockMvc.perform(post("/api/tags")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tagCreateRequestDto)))
                 .andExpect(status().isCreated())
                 .andDo(document("tag/saveTag/success",
                         preprocessRequest(prettyPrint()),
@@ -172,7 +173,7 @@ class TagControllerTest {
 
     @Test
     @DisplayName("태그 수정 - 실패(Validation Error)")
-    void updateTagTest_Failed() throws Exception{
+    void updateTagTest_Failed() throws Exception {
         // given
         TagUpdateRequestDto tagUpdateRequestDto = new TagUpdateRequestDto();
         ReflectionTestUtils.setField(tagUpdateRequestDto, "tagId", 1L);
@@ -209,9 +210,10 @@ class TagControllerTest {
                                 fieldWithPath("tagName").description("태그 수정을 위한 태그 이름")
                         )));
     }
+
     @Test
     @DisplayName("태그 삭제 - 실패(Validation Error)")
-    void deleteTagTest_Failed_Validation() throws Exception{
+    void deleteTagTest_Failed_Validation() throws Exception {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", null);
@@ -228,7 +230,7 @@ class TagControllerTest {
 
     @Test
     @DisplayName("태그 삭제 - 실패(존재하지 않는 태그)")
-    void deleteTagTest_Failed_TagNotFoundException() throws Exception{
+    void deleteTagTest_Failed_TagNotFoundException() throws Exception {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", 1L);
@@ -244,8 +246,8 @@ class TagControllerTest {
                         jsonPath("message", equalTo(expectedException.getMessage())),
                         status().isNotFound())
                 .andDo(document("tag/deleteTag/not-found",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint())));
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -261,8 +263,8 @@ class TagControllerTest {
                         .content(objectMapper.writeValueAsString(tagDeleteRequestDto)))
                 .andExpect(status().isOk())
                 .andDo(document("tag/deleteTag/success",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("tagId").description("삭제를 위한 태그 아이디")
                         )));

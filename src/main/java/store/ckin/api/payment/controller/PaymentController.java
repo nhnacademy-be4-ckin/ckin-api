@@ -1,5 +1,6 @@
 package store.ckin.api.payment.controller;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,9 @@ public class PaymentController {
      * @return 201 (CREATED), 결제 성공 응답 DTO
      */
     @PostMapping
-    public ResponseEntity<PaymentSuccessResponseDto> createPayment(@RequestBody PaymentRequestDto requestDto) {
-        // 결제 SAVE
-        PaymentSuccessResponseDto payment = paymentFacade.createPayment(requestDto);
+    public ResponseEntity<PaymentSuccessResponseDto> createPayment(@Valid @RequestBody PaymentRequestDto requestDto) {
 
-        // 포인트 적립 + 포인트 기록
-        paymentFacade.createRewardPoint(payment.getSaleNumber());
+        PaymentSuccessResponseDto payment = paymentFacade.createPayment(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(payment);
     }
 }

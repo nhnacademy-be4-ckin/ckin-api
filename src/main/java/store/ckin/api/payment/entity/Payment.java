@@ -3,6 +3,8 @@ package store.ckin.api.payment.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,7 +44,8 @@ public class Payment {
     private String paymentKey;
 
     @Column(name = "payment_status")
-    private String paymentStatus;
+    @Enumerated(value = EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @Column(name = "payment_requested_at")
     private LocalDateTime requestedAt;
@@ -55,7 +58,8 @@ public class Payment {
 
 
     @Builder
-    public Payment(Long paymentId, Sale sale, String paymentKey, String paymentStatus, LocalDateTime requestedAt,
+    public Payment(Long paymentId, Sale sale, String paymentKey,
+                   PaymentStatus paymentStatus, LocalDateTime requestedAt,
                    LocalDateTime approvedAt, String receipt) {
         this.paymentId = paymentId;
         this.sale = sale;
@@ -64,5 +68,9 @@ public class Payment {
         this.requestedAt = requestedAt;
         this.approvedAt = approvedAt;
         this.receipt = receipt;
+    }
+
+    public void cancelPayment() {
+        this.paymentStatus = PaymentStatus.CANCEL;
     }
 }
