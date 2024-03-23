@@ -29,6 +29,7 @@
     <springProfile name="prod">
         <property name="LOGS_ABSOLUTE_PATH" value="~/logs"/>
         <root level="INFO">
+            <appender-ref ref="STDOUT"/>
             <appender-ref ref="LOG"/>
         </root>
     </springProfile>
