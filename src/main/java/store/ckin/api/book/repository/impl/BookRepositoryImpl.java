@@ -2,7 +2,6 @@ package store.ckin.api.book.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -362,24 +361,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
     @Override
     public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
-        List<String> authorNames = from(book)
-                .leftJoin(bookAuthor)
-                .on(book.bookId.eq(bookAuthor.book.bookId))
-                .select(author.authorName)
-                .fetch();
-
-        List<String> categoryNames = from(book)
-                .leftJoin(bookCategory)
-                .on(book.bookId.eq(bookCategory.book.bookId))
-                .select(category.categoryName)
-                .fetch();
-
-        List<String> tagNames = from(book)
-                .leftJoin(bookTag)
-                .on(book.bookId.eq(bookTag.book.bookId))
-                .select(tag.tagName)
-                .fetch();
-
         List<BookResponseDto> results = from(book)
                 .leftJoin(book.authors, bookAuthor)
                 .leftJoin(bookAuthor.author, author)
@@ -408,11 +389,39 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .orderBy(book.bookPublicationDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .distinct()
                 .fetch();
 
-        results.forEach(bookResponseDto -> bookResponseDto.updateList(authorNames, categoryNames, tagNames));
+        List<BookResponseDto> resultList = results.stream().map(book -> {
+            List<String> tagNames = from(tag)
+                    .leftJoin(bookTag)
+                    .on(tag.tagId.eq(bookTag.tag.tagId))
+                    .where(bookTag.book.bookId.eq(book.getBookId()))
+                    .select(tag.tagName)
+                    .fetch();
+            List<String> authorNames = from(author)
+                    .leftJoin(bookAuthor)
+                    .on(author.authorId.eq(bookAuthor.author.authorId))
+                    .where(bookAuthor.book.bookId.eq(book.getBookId()))
+                    .select(author.authorName)
+                    .fetch();
+            List<String> categoryNames = from(category)
+                    .leftJoin(bookCategory)
+                    .on(category.categoryId.eq(bookCategory.category.categoryId))
+                    .where(bookCategory.book.bookId.eq(book.getBookId()))
+                    .select(category.categoryName)
+                    .fetch();
+            book.updateList(authorNames, categoryNames, tagNames);
+            return book;
+        }).collect(Collectors.toList());
 
-        long count = from(book)
+
+        return new PageImpl<>(resultList, pageable, resultList.size());
+    }
+
+    @Override
+    public Page<BookResponseDto> getBookPageByTagName(Pageable pageable, String tagName) {
+        List<BookResponseDto> results = from(book)
                 .leftJoin(book.authors, bookAuthor)
                 .leftJoin(bookAuthor.author, author)
                 .leftJoin(book.categories, bookCategory)
@@ -420,13 +429,54 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(book.tags, bookTag)
                 .leftJoin(bookTag.tag, tag)
                 .leftJoin(book.thumbnail, file)
-                .select(book.count())
-                .orderBy(book.bookPublicationDate.desc())
+                .select(new QBookResponseDto(
+                        book.bookId,
+                        book.bookIsbn,
+                        book.bookTitle,
+                        book.bookDescription,
+                        book.bookPublisher,
+                        book.bookPublicationDate,
+                        book.bookIndex,
+                        book.bookPackaging,
+                        book.bookStock,
+                        book.bookRegularPrice,
+                        book.bookDiscountRate,
+                        book.bookState,
+                        book.bookSalePrice,
+                        book.bookReviewRate,
+                        file.fileUrl
+                ))
+                .where(tag.tagName.eq(tagName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetchOne();
+                .distinct()
+                .fetch();
 
-        return new PageImpl<>(results, pageable, count);
+        List<BookResponseDto> resultList = results.stream().map(book -> {
+            List<String> tagNames = from(tag)
+                    .leftJoin(bookTag)
+                    .on(tag.tagId.eq(bookTag.tag.tagId))
+                    .where(bookTag.book.bookId.eq(book.getBookId()))
+                    .select(tag.tagName)
+                    .fetch();
+            List<String> authorNames = from(author)
+                    .leftJoin(bookAuthor)
+                    .on(author.authorId.eq(bookAuthor.author.authorId))
+                    .where(bookAuthor.book.bookId.eq(book.getBookId()))
+                    .select(author.authorName)
+                    .fetch();
+            List<String> categoryNames = from(category)
+                    .leftJoin(bookCategory)
+                    .on(category.categoryId.eq(bookCategory.category.categoryId))
+                    .where(bookCategory.book.bookId.eq(book.getBookId()))
+                    .select(category.categoryName)
+                    .fetch();
+            book.updateList(authorNames, categoryNames, tagNames);
+            return book;
+        }).collect(Collectors.toList());
+
+
+        return new PageImpl<>(resultList, pageable, resultList.size());
     }
 
 

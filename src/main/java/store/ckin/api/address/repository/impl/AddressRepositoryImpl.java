@@ -32,7 +32,7 @@ public class AddressRepositoryImpl extends QuerydslRepositorySupport
                         address.detail,
                         address.alias,
                         address.isDefault
-                        ))
+                ))
                 .where(address.member.id.eq(memberId))
                 .fetch();
     }
