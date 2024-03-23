@@ -60,7 +60,7 @@ public class AddressController {
 
     @PutMapping("/addresses/{addressId}/default")
     ResponseEntity<Void> setDefaultAddress(@PathVariable("memberId") Long memberId,
-                                       @PathVariable("addressId") Long addressId) {
+                                           @PathVariable("addressId") Long addressId) {
         addressService.setDefaultAddress(memberId, addressId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -74,7 +74,7 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ExceptionHandler({ MemberNotFoundException.class, AddressNotFoundException.class })
+    @ExceptionHandler({MemberNotFoundException.class, AddressNotFoundException.class})
     public ResponseEntity<Void> handleNotFoundException() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

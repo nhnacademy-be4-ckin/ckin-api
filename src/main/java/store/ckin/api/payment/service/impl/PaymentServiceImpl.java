@@ -1,5 +1,6 @@
 package store.ckin.api.payment.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,8 +42,8 @@ public class PaymentServiceImpl implements PaymentService {
                         .sale(sale)
                         .paymentKey(requestDto.getPaymentKey())
                         .paymentStatus(requestDto.getPaymentStatus())
-                        .requestedAt(requestDto.getRequestedAt())
-                        .approvedAt(requestDto.getApprovedAt())
+                        .requestedAt(requestDto.getRequestedAt().plusHours(9))
+                        .approvedAt(Objects.nonNull(requestDto.getApprovedAt()) ? requestDto.getApprovedAt().plusHours(9) : null)
                         .receipt(requestDto.getReceiptUrl())
                         .build();
 

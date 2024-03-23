@@ -42,7 +42,7 @@ public class ReviewController {
      * 리뷰 업로드를 구현하는 메소드 입니다.
      *
      * @param createRequestDto 도서 아이디, 리뷰 점수, 리뷰 코멘트를 담고 있는 DTO 입니다.
-     * @param imageList    리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
+     * @param imageList        리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
      */
     @PostMapping("/review")
     public ResponseEntity<Void> postReview(@RequestPart ReviewCreateRequestDto createRequestDto,
@@ -90,7 +90,7 @@ public class ReviewController {
     public ResponseEntity<Void> updateReview(@RequestBody ReviewUpdateRequestDto updateRequestDto,
                                              @PathVariable Long memberId) {
 
-        reviewFacade.updateReview(updateRequestDto,memberId);
+        reviewFacade.updateReview(updateRequestDto, memberId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

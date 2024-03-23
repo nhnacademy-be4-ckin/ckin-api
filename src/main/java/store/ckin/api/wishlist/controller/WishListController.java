@@ -3,9 +3,13 @@ package store.ckin.api.wishlist.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.book.exception.BookNotFoundException;
-import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.wishlist.exception.WishListAlreadyExistsException;
 import store.ckin.api.wishlist.service.WishListService;
@@ -38,7 +42,7 @@ public class WishListController {
      */
     @DeleteMapping("/members/{memberId}/wish-list/{bookId}")
     public ResponseEntity<Void> deleteWishList(@PathVariable("memberId") Long memberId,
-                                            @PathVariable("bookId") Long bookId) {
+                                               @PathVariable("bookId") Long bookId) {
         wishListService.deleteWishList(memberId, bookId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
