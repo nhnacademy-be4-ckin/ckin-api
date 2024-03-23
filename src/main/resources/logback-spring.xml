@@ -9,25 +9,26 @@
         </encoder>
     </appender>
 
-    <!-- 로깅을 파일로 저장 -->
-    <appender name="LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./${LOGS_ABSOLUTE_PATH}/api.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <charset>utf8</charset>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread [%X{traceId}] %-5level %logger - %m%n</Pattern>
-        </encoder>
-        <!--로깅 파일이 특정 조건을 넘어가면 다른 파일로 만들어 준다.-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./${LOGS_ABSOLUTE_PATH}/api.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>100MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>180</maxHistory>
-        </rollingPolicy>
-    </appender>
-
     <springProfile name="prod">
+
         <property name="LOGS_ABSOLUTE_PATH" value="~/logs"/>
+
+        <appender name="LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOGS_ABSOLUTE_PATH}/api.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <charset>utf8</charset>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread [%X{traceId}] %-5level %logger - %m%n</Pattern>
+            </encoder>
+            <!--로깅 파일이 특정 조건을 넘어가면 다른 파일로 만들어 준다.-->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOGS_ABSOLUTE_PATH}/api.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>180</maxHistory>
+            </rollingPolicy>
+        </appender>
+
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="LOG"/>
@@ -35,7 +36,25 @@
     </springProfile>
 
     <springProfile name="dev">
+
         <property name="LOGS_ABSOLUTE_PATH" value="./logs"/>
+
+        <appender name="LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOGS_ABSOLUTE_PATH}/api.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <charset>utf8</charset>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread [%X{traceId}] %-5level %logger - %m%n</Pattern>
+            </encoder>
+            <!--로깅 파일이 특정 조건을 넘어가면 다른 파일로 만들어 준다.-->
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOGS_ABSOLUTE_PATH}/api.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>180</maxHistory>
+            </rollingPolicy>
+        </appender>
+
         <root level="DEBUG">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="LOG"/>
