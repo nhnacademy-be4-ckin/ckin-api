@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <springProfile name="prod">
+    <springProfile name="prod1, prod2">
 
         <property name="LOGS_ABSOLUTE_PATH" value="~/logs"/>
 
