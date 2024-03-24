@@ -1,7 +1,7 @@
 package store.ckin.api.member.domain.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 비밀번호 요청에 대한 응답 DTO 입니다.
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * @version : 2024. 03. 24.
  */
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class MemberPasswordResponseDto {
     private String password;
 }

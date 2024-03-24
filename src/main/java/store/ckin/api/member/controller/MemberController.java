@@ -48,7 +48,7 @@ public class MemberController {
                 .body(memberService.alreadyExistsEmail(memberEmailOnlyRequestDto));
     }
 
-    @PostMapping("/members/{memberId}/checkPassword")
+    @GetMapping("/members/{memberId}/checkPassword")
     public ResponseEntity<MemberPasswordResponseDto> checkPassword(@PathVariable("memberId") Long memberId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberService.getPassword(memberId));
