@@ -147,6 +147,7 @@ class MemberRepositoryTest {
         assertEquals(grade.getName(), result.getGradeName());
         assertEquals(member.getAccumulateAmount(), result.getAccumulateAmount());
         assertEquals(member.getPoint(), result.getPoint());
+        assertEquals(grade.getCondition(), result.getGradeCondition());
         assertEquals(1, result.getCountReview());
     }
 
