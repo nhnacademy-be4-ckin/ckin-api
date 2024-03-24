@@ -6,10 +6,13 @@ import store.ckin.api.grade.entity.QGrade;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
 import store.ckin.api.review.entity.QReview;
+
+import java.util.Optional;
 
 /**
  * MemberRepositoryCustom 의 구현체 입니다.
@@ -69,5 +72,18 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         member.role))
                 .where(member.oauthId.eq(oauthId))
                 .fetchOne();
+    }
+
+    @Override
+    public Optional<MemberPasswordResponseDto> getPassword(Long memberId) {
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(
+                from(member)
+                        .select(Projections.constructor(
+                                MemberPasswordResponseDto.class,
+                                member.password))
+                        .where(member.id.eq(memberId))
+                        .fetchOne());
     }
 }

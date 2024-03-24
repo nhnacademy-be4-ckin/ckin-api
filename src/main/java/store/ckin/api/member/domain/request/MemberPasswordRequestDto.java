@@ -14,8 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberPasswordRequestDto {
     @NotBlank
-    private String oldPassword;
-
-    @NotBlank
-    private String newPassword;
+    private String password;
 }

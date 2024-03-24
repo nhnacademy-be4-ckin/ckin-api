@@ -4,6 +4,7 @@ import store.ckin.api.member.domain.request.*;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
 
 /**
@@ -66,6 +67,8 @@ public interface MemberService {
     void updateLatestLoginAt(Long memberId);
 
     void changeState(Long memberId, Member.State state);
+
+    MemberPasswordResponseDto getPassword(Long memberId);
 
     void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto);
 

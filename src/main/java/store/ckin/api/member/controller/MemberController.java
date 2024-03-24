@@ -17,6 +17,7 @@ import store.ckin.api.member.domain.request.*;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
@@ -45,6 +46,12 @@ public class MemberController {
             @Valid @RequestBody MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberService.alreadyExistsEmail(memberEmailOnlyRequestDto));
+    }
+
+    @PostMapping("/members/{memberId}/checkPassword")
+    public ResponseEntity<MemberPasswordResponseDto> checkPassword(@PathVariable("memberId") Long memberId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(memberService.getPassword(memberId));
     }
 
     /**

@@ -18,6 +18,7 @@ import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
@@ -259,19 +260,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public MemberPasswordResponseDto getPassword(Long memberId) {
+        return memberRepository.getPassword(memberId)
+                .orElseThrow(() -> new MemberPasswordCannotChangeException(memberId));
+    }
+
+    @Override
     @Transactional
     public void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        if (!member.getPassword()
-                .equals(memberPasswordRequestDto.getOldPassword())
-                || member.getPassword()
-                .equals(memberPasswordRequestDto.getNewPassword())) {
+        if (member.getPassword()
+                .equals(memberPasswordRequestDto.getPassword())) {
             throw new MemberPasswordCannotChangeException(memberId);
         }
 
-        member.changePassword(memberPasswordRequestDto.getNewPassword());
+        member.changePassword(memberPasswordRequestDto.getPassword());
     }
 
     @Override
