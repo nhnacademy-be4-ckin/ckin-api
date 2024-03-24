@@ -21,6 +21,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import store.ckin.api.grade.entity.Grade;
+import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
 
 
 /**
@@ -122,5 +123,14 @@ public class Member {
 
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * 회원정보를 수정하는 메서드 입니다.
+     */
+    public void updateMemberInfo(MemberUpdateRequestDto memberUpdateRequestDto) {
+        this.name = memberUpdateRequestDto.getName();
+        this.contact = memberUpdateRequestDto.getContact();
+        this.birth = memberUpdateRequestDto.getBirth();
     }
 }

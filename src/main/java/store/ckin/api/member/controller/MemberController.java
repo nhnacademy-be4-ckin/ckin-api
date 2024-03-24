@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.member.domain.request.MemberAuthRequestDto;
-import store.ckin.api.member.domain.request.MemberCreateRequestDto;
-import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
+import store.ckin.api.member.domain.request.*;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
@@ -109,7 +105,7 @@ public class MemberController {
     /**
      * 서비스를 이용할 때마다 최근 로그인 날짜를 갱신해주는 메서드 입니다.
      */
-    @PutMapping("/members/{memberId}/update")
+    @PutMapping("/members/{memberId}/update-log")
     public ResponseEntity<Void> memberUpdateLoginLog(@PathVariable("memberId") Long memberId) {
         memberService.updateLatestLoginAt(memberId);
 
@@ -143,6 +139,17 @@ public class MemberController {
     public ResponseEntity<Void> changePassword(@PathVariable("memberId") Long memberId,
                                                @Valid @RequestBody MemberPasswordRequestDto memberPasswordRequestDto) {
         memberService.changePassword(memberId, memberPasswordRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 회원정보를를 수정하는 API 메서드 입니다.
+     */
+    @PutMapping("members/{memberId}/update-info")
+    public ResponseEntity<Void> updateMemberInfo(@PathVariable("memberId") Long memberId,
+                                               @Valid @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
+        memberService.updateMemberInfo(memberId, memberUpdateRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

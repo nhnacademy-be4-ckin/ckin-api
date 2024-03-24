@@ -68,4 +68,6 @@ public interface MemberService {
     void changeState(Long memberId, Member.State state);
 
     void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto);
+
+    void updateMemberInfo(Long memberId, MemberUpdateRequestDto memberUpdateRequestDto);
 }

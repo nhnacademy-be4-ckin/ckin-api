@@ -9,12 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
-import store.ckin.api.member.domain.request.*;
+import store.ckin.api.member.domain.request.MemberAuthRequestDto;
+import store.ckin.api.member.domain.request.MemberCreateRequestDto;
+import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
+import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
+import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
+import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
 import store.ckin.api.member.entity.Member;
-import store.ckin.api.member.exception.*;
+import store.ckin.api.member.exception.MemberAlreadyExistsException;
+import store.ckin.api.member.exception.MemberCannotChangeStateException;
+import store.ckin.api.member.exception.MemberNotFoundException;
+import store.ckin.api.member.exception.MemberOauthNotFoundException;
+import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
@@ -255,11 +264,22 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        if (member.getPassword()
-                .equals(memberPasswordRequestDto.getPassword())) {
+        if (!member.getPassword()
+                .equals(memberPasswordRequestDto.getOldPassword())
+                || member.getPassword()
+                .equals(memberPasswordRequestDto.getNewPassword())) {
             throw new MemberPasswordCannotChangeException(memberId);
         }
 
-        member.changePassword(memberPasswordRequestDto.getPassword());
+        member.changePassword(memberPasswordRequestDto.getNewPassword());
+    }
+
+    @Override
+    @Transactional
+    public void updateMemberInfo(Long memberId, MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        member.updateMemberInfo(memberUpdateRequestDto);
     }
 }
