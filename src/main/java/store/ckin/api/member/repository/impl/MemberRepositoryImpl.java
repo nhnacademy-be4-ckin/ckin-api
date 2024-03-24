@@ -50,6 +50,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         grade.name,
                         member.accumulateAmount,
                         member.point,
+                        grade.condition,
                         review.count()))
                 .innerJoin(member.grade, grade)
                 .leftJoin(review).on(member.id.eq(review.member.id))
