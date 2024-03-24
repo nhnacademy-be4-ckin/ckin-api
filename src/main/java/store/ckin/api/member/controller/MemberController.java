@@ -17,6 +17,7 @@ import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
+import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
@@ -24,6 +25,7 @@ import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
+import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
 import store.ckin.api.member.service.MemberService;
 
 /**
@@ -135,9 +137,24 @@ public class MemberController {
     }
 
     /**
+     * 비밀번호를 변경하는 API 메서드 입니다.
+     */
+    @PutMapping("members/{memberId}/password")
+    public ResponseEntity<Void> changePassword(@PathVariable("memberId") Long memberId,
+                                               @Valid @RequestBody MemberPasswordRequestDto memberPasswordRequestDto) {
+        memberService.changePassword(memberId, memberPasswordRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
      * 409 Code 로 응답을 보내는 ExceptionHandler 입니다.
      */
-    @ExceptionHandler({MemberAlreadyExistsException.class, MemberCannotChangeStateException.class})
+    @ExceptionHandler({
+            MemberAlreadyExistsException.class,
+            MemberCannotChangeStateException.class,
+            MemberPasswordCannotChangeException.class
+    })
     public ResponseEntity<Void> conflictExceptionHandler(Exception exception) {
         log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
@@ -153,5 +170,4 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
 }

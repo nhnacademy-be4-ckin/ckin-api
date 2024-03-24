@@ -119,4 +119,8 @@ public class Member {
     public void changeState(State state) {
         this.state = state;
     }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }
