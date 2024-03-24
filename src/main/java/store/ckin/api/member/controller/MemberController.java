@@ -135,7 +135,7 @@ public class MemberController {
     /**
      * 비밀번호를 변경하는 API 메서드 입니다.
      */
-    @PutMapping("members/{memberId}/password")
+    @PutMapping("/members/{memberId}/password")
     public ResponseEntity<Void> changePassword(@PathVariable("memberId") Long memberId,
                                                @Valid @RequestBody MemberPasswordRequestDto memberPasswordRequestDto) {
         memberService.changePassword(memberId, memberPasswordRequestDto);
@@ -146,7 +146,7 @@ public class MemberController {
     /**
      * 회원정보를를 수정하는 API 메서드 입니다.
      */
-    @PutMapping("members/{memberId}/update-info")
+    @PutMapping("/members/{memberId}/update-info")
     public ResponseEntity<Void> updateMemberInfo(@PathVariable("memberId") Long memberId,
                                                @Valid @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
         memberService.updateMemberInfo(memberId, memberUpdateRequestDto);
