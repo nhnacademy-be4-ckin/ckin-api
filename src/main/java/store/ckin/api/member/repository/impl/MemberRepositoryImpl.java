@@ -3,10 +3,7 @@ package store.ckin.api.member.repository.impl;
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.grade.entity.QGrade;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
-import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
@@ -83,6 +80,21 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         .select(Projections.constructor(
                                 MemberPasswordResponseDto.class,
                                 member.password))
+                        .where(member.id.eq(memberId))
+                        .fetchOne());
+    }
+
+    @Override
+    public Optional<MemberDetailInfoResponseDto> getMemberDetailInfo(Long memberId) {
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(
+                from(member)
+                        .select(Projections.constructor(
+                                MemberDetailInfoResponseDto.class,
+                                member.name,
+                                member.contact,
+                                member.birth))
                         .where(member.id.eq(memberId))
                         .fetchOne());
     }

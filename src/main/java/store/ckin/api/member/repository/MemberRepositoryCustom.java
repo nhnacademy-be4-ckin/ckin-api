@@ -1,10 +1,7 @@
 package store.ckin.api.member.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
-import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
+import store.ckin.api.member.domain.response.*;
 
 import java.util.Optional;
 
@@ -23,4 +20,6 @@ public interface MemberRepositoryCustom {
     MemberOauthLoginResponseDto getOauthMemberInfo(String oauthId);
 
     Optional<MemberPasswordResponseDto> getPassword(Long memberId);
+
+    Optional<MemberDetailInfoResponseDto> getMemberDetailInfo(Long memberId);
 }

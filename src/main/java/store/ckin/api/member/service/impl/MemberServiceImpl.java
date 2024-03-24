@@ -15,10 +15,7 @@ import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
 import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
-import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
@@ -263,7 +260,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberPasswordResponseDto getPassword(Long memberId) {
         return memberRepository.getPassword(memberId)
-                .orElseThrow(() -> new MemberPasswordCannotChangeException(memberId));
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 
     @Override
@@ -287,5 +284,12 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateMemberInfo(memberUpdateRequestDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberDetailInfoResponseDto getMemberDetailInfo(Long memberId) {
+        return memberRepository.getMemberDetailInfo(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 }
