@@ -1,16 +1,21 @@
 package store.ckin.api.address.repository;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import store.ckin.api.address.domain.response.MemberAddressResponseDto;
 import store.ckin.api.address.entity.Address;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
@@ -149,5 +154,33 @@ class AddressRepositoryTest {
                 .existsByIdAndMember_Id(savedAddress.getId(), member.getId()));
         assertFalse(addressRepository
                 .existsByIdAndMember_Id(savedAddress.getId(), member.getId() + 1L));
+    }
+
+    @Test
+    @DisplayName("회원 ID로 주소 목록 조회")
+    void testGetMemberAddressList() {
+        Address address = Address.builder()
+                .member(member)
+                .postCode("12345")
+                .base("광주")
+                .detail("광역시")
+                .alias("광산구")
+                .build();
+
+        addressRepository.save(address);
+
+        List<MemberAddressResponseDto> actualList = addressRepository.getMemberAddressList(member.getId());
+
+        assertFalse(actualList.isEmpty());
+
+        MemberAddressResponseDto actual = actualList.get(0);
+
+        assertAll(
+                () -> assertNotNull(actual.getAddressId()),
+                () -> assertEquals(actual.getPostCode(), address.getPostCode()),
+                () -> assertEquals(actual.getBase(), address.getBase()),
+                () -> assertEquals(actual.getDetail(), address.getDetail()),
+                () -> assertEquals(actual.getAlias(), address.getAlias())
+        );
     }
 }
