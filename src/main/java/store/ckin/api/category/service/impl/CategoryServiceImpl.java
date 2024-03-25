@@ -1,13 +1,14 @@
 package store.ckin.api.category.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.ckin.api.book.repository.BookRepository;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
+import store.ckin.api.category.dto.response.CategoryCacheResponseDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;
@@ -26,7 +27,6 @@ import store.ckin.api.category.service.CategoryService;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final BookRepository bookRepository;
     private static final int DEFAULT_CATEGORY_PRIORITY = 1;
 
     /**
@@ -131,6 +131,20 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.getParentIds(bookIds);
     }
 
+    @Override
+    public List<CategoryCacheResponseDto> gerAllCategories() {
+        List<Category> subcategories = categoryRepository.findAll();
+        return subcategories.stream()
+                .map(category -> CategoryCacheResponseDto.builder()
+                        .categoryId(category.getCategoryId())
+                        .parentCategoryId(Optional.ofNullable(category.getParentCategory())
+                                .map(Category::getCategoryId)
+                                .orElse(null))
+                        .categoryName(category.getCategoryName())
+                        .categoryPriority(category.getCategoryPriority())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
 }
 
