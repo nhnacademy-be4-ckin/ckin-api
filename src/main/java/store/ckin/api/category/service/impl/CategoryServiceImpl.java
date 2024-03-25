@@ -132,7 +132,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryCacheResponseDto> gerAllCategories() {
+    public List<CategoryCacheResponseDto> getAllCategories() {
         List<Category> subcategories = categoryRepository.findAll();
         return subcategories.stream()
                 .map(category -> CategoryCacheResponseDto.builder()
