@@ -1,0 +1,74 @@
+== 등급
+
+=== 등급 생성 - 성공
+==== Request
+include::{snippets}/grade/createGrade/success/http-request.adoc[]
+
+include::{snippets}/grade/createGrade/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/grade/createGrade/success/http-response.adoc[]
+
+=== 등급 생성 - 실패
+==== 이미 존재하는 등급일 경우
+===== Request
+include::{snippets}/grade/createGrade/failed/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/grade/createGrade/failed/http-response.adoc[]
+
+=== 모든 등급 조회
+
+==== Request
+
+include::{snippets}/grade/getGradeList/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/grade/getGradeList/success/http-response.adoc[]
+
+include::{snippets}/grade/getGradeList/success/response-fields.adoc[]
+
+=== 등급 변경 - 성공
+
+==== Request
+
+include::{snippets}/grade/updateGrade/success/http-request.adoc[]
+
+include::{snippets}/grade/updateGrade/success/path-parameters.adoc[]
+
+include::{snippets}/grade/updateGrade/success/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/grade/updateGrade/success/http-response.adoc[]
+
+=== 등급 변경 - 실패
+==== 존재하지 않는 등급 ID일 경우
+===== Request
+
+include::{snippets}/grade/updateGrade/failed/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/grade/updateGrade/failed/http-response.adoc[]
+
+=== 등급 삭제 - 성공
+==== Request
+
+include::{snippets}/grade/deleteGrade/success/http-request.adoc[]
+
+include::{snippets}/grade/deleteGrade/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/grade/deleteGrade/success/http-response.adoc[]
+
+=== 등급 삭제 - 실패
+==== 존재하지 않는 멤버 ID일 경우
+===== Request
+include::{snippets}/grade/deleteGrade/failed/http-request.adoc[]
+
+===== Response
+include::{snippets}/grade/deleteGrade/failed/http-response.adoc[]

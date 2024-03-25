@@ -63,3 +63,5 @@ include::point-policy.adoc[]
 include::sale.adoc[]
 
 include::address.adoc[]
+
+include::grade.adoc[]

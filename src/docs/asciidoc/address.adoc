@@ -70,7 +70,7 @@ include::{snippets}/address/updateAddress/success/request-fields.adoc[]
 
 include::{snippets}/address/updateAddress/success/http-response.adoc[]
 
-==== 주소 업데이트 - 실패
+=== 주소 업데이트 - 실패
 ==== 멤버가 존재하지 않는 경우
 
 ===== Request
@@ -132,7 +132,7 @@ include::{snippets}/address/deleteAddress/success/http-request.adoc[]
 
 include::{snippets}/address/deleteAddress/success/path-parameters.adoc[]
 
-===== Response
+==== Response
 
 include::{snippets}/address/deleteAddress/success/http-response.adoc[]
 
