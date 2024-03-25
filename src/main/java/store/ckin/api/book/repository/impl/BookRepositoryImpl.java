@@ -247,7 +247,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         List<BookExtractionResponseDto> bookInfoList
                 = from(book)
                 .join(book.categories, bookCategory)
-                .join(book.thumbnail, file)
+                .leftJoin(book.thumbnail, file)
                 .where(book.bookId.in(bookIds))
                 .select(Projections.constructor(BookExtractionResponseDto.class,
                         book.bookId,
