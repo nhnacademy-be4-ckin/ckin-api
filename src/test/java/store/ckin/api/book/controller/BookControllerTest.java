@@ -425,6 +425,7 @@ class BookControllerTest {
                 .bookState("판매중")
                 .bookSalePrice(18000)
                 .bookReviewRate("4.5")
+                .thumbnail("example.jpg")
                 .authorNames(List.of("저자1", "저자2"))
                 .build());
         PageRequest pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "bookPublicationDate"));
@@ -433,12 +434,50 @@ class BookControllerTest {
 
         Mockito.when(bookService.findAllBooks(pageable)).thenReturn(bookPage);
 
-        mockMvc.perform(get("/api/books")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books")
                         .param("page", String.valueOf(pageable.getPageNumber()))
                         .param("size", String.valueOf(pageable.getPageSize())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(bookListResponseDtos.size())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(bookListResponseDtos.size())))
+                .andDo(document("book/getAllBooks/success",
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("size").description("페이지 당 아이템 개수")
+                        ),
+                        responseFields(
+                                fieldWithPath("content[]").description("페이지 내의 책 목록"),
+                                fieldWithPath("content[].bookId").description("책의 ID"),
+                                fieldWithPath("content[].bookIsbn").description("책의 ISBN 번호"),
+                                fieldWithPath("content[].bookTitle").description("책 제목"),
+                                fieldWithPath("content[].bookDescription").description("책 설명"),
+                                fieldWithPath("content[].bookPublisher").description("출판사"),
+                                fieldWithPath("content[].bookPublicationDate").description("출판 날짜"),
+                                fieldWithPath("content[].bookIndex").description("책 목차"),
+                                fieldWithPath("content[].bookPackaging").description("책 포장 여부"),
+                                fieldWithPath("content[].bookStock").description("책 재고"),
+                                fieldWithPath("content[].bookRegularPrice").description("책 정가"),
+                                fieldWithPath("content[].bookDiscountRate").description("할인율"),
+                                fieldWithPath("content[].bookState").description("판매 상태"),
+                                fieldWithPath("content[].bookSalePrice").description("판매 가격"),
+                                fieldWithPath("content[].bookReviewRate").description("리뷰 평점"),
+                                fieldWithPath("content[].authorNames[]").description("저자 이름 목록"),
+                                subsectionWithPath("pageable").ignored(),
+                                fieldWithPath("totalElements").description("전체 도서 수"),
+                                fieldWithPath("totalPages").description("전체 페이지 수"),
+                                fieldWithPath("number").description("현재 페이지 번호"),
+                                fieldWithPath("content[].thumbnail").description("책 표지의 썸네일 이미지"),
+                                fieldWithPath("last").description("현재 페이지가 마지막 페이지인지 여부"),
+                                fieldWithPath("first").description("현재 페이지가 첫 번째 페이지인지 여부"),
+                                fieldWithPath("sort.empty").description("정렬된 데이터가 비어 있는지 여부"),
+                                fieldWithPath("sort.unsorted").description("정렬되지 않은 데이터인지 여부"),
+                                fieldWithPath("sort.sorted").description("정렬된 데이터인지 여부"),
+                                fieldWithPath("size").description("페이지당 요소의 수"),
+                                fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
+                                fieldWithPath("empty").description("현재 페이지가 비어 있는지 여부")
+                        )
+                ));
     }
+
 
     @Test
     @DisplayName("도서 아이디 목록에 해당하는 도서 정보 반환 테스트")
