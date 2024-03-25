@@ -1,11 +1,13 @@
 package store.ckin.api.member.repository;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +18,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberDetailInfoResponseDto;
 import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
 import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.member.entity.QMember;
 import store.ckin.api.review.entity.Review;
 
 /**
@@ -28,17 +33,17 @@ import store.ckin.api.review.entity.Review;
  * @version : 2024. 02. 16.
  */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemberRepositoryTest {
-    @Autowired
-    private TestEntityManager entityManager;
 
     @Autowired
-    private MemberRepository memberRepository;
+    TestEntityManager entityManager;
 
-    private Grade grade;
+    @Autowired
+    MemberRepository memberRepository;
 
-    private Member member;
+    Grade grade;
+
+    Member member;
 
     @BeforeEach
     void setUp() {
@@ -175,4 +180,35 @@ class MemberRepositoryTest {
         assertEquals(oauthMember.getRole().toString(), result.getRole());
     }
 
+    @Test
+    @DisplayName("회원 ID로 회원 비밀번호 조회")
+    void testGetPassword() {
+
+        Optional<MemberPasswordResponseDto> password = memberRepository.getPassword(member.getId());
+
+        assertTrue(password.isPresent());
+
+        MemberPasswordResponseDto actual = password.get();
+
+        assertAll(
+                () -> assertEquals(member.getPassword(), actual.getPassword())
+        );
+    }
+
+    @Test
+    @DisplayName("회원 ID로 회원 상세 정보 조회")
+    void testGetMemberDetailInfo() {
+
+        Optional<MemberDetailInfoResponseDto> memberDetail = memberRepository.getMemberDetailInfo(member.getId());
+
+        assertTrue(memberDetail.isPresent());
+
+        MemberDetailInfoResponseDto actual = memberDetail.get();
+
+        assertAll(
+                () -> assertEquals(member.getName(), actual.getName()),
+                () -> assertEquals(member.getContact(), actual.getContact()),
+                () -> assertEquals(member.getBirth(), actual.getBirth())
+        );
+    }
 }
