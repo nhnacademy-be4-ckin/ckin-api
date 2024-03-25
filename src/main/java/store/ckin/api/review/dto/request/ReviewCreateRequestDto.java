@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
-public class ReviewCreateRequestDto {
+public class  ReviewCreateRequestDto {
 
     private Long memberId;
     private Long bookId;
     private Integer reviewRate;
     private String reviewComment;
-
 }

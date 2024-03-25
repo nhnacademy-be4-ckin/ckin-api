@@ -13,14 +13,15 @@ import store.ckin.api.member.domain.request.MemberAuthRequestDto;
 import store.ckin.api.member.domain.request.MemberCreateRequestDto;
 import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
+import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.exception.MemberOauthNotFoundException;
+import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
@@ -253,5 +254,42 @@ public class MemberServiceImpl implements MemberService {
         }
 
         member.changeState(state);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberPasswordResponseDto getPassword(Long memberId) {
+        return memberRepository.getPassword(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        if (member.getPassword()
+                .equals(memberPasswordRequestDto.getPassword())) {
+            throw new MemberPasswordCannotChangeException(memberId);
+        }
+
+        member.changePassword(memberPasswordRequestDto.getPassword());
+    }
+
+    @Override
+    @Transactional
+    public void updateMemberInfo(Long memberId, MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
+        member.updateMemberInfo(memberUpdateRequestDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberDetailInfoResponseDto getMemberDetailInfo(Long memberId) {
+        return memberRepository.getMemberDetailInfo(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 }

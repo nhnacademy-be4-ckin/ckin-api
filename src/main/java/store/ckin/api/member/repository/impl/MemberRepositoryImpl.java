@@ -3,13 +3,13 @@ package store.ckin.api.member.repository.impl;
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import store.ckin.api.grade.entity.QGrade;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.entity.QMember;
 import store.ckin.api.member.repository.MemberRepositoryCustom;
 import store.ckin.api.review.entity.QReview;
+
+import java.util.Optional;
 
 /**
  * MemberRepositoryCustom 의 구현체 입니다.
@@ -50,6 +50,7 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         grade.name,
                         member.accumulateAmount,
                         member.point,
+                        grade.condition,
                         review.count()))
                 .innerJoin(member.grade, grade)
                 .leftJoin(review).on(member.id.eq(review.member.id))
@@ -68,5 +69,33 @@ public class MemberRepositoryImpl extends QuerydslRepositorySupport
                         member.role))
                 .where(member.oauthId.eq(oauthId))
                 .fetchOne();
+    }
+
+    @Override
+    public Optional<MemberPasswordResponseDto> getPassword(Long memberId) {
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(
+                from(member)
+                        .select(Projections.constructor(
+                                MemberPasswordResponseDto.class,
+                                member.password))
+                        .where(member.id.eq(memberId))
+                        .fetchOne());
+    }
+
+    @Override
+    public Optional<MemberDetailInfoResponseDto> getMemberDetailInfo(Long memberId) {
+        QMember member = QMember.member;
+
+        return Optional.ofNullable(
+                from(member)
+                        .select(Projections.constructor(
+                                MemberDetailInfoResponseDto.class,
+                                member.name,
+                                member.contact,
+                                member.birth))
+                        .where(member.id.eq(memberId))
+                        .fetchOne());
     }
 }

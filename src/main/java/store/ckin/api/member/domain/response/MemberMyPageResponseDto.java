@@ -20,5 +20,7 @@ public class MemberMyPageResponseDto {
 
     private Integer point;
 
+    private Integer gradeCondition;
+
     private Long countReview;
 }

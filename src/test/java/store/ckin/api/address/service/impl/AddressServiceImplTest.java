@@ -113,8 +113,10 @@ class AddressServiceImplTest {
         when(memberRepository.findById(member.getId()))
                 .thenReturn(Optional.empty());
 
+        Long memberId = member.getId();
+
         assertThrows(MemberNotFoundException.class,
-                () -> addressService.addAddress(member.getId(), dto));
+                () -> addressService.addAddress(memberId, dto));
 
         verify(memberRepository).findById(member.getId());
         verify(addressRepository, never())
@@ -134,15 +136,17 @@ class AddressServiceImplTest {
 
         when(memberRepository.findById(member.getId()))
                 .thenReturn(Optional.of(member));
+
         when(addressRepository.existsByMemberIdAndBaseAndDetail(member.getId(), dto.getBase(), dto.getDetail()))
                 .thenReturn(true);
 
+        Long memberId = member.getId();
+
         assertThrows(AddressAlreadyExistsException.class,
-                () -> addressService.addAddress(member.getId(), dto));
+                () -> addressService.addAddress(memberId, dto));
 
         verify(memberRepository).findById(member.getId());
-        verify(addressRepository)
-                .existsByMemberIdAndBaseAndDetail(member.getId(), dto.getBase(), dto.getDetail());
+        verify(addressRepository).existsByMemberIdAndBaseAndDetail(member.getId(), dto.getBase(), dto.getDetail());
         verify(addressRepository, never()).save(any(Address.class));
     }
 
@@ -179,8 +183,10 @@ class AddressServiceImplTest {
         when(memberRepository.existsById(member.getId()))
                 .thenReturn(false);
 
+        Long id = member.getId();
+
         assertThrows(MemberNotFoundException.class,
-                () -> addressService.getMemberAddressList(member.getId()));
+                () -> addressService.getMemberAddressList(id));
 
         verify(memberRepository).existsById(member.getId());
         verify(addressRepository, never()).getMemberAddressList(member.getId());
@@ -233,8 +239,10 @@ class AddressServiceImplTest {
         when(memberRepository.existsById(member.getId()))
                 .thenReturn(false);
 
+        Long id = member.getId();
+
         assertThrows(MemberNotFoundException.class,
-                () -> addressService.updateAddress(1L, member.getId(), dto));
+                () -> addressService.updateAddress(1L, id, dto));
 
         verify(memberRepository).existsById(member.getId());
         verify(addressRepository, never()).findByIdAndMember_Id(1L, member.getId());
@@ -255,8 +263,10 @@ class AddressServiceImplTest {
         when(addressRepository.findByIdAndMember_Id(1L, member.getId()))
                 .thenReturn(Optional.empty());
 
+        Long id = member.getId();
+
         assertThrows(AddressNotFoundException.class,
-                () -> addressService.updateAddress(1L, member.getId(), dto));
+                () -> addressService.updateAddress(1L, id, dto));
 
 
         verify(memberRepository).existsById(member.getId());
@@ -309,8 +319,10 @@ class AddressServiceImplTest {
         when(memberRepository.existsById(member.getId()))
                 .thenReturn(false);
 
+        Long memberId = member.getId();
+
         assertThrows(MemberNotFoundException.class,
-                () -> addressService.setDefaultAddress(member.getId(), 1L));
+                () -> addressService.setDefaultAddress(memberId, 1L));
 
         verify(memberRepository).existsById(member.getId());
         verify(addressRepository, never()).findByIdAndMember_Id(anyLong(), anyLong());
@@ -325,8 +337,11 @@ class AddressServiceImplTest {
         when(addressRepository.findByIdAndMember_Id(1L, member.getId()))
                 .thenReturn(Optional.empty());
 
+
+        Long memberId = member.getId();
+
         assertThrows(AddressNotFoundException.class,
-                () -> addressService.setDefaultAddress(member.getId(), 1L));
+                () -> addressService.setDefaultAddress(memberId, 1L));
 
         verify(memberRepository).existsById(member.getId());
         verify(addressRepository).findByIdAndMember_Id(1L, member.getId());

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import store.ckin.api.adit.Auditable;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.member.entity.Member;

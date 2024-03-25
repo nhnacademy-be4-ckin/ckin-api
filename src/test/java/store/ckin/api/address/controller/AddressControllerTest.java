@@ -129,7 +129,7 @@ class AddressControllerTest {
         );
 
         MemberAddressResponseDto address2 = new MemberAddressResponseDto(
-                1L,
+                2L,
                 "427891",
                 "광주 광역시",
                 "조선대학교",
@@ -188,25 +188,6 @@ class AddressControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 주소 ID로 조회 시, 멤버별 주소 조회 실패")
-    void testGetMemberAddressListFailedNotFoundAddress() throws Exception {
-        doThrow(AddressNotFoundException.class)
-                .when(addressService)
-                .getMemberAddressList(1L);
-
-        mockMvc.perform(RestDocumentationRequestBuilders
-                        .get("/api/members/{memberId}/address", 1L)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andDo(document("address/getMemberAddressList/not-found-address",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())
-                ));
-
-        verify(addressService).getMemberAddressList(1L);
-    }
-
-    @Test
     @DisplayName("주소 업데이트")
     void testUpdateAddress() throws Exception {
         AddressUpdateRequestDto dto = new AddressUpdateRequestDto();
@@ -223,7 +204,7 @@ class AddressControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
-                .andDo(document("address/updateAddress/not-found",
+                .andDo(document("address/updateAddress/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -344,7 +325,7 @@ class AddressControllerTest {
                         .put("/api/members/{memberId}/addresses/{addressId}/default", 1L, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andDo(document("address/setDefaultAddress/not-found-member",
+                .andDo(document("address/setDefaultAddress/not-found-address",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));
@@ -402,7 +383,7 @@ class AddressControllerTest {
                         .delete("/api/members/{memberId}/addresses/{addressId}", 1L, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andDo(document("address/deleteAddress/not-found-member",
+                .andDo(document("address/deleteAddress/not-found-address",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));

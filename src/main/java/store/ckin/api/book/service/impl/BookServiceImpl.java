@@ -229,26 +229,32 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getExtractBookListByBookIds(bookIds);
     }
 
+
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit) {
         return bookRepository.getMainPageResponseDtoByCategoryId(categoryId, limit);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit) {
         return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
         return bookRepository.getMainPageBooksByTagName(limit, tagName);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
         return bookRepository.getRecentPublished(pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<BookResponseDto> getBookPageByTagName(Pageable pageable, String tagName) {
         return bookRepository.getBookPageByTagName(pageable, tagName);
