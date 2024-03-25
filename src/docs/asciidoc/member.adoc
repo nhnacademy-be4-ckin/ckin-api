@@ -1,0 +1,234 @@
+== 멤버
+=== 멤버 생성 - 성공
+==== Request
+include::{snippets}/member/createMember/success/http-request.adoc[]
+
+include::{snippets}/member/createMember/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/createMember/success/http-response.adoc[]
+
+=== 멤버 생성 - 실패
+==== 이미 존재하는 이메일일 경우
+===== Request
+include::{snippets}/member/createMember/conflict/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/createMember/conflict/http-response.adoc[]
+
+==== 기본 설정 등급이 존재하지 않을 경우
+===== Request
+include::{snippets}/member/createMember/not-found-grade/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/createMember/not-found-grade/http-response.adoc[]
+
+==== 기본 포인트 정책이 존재하지 않을 경우
+===== Request
+include::{snippets}/member/createMember/not-found-point-policy/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/createMember/not-found-point-policy/http-response.adoc[]
+
+=== 이메일 중복확인 조회
+==== Request
+include::{snippets}/member/checkDuplicateEmail/success/http-request.adoc[]
+
+include::{snippets}/member/checkDuplicateEmail/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/checkDuplicateEmail/success/http-response.adoc[]
+
+=== 비밀번호 조회
+==== Request
+include::{snippets}/member/checkPassword/success/http-request.adoc[]
+
+include::{snippets}/member/checkPassword/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/checkPassword/success/http-response.adoc[]
+
+include::{snippets}/member/checkPassword/success/response-fields.adoc[]
+
+=== 비밀번호 조회 - 실패
+==== 존재하지 않는 멤버 ID일 경우
+===== Request
+include::{snippets}/member/checkPassword/failed/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/member/checkPassword/failed/http-response.adoc[]
+
+=== 로그인 시 필요한 정보 조회
+==== Request
+include::{snippets}/member/getMemberInfo/success/http-request.adoc[]
+
+include::{snippets}/member/getMemberInfo/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/getMemberInfo/success/http-response.adoc[]
+
+include::{snippets}/member/getMemberInfo/success/response-fields.adoc[]
+
+=== 로그인 시 필요한 정보 조회 - 실패
+==== 존재하지 않는 멤버 ID일 경우
+===== Request
+include::{snippets}/member/getMemberInfo/failed/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/getMemberInfo/failed/http-response.adoc[]
+
+=== 소셜 로그인 시 로그인 관련 정보 조회
+==== Request
+include::{snippets}/member/getOauthMemberInfo/success/http-request.adoc[]
+
+include::{snippets}/member/getOauthMemberInfo/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/getOauthMemberInfo/success/http-response.adoc[]
+
+include::{snippets}/member/getOauthMemberInfo/success/response-fields.adoc[]
+
+=== 소셜 로그인 시 로그인 관련 정보 조회 - 실패
+==== Request
+include::{snippets}/member/getOauthMemberInfo/failed/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/getOauthMemberInfo/failed/http-response.adoc[]
+
+=== 계정 접속시간 갱신
+==== Request
+include::{snippets}/member/memberUpdateLoginLog/success/http-request.adoc[]
+
+include::{snippets}/member/memberUpdateLoginLog/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/memberUpdateLoginLog/success/http-response.adoc[]
+
+=== 계정 접속시간 갱신 - 실패
+==== 없는 멤버 ID일 경우
+===== Request
+include::{snippets}/member/memberUpdateLoginLog/failed/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/memberUpdateLoginLog/failed/http-response.adoc[]
+
+=== 휴면 계정 재활성화
+==== Request
+include::{snippets}/member/setActiveMember/success/http-request.adoc[]
+
+include::{snippets}/member/setActiveMember/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/setActiveMember/success/http-response.adoc[]
+
+=== 휴면 계정 재활성화 - 실패
+==== 없는 멤버 ID일 경우
+===== Request
+include::{snippets}/member/setActiveMember/not-found/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/setActiveMember/not-found/http-response.adoc[]
+
+==== 이미 변경하려는 상태일 경우
+===== Request
+include::{snippets}/member/setActiveMember/conflict/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/setActiveMember/conflict/http-response.adoc[]
+
+=== 휴면 계정 설정
+==== Request
+include::{snippets}/member/setDormantMember/success/http-request.adoc[]
+
+include::{snippets}/member/setDormantMember/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/setDormantMember/success/http-response.adoc[]
+
+=== 휴면 계정 설정 - 실패
+==== 없는 멤버 ID일 경우
+===== Request
+include::{snippets}/member/setDormantMember/not-found/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/setDormantMember/not-found/http-response.adoc[]
+
+==== 이미 변경하려는 상태일 경우
+===== Request
+include::{snippets}/member/setDormantMember/conflict/http-request.adoc[]
+
+===== Response
+include::{snippets}/member/setDormantMember/conflict/http-response.adoc[]
+
+=== 비밀번호 변경
+==== Request
+include::{snippets}/member/changePassword/success/http-request.adoc[]
+
+include::{snippets}/member/changePassword/success/path-parameters.adoc[]
+
+include::{snippets}/member/changePassword/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/changePassword/success/http-response.adoc[]
+
+=== 비밀변호 변경 실패
+==== Request
+include::{snippets}/member/changePassword/failed/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/changePassword/failed/http-response.adoc[]
+
+=== 멤버 정보 수정
+==== Request
+include::{snippets}/member/updateMemberInfo/success/http-request.adoc[]
+
+include::{snippets}/member/updateMemberInfo/success/path-parameters.adoc[]
+
+include::{snippets}/member/updateMemberInfo/success/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/updateMemberInfo/success/http-response.adoc[]
+
+=== 멤버 정보 수정 - 실패
+==== Request
+include::{snippets}/member/updateMemberInfo/failed/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/updateMemberInfo/failed/http-response.adoc[]
+
+=== 멤버 정보 수정 폼으로 보낼 정보 조회
+==== Request
+include::{snippets}/member/getMemberDetailInfo/success/http-request.adoc[]
+
+include::{snippets}/member/getMemberDetailInfo/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/getMemberDetailInfo/success/http-response.adoc[]
+
+include::{snippets}/member/getMemberDetailInfo/success/response-fields.adoc[]
+
+=== 멤버 수정 폼으로 보낼 정보 조회 - 실패
+==== Request
+include::{snippets}/member/getMemberDetailInfo/failed/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/getMemberDetailInfo/failed/http-response.adoc[]
+
+=== 마이페이지 헤더에 들어가는 정보 조회
+==== Request
+include::{snippets}/member/getMyPageInfo/success/http-request.adoc[]
+
+include::{snippets}/member/getMyPageInfo/success/path-parameters.adoc[]
+
+==== Response
+include::{snippets}/member/getMyPageInfo/success/http-response.adoc[]
+
+include::{snippets}/member/getMyPageInfo/success/response-fields.adoc[]
+
+=== 마이페이지 헤더에 들어가는 정보 조회 - 실패
+==== Request
+include::{snippets}/member/getMyPageInfo/failed/http-request.adoc[]
+
+==== Response
+include::{snippets}/member/getMyPageInfo/failed/http-response.adoc[]

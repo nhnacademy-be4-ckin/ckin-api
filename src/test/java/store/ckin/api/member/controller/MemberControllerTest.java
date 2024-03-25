@@ -160,7 +160,7 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isNotFound())
-                .andDo(document("member/createMember/not-found-grade",
+                .andDo(document("member/createMember/not-found-point-policy",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
                 ));
