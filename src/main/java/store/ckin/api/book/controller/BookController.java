@@ -122,6 +122,7 @@ public class BookController {
     @GetMapping("/extraction")
     public ResponseEntity<List<BookExtractionResponseDto>> getExtractBookListByBookIds(
             @RequestParam("bookId") List<Long> bookIds) {
+
         return ResponseEntity.ok(bookService.getExtractBookListByBookIds(bookIds));
     }
 
@@ -180,18 +181,14 @@ public class BookController {
     public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksByCategoryId(
             @RequestParam(required = false, defaultValue = "8") Integer limit,
             @RequestParam("tagName") String tagName) {
-
         List<BookMainPageResponseDto> books = bookService.getMainPageBooksByTagName(limit, tagName);
-
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/main-page")
     public ResponseEntity<List<BookMainPageResponseDto>> getMainPageBooksOrderByBookPublicationDate(
             @RequestParam(required = false, defaultValue = "8") Integer limit) {
-
         List<BookMainPageResponseDto> books = bookService.getMainPageBookListOrderByBookPublicationDate(limit);
-
         return ResponseEntity.ok(books);
     }
 
@@ -204,7 +201,6 @@ public class BookController {
     @GetMapping("/recent")
     public ResponseEntity<Page<BookResponseDto>> getRecentPublishedBook(@PageableDefault(size = 8) Pageable pageable) {
         Page<BookResponseDto> recentBookPage = bookService.getRecentPublished(pageable);
-
         return ResponseEntity.ok().body(recentBookPage);
     }
 
@@ -218,7 +214,6 @@ public class BookController {
     public ResponseEntity<Page<BookResponseDto>> getBookPageByTagName(@PageableDefault(size = 8) Pageable pageable,
                                                                       @PathVariable("tagName") String tagName) {
         Page<BookResponseDto> bookPageByTagName = bookService.getBookPageByTagName(pageable, tagName);
-
         return ResponseEntity.ok().body(bookPageByTagName);
     }
 }
