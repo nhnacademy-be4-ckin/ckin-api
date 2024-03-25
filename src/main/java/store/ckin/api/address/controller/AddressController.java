@@ -35,40 +35,41 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping("/address")
-    ResponseEntity<Void> addAddress(@PathVariable("memberId") Long memberId,
-                                    @Valid @RequestBody AddressAddRequestDto addressAddRequestDto) {
+    public ResponseEntity<Void> addAddress(@PathVariable("memberId") Long memberId,
+                                           @Valid @RequestBody AddressAddRequestDto addressAddRequestDto) {
         addressService.addAddress(memberId, addressAddRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/address")
-    ResponseEntity<List<MemberAddressResponseDto>> getMemberAddressList(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<List<MemberAddressResponseDto>> getMemberAddressList(
+            @PathVariable("memberId") Long memberId) {
         List<MemberAddressResponseDto> addressList = addressService.getMemberAddressList(memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(addressList);
     }
 
     @PutMapping("/addresses/{addressId}")
-    ResponseEntity<Void> updateAddress(@PathVariable("memberId") Long memberId,
-                                       @PathVariable("addressId") Long addressId,
-                                       @Valid @RequestBody AddressUpdateRequestDto addressUpdateRequestDto) {
+    public ResponseEntity<Void> updateAddress(@PathVariable("memberId") Long memberId,
+                                              @PathVariable("addressId") Long addressId,
+                                              @Valid @RequestBody AddressUpdateRequestDto addressUpdateRequestDto) {
         addressService.updateAddress(memberId, addressId, addressUpdateRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/addresses/{addressId}/default")
-    ResponseEntity<Void> setDefaultAddress(@PathVariable("memberId") Long memberId,
-                                           @PathVariable("addressId") Long addressId) {
+    public ResponseEntity<Void> setDefaultAddress(@PathVariable("memberId") Long memberId,
+                                                  @PathVariable("addressId") Long addressId) {
         addressService.setDefaultAddress(memberId, addressId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/addresses/{addressId}")
-    ResponseEntity<Void> deleteAddress(@PathVariable("memberId") Long memberId,
-                                       @PathVariable("addressId") Long addressId) {
+    public ResponseEntity<Void> deleteAddress(@PathVariable("memberId") Long memberId,
+                                              @PathVariable("addressId") Long addressId) {
         addressService.deleteAddress(memberId, addressId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
