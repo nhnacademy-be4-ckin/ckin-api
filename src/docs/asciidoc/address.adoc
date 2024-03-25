@@ -1,0 +1,158 @@
+== 주소
+
+=== 주소 생성 - 성공
+
+==== Request
+
+include::{snippets}/address/addAddress/success/http-request.adoc[]
+
+include::{snippets}/address/addAddress/success/path-parameters.adoc[]
+
+include::{snippets}/address/updateAddress/success/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/address/addAddress/success/http-response.adoc[]
+
+{empty} +
+
+=== 주소 생성 실패
+이미 등록된 주소일 경우
+
+==== Request
+
+include::{snippets}/address/addAddress/conflict/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/address/addAddress/conflict/http-response.adoc[]
+
+{empty} +
+
+=== 주소 조회 - 성공
+
+==== Request
+
+include::{snippets}/address/getMemberAddressList/success/http-request.adoc[]
+
+include::{snippets}/address/getMemberAddressList/success/path-parameters.adoc[]
+
+include::{snippets}/address/getMemberAddressList/success/response-body.adoc[]
+
+include::{snippets}/address/getMemberAddressList/success/response-fields.adoc[]
+
+{empty} +
+
+=== 주소 조회 - 실패
+==== 멤버가 존재하지 않는 경우
+
+===== Request
+
+include::{snippets}/address/getMemberAddressList/not-found-member/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/getMemberAddressList/not-found-member/http-response.adoc[]
+
+{empty} +
+
+=== 주소 업데이트 - 성공
+
+==== Request
+
+include::{snippets}/address/updateAddress/success/http-request.adoc[]
+
+include::{snippets}/address/updateAddress/success/path-parameters.adoc[]
+
+include::{snippets}/address/updateAddress/success/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/address/updateAddress/success/http-response.adoc[]
+
+==== 주소 업데이트 - 실패
+==== 멤버가 존재하지 않는 경우
+
+===== Request
+
+include::{snippets}/address/updateAddress/not-found-member/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/updateAddress/not-found-member/http-response.adoc[]
+
+==== 주소가 존재하지 않는 경우
+
+===== Request
+
+include::{snippets}/address/updateAddress/not-found-address/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/updateAddress/not-found-address/http-response.adoc[]
+
+=== 기본 주소지로 설정 - 성공
+
+==== Request
+
+include::{snippets}/address/setDefaultAddress/success/http-request.adoc[]
+
+include::{snippets}/address/setDefaultAddress/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/address/setDefaultAddress/success/http-response.adoc[]
+
+=== 기본 주소지로 설정 - 실패
+==== 멤버 ID가 없는 경우
+
+===== Request
+
+include::{snippets}/address/setDefaultAddress/not-found-member/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/setDefaultAddress/not-found-member/http-response.adoc[]
+
+==== 주소 ID가 없는 경우
+
+===== Request
+
+include::{snippets}/address/setDefaultAddress/not-found-address/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/setDefaultAddress/not-found-address/http-response.adoc[]
+
+=== 주소 삭제 - 성공
+
+==== Request
+
+include::{snippets}/address/deleteAddress/success/http-request.adoc[]
+
+include::{snippets}/address/deleteAddress/success/path-parameters.adoc[]
+
+===== Response
+
+include::{snippets}/address/deleteAddress/success/http-response.adoc[]
+
+=== 주소 삭제 - 실패
+==== 멤버 ID가 없는 경우
+
+===== Request
+
+include::{snippets}/address/deleteAddress/not-found-member/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/deleteAddress/not-found-member/http-response.adoc[]
+
+==== 주소 ID가 없는 경우
+
+===== Request
+
+include::{snippets}/address/deleteAddress/not-found-address/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/address/deleteAddress/not-found-address/http-response.adoc[]
