@@ -310,7 +310,7 @@ public class BookServiceImpl implements BookService {
 
 
     private Integer calculateSalePrice(Integer regularPrice, Integer discountRate) {
-        double discountedPrice = regularPrice - (regularPrice * discountRate / 100.0);
+        double discountedPrice = regularPrice - (regularPrice * (double) discountRate / 100.0);
 
         discountedPrice = Math.round(discountedPrice / 100.0) * 100;
 
