@@ -74,7 +74,7 @@ public class CategoryController {
 
     @GetMapping("/redis")
     public ResponseEntity<List<CategoryCacheResponseDto>> getAllCategories() {
-        List<CategoryCacheResponseDto> categories = categoryService.gerAllCategories();
+        List<CategoryCacheResponseDto> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 

@@ -67,3 +67,10 @@ include::address.adoc[]
 include::grade.adoc[]
 
 include::member.adoc[]
+
+include::author.adoc[]
+
+include::category.adoc[]
+
+include::book.adoc[]
+

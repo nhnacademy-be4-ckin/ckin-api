@@ -1,0 +1,134 @@
+= 작가
+
+== ID로 작가 조회
+
+주어진 작가 ID로 작가를 조회합니다.
+
+=== Request
+
+include::{snippets}/author/getAuthorById/success/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/author/getAuthorById/success/http-response.adoc[]
+
+=== Response Field
+
+include::{snippets}/author/getAuthorById/success/response-fields.adoc[]
+
+{empty} +
+
+== 이름으로 작가 검색
+
+작가의 이름을 사용하여 검색합니다. 해당 이름을 포함하는 모든 작가가 결과로 반환됩니다.
+
+=== Request
+
+include::{snippets}/author/searchAuthorsByName/success/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/author/searchAuthorsByName/success/http-response.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/author/searchAuthorsByName/success/request-parameters.adoc[]
+
+=== Response Fields
+
+include::{snippets}/author/searchAuthorsByName/success/response-fields.adoc[]
+
+{empty} +
+
+== 작가 생성
+
+=== Request
+
+include::{snippets}/author/createAuthor/success/http-request.adoc[]
+
+=== Request Fields
+
+include::{snippets}/author/createAuthor/success/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/author/createAuthor/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/author/createAuthor/success/response-fields.adoc[]
+
+{empty} +
+
+== 작가 정보 업데이트
+
+=== Request
+
+include::{snippets}/author/updateAuthor/success/http-request.adoc[]
+
+=== Path Parameters
+
+include::{snippets}/author/updateAuthor/success/path-parameters.adoc[]
+
+=== Request Fields
+
+include::{snippets}/author/updateAuthor/success/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/author/updateAuthor/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/author/updateAuthor/success/response-fields.adoc[]
+
+{empty} +
+
+== 작가 ID로 작가 삭제
+
+=== Request
+
+include::{snippets}/author/delete/success/http-request.adoc[]
+
+=== Path Parameters
+
+include::{snippets}/author/delete/success/path-parameters.adoc[]
+
+{empty} +
+
+== 작가 생성 요청의 유효성 검사 실패
+
+=== Request
+
+include::{snippets}/author/createAuthor/validation-failed/http-request.adoc[]
+include::{snippets}/author/createAuthor/validation-failed/http-response.adoc[]
+include::{snippets}/author/createAuthor/validation-failed-too-Long/http-request.adoc[]
+include::{snippets}/author/createAuthor/validation-failed-too-Long/http-response.adoc[]
+
+{empty} +
+
+== 작가 수정 요청의 유효성 검사 실패
+
+include::{snippets}/author/updateAuthor/validation-failed/http-request.adoc[]
+include::{snippets}/author/updateAuthor/validation-failed/http-response.adoc[]
+include::{snippets}/author/updateAuthor/validation-failed-too-Long/http-request.adoc[]
+include::{snippets}/author/updateAuthor/validation-failed-too-Long/http-response.adoc[]
+
+{empty} +
+
+== 페이지 요청으로 모든 작가 조회
+
+주어진 페이지 번호와 크기에 따라 모든 작가를 조회하고, 페이지로 나누어 반환합니다.
+
+=== Request
+
+include::{snippets}/author/getAll/success/http-request.adoc[]
+
+=== Response
+
+include::{snippets}/author/getAll/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/author/getAll/success/response-fields.adoc[]
+

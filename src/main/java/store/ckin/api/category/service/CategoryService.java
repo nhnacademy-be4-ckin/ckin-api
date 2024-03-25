@@ -71,5 +71,5 @@ public interface CategoryService {
      */
     List<Long> getParentIds(List<Long> categoryIds);
 
-    List<CategoryCacheResponseDto> gerAllCategories();
+    List<CategoryCacheResponseDto> getAllCategories();
 }
