@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
+import store.ckin.api.category.dto.response.CategoryCacheResponseDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.service.CategoryService;
 
@@ -69,6 +70,12 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponseDto>> getSubcategories(@PathVariable Long parentId) {
         List<CategoryResponseDto> subcategories = categoryService.findSubcategories(parentId);
         return ResponseEntity.ok(subcategories);
+    }
+
+    @GetMapping("/redis")
+    public ResponseEntity<List<CategoryCacheResponseDto>> getAllCategories() {
+        List<CategoryCacheResponseDto> categories = categoryService.gerAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
     /**
