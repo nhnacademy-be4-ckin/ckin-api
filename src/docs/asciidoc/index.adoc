@@ -65,3 +65,5 @@ include::sale.adoc[]
 include::address.adoc[]
 
 include::grade.adoc[]
+
+include::member.adoc[]
