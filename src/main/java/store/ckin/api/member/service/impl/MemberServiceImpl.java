@@ -92,7 +92,8 @@ public class MemberServiceImpl implements MemberService {
                 .point(registerPolicy.getPointPolicyReserve())
                 .build();
 
-        if (Objects.nonNull(memberCreateRequestDto.getOauthId())) {
+        if (Objects.nonNull(memberCreateRequestDto.getOauthId())
+                && !memberCreateRequestDto.getOauthId().isEmpty()) {
             member.setOauthId(memberCreateRequestDto.getOauthId());
         }
 
