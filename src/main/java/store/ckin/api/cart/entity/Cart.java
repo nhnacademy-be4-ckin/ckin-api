@@ -1,8 +1,8 @@
 package store.ckin.api.cart.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -28,14 +28,14 @@ import store.ckin.api.member.entity.Member;
 @Entity
 @Table
 public class Cart {
-    @MapsId("userId")
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @MapsId("memberId")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Id
-    @Column
-    private Long userId;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @Column(name = "cart_id")
     private String cartId;
