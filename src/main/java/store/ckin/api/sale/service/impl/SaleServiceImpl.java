@@ -20,6 +20,7 @@ import store.ckin.api.payment.entity.Payment;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -250,5 +251,12 @@ public class SaleServiceImpl implements SaleService {
         paymentRepository.findBySale_SaleId(saleId)
                 .ifPresent(Payment::cancelPayment);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SaleCheckResponseDto checkSaleByMemberIdAndBookId(Long memberId, Long bookId) {
+
+        return saleRepository.checkSaleByMemberIdAndBookId(memberId, bookId);
     }
 }
