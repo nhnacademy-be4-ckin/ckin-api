@@ -31,12 +31,12 @@ public class CartController {
 
     /**
      * 유저의 아이디를 통하여 카트 아이디를 가져오는 메서드
-     * @param userId 사용자의 user_id
+     * @param memberId 사용자의 user_id
      * @return 사용자의 카트 ID(UUID)
      */
     @GetMapping
-    public ResponseEntity<CartIdResponseDto> getUserCartId(@RequestParam("userId") Long userId) {
-        return ResponseEntity.ok(cartService.readCartId(userId));
+    public ResponseEntity<CartIdResponseDto> getUserCartId(@RequestParam("memberId") Long memberId) {
+        return ResponseEntity.ok(cartService.readCartId(memberId));
     }
 
     /**

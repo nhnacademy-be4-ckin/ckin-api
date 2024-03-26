@@ -18,13 +18,13 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements Car
     }
 
     @Override
-    public CartIdResponseDto getCartIdByUserId(Long userId) {
+    public CartIdResponseDto getCartIdByMemberId(Long memberId) {
         QCart cart = QCart.cart;
 
         return from(cart)
                 .select(Projections.constructor(CartIdResponseDto.class,
                         cart.cartId))
-                .where(cart.userId.eq(userId))
+                .where(cart.member.id.eq(memberId))
                 .fetchOne();
     }
 }

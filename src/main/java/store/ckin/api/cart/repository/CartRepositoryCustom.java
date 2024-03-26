@@ -9,5 +9,5 @@ import store.ckin.api.cart.dto.CartIdResponseDto;
  * @version : 2024. 03. 26
  */
 public interface CartRepositoryCustom {
-    CartIdResponseDto getCartIdByUserId(Long userId);
+    CartIdResponseDto getCartIdByMemberId(Long memberId);
 }

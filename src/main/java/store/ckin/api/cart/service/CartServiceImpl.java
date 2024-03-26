@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.cart.dto.CartCreateRequestDto;
 import store.ckin.api.cart.dto.CartIdResponseDto;
 import store.ckin.api.cart.entity.Cart;
+import store.ckin.api.cart.exception.CartAlreadyExistException;
 import store.ckin.api.cart.exception.CartNotFoundException;
 import store.ckin.api.cart.repository.CartRepository;
 import store.ckin.api.member.entity.Member;
@@ -27,13 +28,16 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public void createCart(CartCreateRequestDto cartCreateRequestDto) {
-        Long userId = cartCreateRequestDto.getUserId();
-        Member member = memberRepository.findById(userId).orElseThrow(() -> new MemberNotFoundException(userId));
+        Long memberId = cartCreateRequestDto.getMemberId();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
 
         String cartId = cartCreateRequestDto.getCartId();
+        if(cartRepository.existsById(memberId)) {
+            throw new CartAlreadyExistException(memberId);
+        }
         Cart cart = Cart.builder()
                 .member(member)
-                .userId(userId)
+                .memberId(memberId)
                 .cartId(cartId)
                 .build();
 
@@ -42,11 +46,11 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional(readOnly = true)
-    public CartIdResponseDto readCartId(Long userId) {
-        if (!cartRepository.existsById(userId)) {
-            throw new CartNotFoundException(userId);
+    public CartIdResponseDto readCartId(Long memberId) {
+        if (!cartRepository.existsById(memberId)) {
+            throw new CartNotFoundException(memberId);
         }
 
-        return cartRepository.getCartIdByUserId(userId);
+        return cartRepository.getCartIdByMemberId(memberId);
     }
 }

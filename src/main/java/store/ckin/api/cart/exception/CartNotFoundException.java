@@ -9,7 +9,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  * @version : 2024. 03. 26
  */
 public class CartNotFoundException extends GeneralNotFoundException {
-    public CartNotFoundException(Long userId) {
-        super(String.format("해당 유저의 장바구니가 존재하지 않습니다. [userId = %d]", userId));
+    public CartNotFoundException(Long memberId) {
+        super(String.format("해당 유저의 장바구니가 존재하지 않습니다. [memberId = %d]", memberId));
     }
 }
