@@ -310,8 +310,10 @@ public class BookServiceImpl implements BookService {
 
 
     private Integer calculateSalePrice(Integer regularPrice, Integer discountRate) {
-        // 할인된 가격 계산 로직
-        return regularPrice - (regularPrice * discountRate / 100);
+        double discountedPrice = ((double) regularPrice) - (((double) regularPrice * (double) discountRate) / 100.0);
+        discountedPrice = Math.round(discountedPrice);
+        return (int) discountedPrice;
+
     }
 
     private BookResponseDto convertToBookResponseDto(Book book) {
