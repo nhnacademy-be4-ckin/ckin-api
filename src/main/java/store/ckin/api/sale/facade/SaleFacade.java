@@ -140,7 +140,7 @@ public class SaleFacade {
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
 
         if (!ordererContact.equals(saleDetail.getSaleOrdererContact())) {
-            throw new SaleOrdererContactNotMatchException(saleNumber, ordererContact);
+            throw new SaleOrdererContactNotMatchException();
         }
 
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());
@@ -161,7 +161,7 @@ public class SaleFacade {
         SaleResponseDto saleDetail = saleService.getSaleBySaleNumber(saleNumber);
 
         if (!Objects.equals(memberId, saleDetail.getMemberId())) {
-            throw new SaleMemberNotMatchException(saleNumber);
+            throw new SaleMemberNotMatchException();
         }
 
         List<BookAndBookSaleResponseDto> bookSale = bookSaleService.getBookSaleDetail(saleDetail.getSaleId());

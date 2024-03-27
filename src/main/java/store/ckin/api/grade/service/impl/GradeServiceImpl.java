@@ -27,7 +27,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public void createGrade(GradeCreateRequestDto gradeCreateRequestDto) {
         if (gradeRepository.existsById(gradeCreateRequestDto.getId())) {
-            throw new GradeAlreadyExistsException(gradeCreateRequestDto.getId());
+            throw new GradeAlreadyExistsException();
         }
 
         Grade grade = Grade.builder()
@@ -50,7 +50,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public void updateGrade(Long gradeId, GradeUpdateRequestDto gradeUpdateRequestDto) {
         Grade grade = gradeRepository.findById(gradeId)
-                .orElseThrow(() -> new GradeNotFoundException(gradeId));
+                .orElseThrow(GradeNotFoundException::new);
 
         grade.update(gradeUpdateRequestDto);
     }
@@ -59,7 +59,7 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public void deleteGrade(Long gradeId) {
         if (!gradeRepository.existsById(gradeId)) {
-            throw new GradeNotFoundException(gradeId);
+            throw new GradeNotFoundException();
         }
 
         gradeRepository.deleteById(gradeId);

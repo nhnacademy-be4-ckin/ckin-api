@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  */
 public class GradeAlreadyExistsException extends GeneralAlreadyExistsException {
 
-    public GradeAlreadyExistsException(Long id) {
-        super(String.format("등급의 ID가 존재합니다. [id = %d]", id));
+    public GradeAlreadyExistsException() {
+        super("등급의 ID가 존재합니다.");
     }
 }

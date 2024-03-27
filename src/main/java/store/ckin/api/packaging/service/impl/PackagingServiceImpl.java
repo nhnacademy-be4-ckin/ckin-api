@@ -38,7 +38,7 @@ public class PackagingServiceImpl implements PackagingService {
     public void createPackagingPolicy(PackagingCreateRequestDto requestDto) {
 
         if (packagingRepository.existsByType(requestDto.getPackagingType())) {
-            throw new PackagingAlreadyExistsException(requestDto.getPackagingType());
+            throw new PackagingAlreadyExistsException();
         }
 
         Packaging packaging = Packaging.builder()
@@ -62,7 +62,7 @@ public class PackagingServiceImpl implements PackagingService {
         log.debug("packagingId = {}", id);
 
         return packagingRepository.getPackagingById(id)
-                .orElseThrow(() -> new PackagingNotFoundException(id));
+                .orElseThrow(PackagingNotFoundException::new);
     }
 
     /**
@@ -85,7 +85,7 @@ public class PackagingServiceImpl implements PackagingService {
     @Override
     public void updatePackagingPolicy(PackagingUpdateRequestDto requestDto) {
         Packaging packaging = packagingRepository.findById(requestDto.getPackagingId())
-                .orElseThrow(() -> new PackagingNotFoundException(requestDto.getPackagingId()));
+                .orElseThrow(PackagingNotFoundException::new);
 
         packaging.update(requestDto.getPackagingId(), requestDto.getPackagingType(), requestDto.getPackagingPrice());
     }
@@ -99,7 +99,7 @@ public class PackagingServiceImpl implements PackagingService {
     @Override
     public void deletePackagingPolicy(Long id) {
         if (!packagingRepository.existsById(id)) {
-            throw new PackagingNotFoundException(id);
+            throw new PackagingNotFoundException();
         }
 
         packagingRepository.deleteById(id);

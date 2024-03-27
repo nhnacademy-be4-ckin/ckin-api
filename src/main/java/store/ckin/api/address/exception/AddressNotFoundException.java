@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class AddressNotFoundException extends GeneralNotFoundException {
 
-    public AddressNotFoundException(Long memberId, Long addressId) {
-        super(String.format("주소를 찾을 수 없습니다. [회원 ID = %d, 주소 ID = %d]", memberId, addressId));
+    public AddressNotFoundException() {
+        super("주소를 찾을 수 없습니다.");
     }
 }

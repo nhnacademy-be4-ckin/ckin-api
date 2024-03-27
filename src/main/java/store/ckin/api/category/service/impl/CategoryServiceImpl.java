@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (categoryCreateRequestDto.getParentCategoryId() != null) {
             parentCategory = categoryRepository.findByCategoryId(categoryCreateRequestDto.getParentCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException(categoryCreateRequestDto.getParentCategoryId()));
+                    .orElseThrow(CategoryNotFoundException::new);
 
             categoryPriority = parentCategory.getCategoryPriority() + 1;
         }
@@ -87,7 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponseDto updateCategory(Long categoryId, CategoryUpdateRequestDto categoryUpdateDto) {
         Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+                .orElseThrow(CategoryNotFoundException::new);
 
         Category updatedCategory = existingCategory.toBuilder()
                 .categoryName(categoryUpdateDto.getCategoryName())
@@ -105,7 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteCategory(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {
-            throw new CategoryNotFoundException(categoryId);
+            throw new CategoryNotFoundException();
         }
         categoryRepository.deleteById(categoryId);
     }
@@ -117,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
     public String getCategoryName(Long categoryId) {
 
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+                .orElseThrow(CategoryNotFoundException::new);
 
         return category.getCategoryName();
 

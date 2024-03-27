@@ -2,7 +2,6 @@ package store.ckin.api.member.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -75,15 +74,15 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void createMember(MemberCreateRequestDto memberCreateRequestDto) {
         if (memberRepository.existsByEmail(memberCreateRequestDto.getEmail())) {
-            throw new MemberAlreadyExistsException(memberCreateRequestDto.getEmail());
+            throw new MemberAlreadyExistsException();
         }
 
         Grade grade = gradeRepository.findById(NORMAL_GRADE_ID)
-                .orElseThrow(() -> new GradeNotFoundException(NORMAL_GRADE_ID));
+                .orElseThrow(GradeNotFoundException::new);
 
         // 회원가입 포인트 정책 조회
         PointPolicy registerPolicy = pointPolicyRepository.findById(REGISTER_POINT_POLICY_ID)
-                .orElseThrow(() -> new PointPolicyNotFoundException(REGISTER_POINT_POLICY_ID));
+                .orElseThrow(PointPolicyNotFoundException::new);
 
 
         Member member = Member.builder()
@@ -121,7 +120,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberAuthResponseDto getLoginMemberInfo(MemberAuthRequestDto memberAuthRequestDto) {
         if (!memberRepository.existsByEmail(memberAuthRequestDto.getEmail())) {
-            throw new MemberNotFoundException(memberAuthRequestDto.getEmail());
+            throw new MemberNotFoundException();
         }
 
         return memberRepository.getLoginInfo(memberAuthRequestDto.getEmail());
@@ -131,7 +130,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberMyPageResponseDto getMyPageInfo(Long id) {
         if (!memberRepository.existsById(id)) {
-            throw new MemberNotFoundException(id);
+            throw new MemberNotFoundException();
         }
 
         return memberRepository.getMyPageInfo(id);
@@ -147,7 +146,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updatePoint(Long memberId, Integer pointUsage) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         if (member.getPoint() < pointUsage) {
             throw new MemberPointNotEnoughException();
@@ -162,7 +161,7 @@ public class MemberServiceImpl implements MemberService {
         String oauthId = memberOauthIdOnlyRequestDto.getOauthId();
 
         if (!memberRepository.existsByOauthId(oauthId)) {
-            throw new MemberOauthNotFoundException(oauthId);
+            throw new MemberOauthNotFoundException();
         }
 
         return memberRepository.getOauthMemberInfo(oauthId);
@@ -181,13 +180,13 @@ public class MemberServiceImpl implements MemberService {
 
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException(email));
+                .orElseThrow(MemberNotFoundException::new);
 
         Grade grade = gradeRepository.findById(member.getGrade().getId())
-                .orElseThrow(() -> new GradeNotFoundException(member.getGrade().getId()));
+                .orElseThrow(GradeNotFoundException::new);
 
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         int reward = (int) Math.round(((double) grade.getPointRatio() / 100) * totalPrice);
         member.updatePoint(reward);
@@ -207,10 +206,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updateCancelSalePoint(Long saleId, String memberEmail) {
         Member member = memberRepository.findByEmail(memberEmail)
-                .orElseThrow(() -> new MemberNotFoundException(memberEmail));
+                .orElseThrow(MemberNotFoundException::new);
 
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
+
         if (sale.getSalePaymentStatus() == SalePaymentStatus.WAITING) {
             // 결제를 하지 않은 주문인 경우
             member.updatePoint(sale.getSalePointUsage());
@@ -250,7 +250,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updateLatestLoginAt(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.updateLatestLoginAt();
     }
@@ -259,11 +259,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void changeState(Long memberId, Member.State state) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
 
         if (member.getState().equals(state)) {
-            throw new MemberCannotChangeStateException(memberId, state);
+            throw new MemberCannotChangeStateException();
         }
 
         member.changeState(state);
@@ -273,18 +273,18 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberPasswordResponseDto getPassword(Long memberId) {
         return memberRepository.getPassword(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
     @Transactional
     public void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         if (member.getPassword()
                 .equals(memberPasswordRequestDto.getPassword())) {
-            throw new MemberPasswordCannotChangeException(memberId);
+            throw new MemberPasswordCannotChangeException();
         }
 
         member.changePassword(memberPasswordRequestDto.getPassword());
@@ -294,7 +294,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updateMemberInfo(Long memberId, MemberUpdateRequestDto memberUpdateRequestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.updateMemberInfo(memberUpdateRequestDto);
     }
@@ -303,6 +303,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberDetailInfoResponseDto getMemberDetailInfo(Long memberId) {
         return memberRepository.getMemberDetailInfo(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

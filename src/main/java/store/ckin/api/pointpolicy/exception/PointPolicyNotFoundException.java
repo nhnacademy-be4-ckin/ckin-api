@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class PointPolicyNotFoundException extends GeneralNotFoundException {
 
-    public PointPolicyNotFoundException(Long id) {
-        super(String.format("포인트 정책을 찾을 수 없습니다. [id = %d]", id));
+    public PointPolicyNotFoundException() {
+        super("포인트 정책을 찾을 수 없습니다.");
     }
 }

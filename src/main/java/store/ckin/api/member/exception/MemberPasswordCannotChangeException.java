@@ -7,7 +7,7 @@ package store.ckin.api.member.exception;
  * @version : 2024. 03. 24.
  */
 public class MemberPasswordCannotChangeException extends RuntimeException {
-    public MemberPasswordCannotChangeException(Long memberId) {
-        super(String.format("비밀번호를 바꿀 수 없습니다. ID : [%d]", memberId));
+    public MemberPasswordCannotChangeException() {
+        super("비밀번호를 바꿀 수 없습니다.");
     }
 }

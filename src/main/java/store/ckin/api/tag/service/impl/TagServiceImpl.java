@@ -50,7 +50,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public void createTag(TagCreateRequestDto tagCreateRequestDto) {
         if (tagRepository.existsByTagName(tagCreateRequestDto.getTagName())) {
-            throw new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+            throw new TagNameAlreadyExistException();
         } else {
             Tag tag = Tag.builder()
                     .tagName(tagCreateRequestDto.getTagName())
@@ -66,7 +66,7 @@ public class TagServiceImpl implements TagService {
             Tag tag = tagWrapped.get();
             tag.updateTagName(tagUpdateRequestDto.getTagName());
         } else {
-            throw new TagNotFoundException(tagUpdateRequestDto.getTagId());
+            throw new TagNotFoundException();
         }
     }
 
@@ -75,7 +75,7 @@ public class TagServiceImpl implements TagService {
         if (tagRepository.existsById(tagDeleteRequestDto.getTagId())) {
             tagRepository.deleteById(tagDeleteRequestDto.getTagId());
         } else {
-            throw new TagNotFoundException(tagDeleteRequestDto.getTagId());
+            throw new TagNotFoundException();
         }
     }
 }
