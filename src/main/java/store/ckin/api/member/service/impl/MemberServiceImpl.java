@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
@@ -92,9 +93,10 @@ public class MemberServiceImpl implements MemberService {
                 .point(registerPolicy.getPointPolicyReserve())
                 .build();
 
-        if (Objects.nonNull(memberCreateRequestDto.getOauthId())
-                && !memberCreateRequestDto.getOauthId().isEmpty()) {
-            member.setOauthId(memberCreateRequestDto.getOauthId());
+        String oauthId = memberCreateRequestDto.getOauthId();
+
+        if (Strings.isNotEmpty(oauthId)) {
+            member.setOauthId(oauthId);
         }
 
         Member savedMember = memberRepository.save(member);
