@@ -3,6 +3,7 @@ package store.ckin.api.sale.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.member.entity.Member;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -400,7 +402,44 @@ class SaleRepositoryTest {
                 () -> assertEquals(1, pageInfo.getTotalElements()),
                 () -> assertEquals(1, pageInfo.getTotalPages())
         );
+    }
+
+    @Test
+    @DisplayName("주문 확인 - 회원 ID와 도서 ID로 주문 조회 테스트")
+    void testCheckSaleByMemberIdAndBookId() {
+
+        Sale sale = Sale.builder()
+                .member(member)
+                .saleNumber(saleNumber)
+                .saleTitle("홍길동전")
+                .saleOrdererName("정승조")
+                .saleOrdererContact("01012341234")
+                .saleReceiverName("정승조")
+                .saleReceiverContact("01012341234")
+                .saleReceiverAddress("광주광역시 동구 조선대 5길 IT 융합대학")
+                .saleDate(LocalDateTime.now())
+                .saleShippingDate(LocalDateTime.now())
+                .saleDeliveryDate(LocalDate.now().plusDays(2))
+                .saleDeliveryStatus(DeliveryStatus.READY)
+                .saleDeliveryFee(3000)
+                .salePointUsage(1000)
+                .salePaymentStatus(SalePaymentStatus.PAID)
+                .saleShippingPostCode("123456")
+                .build();
+
+        bookSale = BookSale.builder()
+                .pk(new BookSale.Pk(sale.getSaleId(), book.getBookId()))
+                .book(book)
+                .build();
+
+        entityManager.persist(sale);
+
+        entityManager.flush();
 
 
+        SaleCheckResponseDto actual =
+                saleRepository.checkSaleByMemberIdAndBookId(member.getId(), book.getBookId());
+
+        assertFalse(actual.getIsExist());
     }
 }

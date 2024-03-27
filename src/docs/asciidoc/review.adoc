@@ -53,5 +53,5 @@ include::{snippets}/review/updateReview/success/http-request.adoc[]
 
 ==== Parameters
 
-include::{snippets}/review/updateReview/success/request-parameters.adoc[]
 include::{snippets}/review/updateReview/success/path-parameters.adoc[]
+include::{snippets}/review/updateReview/success/request-fields.adoc[]
