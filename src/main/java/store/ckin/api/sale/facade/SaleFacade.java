@@ -61,7 +61,7 @@ public class SaleFacade {
         bookSaleService.createBookSale(sale.getSaleId(), requestDto.getBookSaleList());
 
         if (requestDto.getMemberId() != null && requestDto.getPointUsage() > 0) {
-            memberService.updatePoint(requestDto.getMemberId(), -requestDto.getPointUsage());
+            memberService.updatePoint(requestDto.getMemberId(), requestDto.getPointUsage());
 
             PointHistoryCreateRequestDto pointHistoryCreateRequestDto = PointHistoryCreateRequestDto.builder()
                     .memberId(requestDto.getMemberId())

@@ -16,13 +16,18 @@ import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
 import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
 import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
-import store.ckin.api.member.domain.response.*;
+import store.ckin.api.member.domain.response.MemberAuthResponseDto;
+import store.ckin.api.member.domain.response.MemberDetailInfoResponseDto;
+import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
+import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
 import store.ckin.api.member.exception.MemberOauthNotFoundException;
 import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
+import store.ckin.api.member.exception.MemberPointNotEnoughException;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
@@ -41,6 +46,7 @@ import store.ckin.api.sale.repository.SaleRepository;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -143,7 +149,11 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
-        member.updatePoint(pointUsage);
+        if (member.getPoint() < pointUsage) {
+            throw new MemberPointNotEnoughException();
+        }
+
+        member.updatePoint(-pointUsage);
     }
 
     @Transactional(readOnly = true)
