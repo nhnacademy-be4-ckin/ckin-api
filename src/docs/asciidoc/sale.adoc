@@ -164,3 +164,17 @@ include::{snippets}/sale/updateSaleStatus/cancel/http-response.adoc[]
 
 {empty} +
 
+=== 회원 ID와 도서 ID를 통해 주문 여부 확인
+
+==== Request
+include::{snippets}/sale/checkSaleByMemberIdAndBookId/success/http-request.adoc[]
+
+==== Request Path Parameters
+include::{snippets}/sale/checkSaleByMemberIdAndBookId/success/path-parameters.adoc[]
+
+
+==== Response
+include::{snippets}/sale/checkSaleByMemberIdAndBookId/success/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/sale/checkSaleByMemberIdAndBookId/success/response-fields.adoc[]

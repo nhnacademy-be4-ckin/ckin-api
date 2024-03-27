@@ -3,6 +3,7 @@ package store.ckin.api.sale.facade;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -31,6 +32,7 @@ import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -519,5 +521,20 @@ class SaleFacadeTest {
         verify(saleService, times(1)).cancelSale(anyLong());
         verify(saleService, times(1)).getSaleDetail(anyLong());
         verify(memberService, times(1)).updateCancelSalePoint(anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("주문 확인 테스트 (도서 ID와 회원 ID를 통해 조회)")
+    void testCheckSaleByMemberIdAndBookId() {
+
+        SaleCheckResponseDto responseDto = new SaleCheckResponseDto(true);
+
+        given(saleService.checkSaleByMemberIdAndBookId(anyLong(), anyLong()))
+                .willReturn(responseDto);
+
+        SaleCheckResponseDto actual = saleFacade.checkSaleByMemberIdAndBookId(1L, 1L);
+
+        assertTrue(actual.getIsExist());
+        verify(saleService, times(1)).checkSaleByMemberIdAndBookId(1L, 1L);
     }
 }

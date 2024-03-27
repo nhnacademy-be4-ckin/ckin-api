@@ -34,6 +34,7 @@ import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -491,5 +492,21 @@ class SaleServiceImplTest {
 
         verify(saleRepository, times(1)).findById(anyLong());
         verify(paymentRepository, times(1)).findBySale_SaleId(anyLong());
+    }
+
+    @Test
+    @DisplayName("주문 확인 테스트")
+    void testCheckSaleByMemberIdAndBookId() {
+
+        SaleCheckResponseDto responseDto = new SaleCheckResponseDto(false);
+
+        given(saleRepository.checkSaleByMemberIdAndBookId(anyLong(), anyLong()))
+                .willReturn(responseDto);
+
+        SaleCheckResponseDto checkResponseDto = saleService.checkSaleByMemberIdAndBookId(1L, 1L);
+
+        assertEquals(responseDto, checkResponseDto);
+        verify(saleRepository, times(1)).checkSaleByMemberIdAndBookId(anyLong(), anyLong());
+
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import store.ckin.api.common.dto.PagedResponse;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -51,4 +52,13 @@ public interface SaleRepositoryCustom {
      * @return 주문 응답 DTO 리스트
      */
     PagedResponse<List<SaleInfoResponseDto>> findAllByMemberId(Long memberId, Pageable pageable);
+
+    /**
+     * 회원 ID와 도서 ID로 주문을 조회하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param bookId   도서 ID
+     * @return 주문 체크 응답 DTO
+     */
+    SaleCheckResponseDto checkSaleByMemberIdAndBookId(Long memberId, Long bookId);
 }

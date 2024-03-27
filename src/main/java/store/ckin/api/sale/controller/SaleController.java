@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -166,5 +167,19 @@ public class SaleController {
     public ResponseEntity<Void> cancelSale(@PathVariable Long saleId) {
         saleFacade.cancelSale(saleId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 회원 ID와 도서 ID를 통해 주문 리스트에 해당 주문이 존재하는지 확인하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param bookId   도서 ID
+     * @return 200 (OK), 주문 확인 응답 DTO
+     */
+    @GetMapping("/check/{memberId}/{bookId}")
+    public ResponseEntity<SaleCheckResponseDto> checkSaleByMemberIdAndBookId(@PathVariable Long memberId,
+                                                                             @PathVariable Long bookId) {
+        SaleCheckResponseDto checkResponseDto = saleFacade.checkSaleByMemberIdAndBookId(memberId, bookId);
+        return ResponseEntity.ok(checkResponseDto);
     }
 }

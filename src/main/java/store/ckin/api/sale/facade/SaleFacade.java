@@ -17,6 +17,7 @@ import store.ckin.api.pointhistory.dto.request.PointHistoryCreateRequestDto;
 import store.ckin.api.pointhistory.service.PointHistoryService;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -210,5 +211,17 @@ public class SaleFacade {
 
         // 주문 및 결제 상태 변경
         saleService.cancelSale(saleId);
+    }
+
+    /**
+     * 회원 ID와 도서 ID를 통해 주문 리스트에 해당 주문이 존재하는지 확인하는 메서드입니다.
+     *
+     * @param memberId 회원 ID
+     * @param bookId   도서 ID
+     * @return 주문 확인 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public SaleCheckResponseDto checkSaleByMemberIdAndBookId(Long memberId, Long bookId) {
+        return saleService.checkSaleByMemberIdAndBookId(memberId, bookId);
     }
 }
