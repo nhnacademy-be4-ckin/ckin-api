@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  */
 public class PointPolicyAlreadyExistsException extends GeneralAlreadyExistsException {
 
-    public PointPolicyAlreadyExistsException(Long id, String name) {
-        super(String.format("해당 포인트 정책은 이미 존재합니다. [id = %d, name = %s]", id, name));
+    public PointPolicyAlreadyExistsException() {
+        super("해당 포인트 정책은 이미 존재합니다.");
     }
 }

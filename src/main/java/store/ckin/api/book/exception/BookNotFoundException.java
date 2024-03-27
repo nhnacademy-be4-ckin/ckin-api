@@ -10,8 +10,8 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class BookNotFoundException extends GeneralNotFoundException {
 
-    public BookNotFoundException(Long bookId) {
-        super(String.format("책을 찾을 수 없습니다 [id = %d]", bookId));
+    public BookNotFoundException() {
+        super("책을 찾을 수 없습니다");
 
     }
 }

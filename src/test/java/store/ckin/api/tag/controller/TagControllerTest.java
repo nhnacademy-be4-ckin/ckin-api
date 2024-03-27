@@ -133,8 +133,9 @@ class TagControllerTest {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "태그1");
-        TagNameAlreadyExistException expectedException =
-                new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+
+        TagNameAlreadyExistException expectedException = new TagNameAlreadyExistException();
+
         willThrow(expectedException).given(tagService).createTag(any());
 
         // when
@@ -237,7 +238,7 @@ class TagControllerTest {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", 1L);
-        TagNotFoundException expectedException = new TagNotFoundException(tagDeleteRequestDto.getTagId());
+        TagNotFoundException expectedException = new TagNotFoundException();
         willThrow(expectedException).given(tagService).deleteTag(any());
 
         // when

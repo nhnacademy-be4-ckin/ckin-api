@@ -9,7 +9,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  * @version 2024. 03. 22.
  */
 public class MemberOauthNotFoundException extends GeneralNotFoundException {
-    public MemberOauthNotFoundException(String oauthId) {
-        super(String.format("회원 Oauth ID를 찾을 수 없습니다. [oauthId = %s]", oauthId));
+    public MemberOauthNotFoundException() {
+        super("회원 Oauth ID를 찾을 수 없습니다.");
     }
 }

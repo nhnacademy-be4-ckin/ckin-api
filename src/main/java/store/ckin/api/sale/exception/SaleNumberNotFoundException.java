@@ -11,7 +11,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
 
 public class SaleNumberNotFoundException extends GeneralNotFoundException {
 
-    public SaleNumberNotFoundException(String saleNumber) {
-        super(String.format("주문 정보가 존재하지 않습니다. [saleNumber = %s]", saleNumber));
+    public SaleNumberNotFoundException() {
+        super("주문 정보가 존재하지 않습니다.");
     }
 }

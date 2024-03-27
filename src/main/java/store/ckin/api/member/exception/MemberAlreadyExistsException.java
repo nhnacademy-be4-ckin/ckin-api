@@ -9,7 +9,7 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  * @version : 2024. 02. 16.
  */
 public class MemberAlreadyExistsException extends GeneralAlreadyExistsException {
-    public MemberAlreadyExistsException(String email) {
-        super(String.format("해당 이메일은 이미 사용중입니다. [email = %s]", email));
+    public MemberAlreadyExistsException() {
+        super("해당 이메일은 이미 사용중입니다.");
     }
 }

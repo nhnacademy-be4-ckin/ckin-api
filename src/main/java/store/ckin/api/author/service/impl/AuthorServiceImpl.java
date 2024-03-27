@@ -75,7 +75,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorResponseDto findAuthorById(Long authorId) {
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new AuthorNotFoundException(authorId));
+                .orElseThrow(AuthorNotFoundException::new);
         return AuthorResponseDto.builder()
                 .authorId(author.getAuthorId())
                 .authorName(author.getAuthorName())
@@ -89,7 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     public AuthorResponseDto updateAuthor(Long authorId, AuthorModifyRequestDto authorModifyRequestDto) {
         Author existingAuthor = authorRepository.findById(authorId)
-                .orElseThrow(() -> new AuthorNotFoundException(authorId));
+                .orElseThrow(AuthorNotFoundException::new);
 
         existingAuthor.updateAuthor(authorModifyRequestDto.getAuthorName());
 
@@ -105,14 +105,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void deleteAuthor(Long authorId) {
-        authorRepository.findById(authorId).ifPresentOrElse(
-                author -> authorRepository.deleteById(authorId),
-                () -> {
-                    throw new AuthorNotFoundException(authorId);
-                }
-        );
+
+        if (!authorRepository.existsById(authorId)) {
+            throw new AuthorNotFoundException();
+        }
+
+        authorRepository.deleteById(authorId);
     }
-
-
 }
 

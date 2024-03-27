@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class CategoryNotFoundException extends GeneralNotFoundException {
 
-    public CategoryNotFoundException(Long categoryId) {
-        super(String.format("카테고리를 찾을 수 없습니다. [id = %d]", categoryId));
+    public CategoryNotFoundException() {
+        super("카테고리를 찾을 수 없습니다.");
     }
 }

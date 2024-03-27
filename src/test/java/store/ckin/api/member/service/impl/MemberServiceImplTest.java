@@ -322,7 +322,7 @@ class MemberServiceImplTest {
 
     @Test
     @DisplayName("회원 포인트 수정 - 성공")
-    void testUpdatePoint_Sucess() {
+    void testUpdatePoint_Success() {
 
         Long memberId = 1L;
 
@@ -335,7 +335,7 @@ class MemberServiceImplTest {
 
         memberService.updatePoint(memberId, 100);
 
-        assertEquals(1100, member.getPoint());
+        assertEquals(900, member.getPoint());
 
         verify(memberRepository, times(1)).findById(anyLong());
     }

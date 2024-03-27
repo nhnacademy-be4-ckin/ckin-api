@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  */
 public class AddressAlreadyExistsException extends GeneralAlreadyExistsException {
 
-    public AddressAlreadyExistsException(Long memberId, String base, String detail) {
-        super(String.format("이미 등록된 주소입니다. [회원 ID = %d,  Address = %s %s]  ", memberId, base, detail));
+    public AddressAlreadyExistsException() {
+        super("이미 등록된 주소입니다.");
     }
 }
