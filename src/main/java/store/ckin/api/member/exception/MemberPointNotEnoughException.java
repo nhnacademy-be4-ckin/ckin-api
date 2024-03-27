@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralBadRequestException;
  */
 public class MemberPointNotEnoughException extends GeneralBadRequestException {
 
-    public MemberPointNotEnoughException(Long memberId) {
-        super(String.format("보유 포인트보다 더 많은 포인트를 사용할 수 없습니다. [memberId = %d]", memberId));
+    public MemberPointNotEnoughException() {
+        super("보유 포인트보다 더 많은 포인트를 사용할 수 없습니다.");
     }
 }

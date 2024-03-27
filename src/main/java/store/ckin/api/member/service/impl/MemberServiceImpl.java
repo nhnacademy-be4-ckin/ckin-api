@@ -45,6 +45,7 @@ import store.ckin.api.sale.repository.SaleRepository;
  * @author : jinwoolee
  * @version : 2024. 02. 16.
  */
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -147,10 +148,10 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         if (member.getPoint() < pointUsage) {
-            throw new MemberPointNotEnoughException(memberId);
+            throw new MemberPointNotEnoughException();
         }
 
-        member.updatePoint(pointUsage);
+        member.updatePoint(-pointUsage);
     }
 
     @Transactional(readOnly = true)
