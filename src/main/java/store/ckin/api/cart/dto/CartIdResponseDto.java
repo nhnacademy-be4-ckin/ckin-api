@@ -1,5 +1,6 @@
 package store.ckin.api.cart.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
  * @version : 2024. 03. 26
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class CartIdResponseDto {
     private String cartId;
