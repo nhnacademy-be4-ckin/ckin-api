@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public void createCart(CartCreateRequestDto cartCreateRequestDto) {
         Long memberId = cartCreateRequestDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
         String cartId = cartCreateRequestDto.getCartId();
         if(cartRepository.existsById(memberId)) {
