@@ -1,6 +1,7 @@
 package store.ckin.api.category.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
+import store.ckin.api.category.dto.response.CategoryCacheResponseDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 import store.ckin.api.category.entity.Category;
 import store.ckin.api.category.exception.CategoryNotFoundException;
@@ -169,4 +172,86 @@ class CategoryServiceImplTest {
             categoryService.createCategory(requestDto);
         });
     }
+
+    @Test
+    @DisplayName("유효한 카테고리 ID로 카테고리 이름 조회")
+    void givenCategoryId_whenGetCategoryName_thenReturnsName() {
+        Long categoryId = 1L;
+        Category category = Category.builder()
+                .categoryId(1L)
+                .categoryName("국내도서")
+                .categoryPriority(1)
+                .build();
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+
+        String categoryName = categoryService.getCategoryName(categoryId);
+
+        assertThat(categoryName).isEqualTo(category.getCategoryName());
+    }
+
+
+    @Test
+    @DisplayName("유효하지 않은 카테고리 ID로 이름 조회 시 예외 발생")
+    void givenInvalidCategoryId_whenGetCategoryName_thenThrowsException() {
+        Long invalidCategoryId = 2L;
+        when(categoryRepository.findById(invalidCategoryId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.getCategoryName(invalidCategoryId))
+                .isInstanceOf(CategoryNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("책 ID 목록으로 부모 카테고리 ID 목록 조회")
+    void whenGetParentIds_givenBookIds_thenReturnsCategoryIds() {
+        List<Long> bookIds = Arrays.asList(1L, 2L, 3L);
+        List<Long> expectedCategoryIds = Arrays.asList(10L, 20L);
+        when(categoryRepository.getParentIds(bookIds)).thenReturn(expectedCategoryIds);
+
+        List<Long> actualCategoryIds = categoryService.getParentIds(bookIds);
+
+        assertThat(actualCategoryIds).isEqualTo(expectedCategoryIds);
+    }
+
+    @Test
+    void whenGetAllCategories_thenReturnsCategoryCacheResponseDtos() {
+        CategoryCacheResponseDto parentCategoryDto = CategoryCacheResponseDto.builder()
+                .categoryId(1L)
+                .categoryName("부모 카테고리")
+                .categoryPriority(1)
+                .build();
+
+        CategoryCacheResponseDto childCategoryDto = CategoryCacheResponseDto.builder()
+                .categoryId(2L)
+                .parentCategoryId(1L)
+                .categoryName("자식 카테고리")
+                .categoryPriority(2)
+                .build();
+
+        Category parentCategory = Category.builder()
+                .categoryId(1L)
+                .categoryName("부모 카테고리")
+                .categoryPriority(1)
+                .build();
+        Category childCategory = Category.builder()
+                .categoryId(2L)
+                .parentCategory(parentCategory)
+                .categoryName("자식 카테고리")
+                .categoryPriority(2)
+                .build();
+        List<Category> categories = Arrays.asList(parentCategory, childCategory);
+
+
+        when(categoryRepository.findAll()).thenReturn(categories);
+
+
+        List<CategoryCacheResponseDto> expectedCategories = Arrays.asList(parentCategoryDto, childCategoryDto);
+
+
+        List<CategoryCacheResponseDto> actualCategories = categoryService.getAllCategories();
+
+        //컨텐츠 검증
+        assertThat(actualCategories).usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyInAnyOrderElementsOf(expectedCategories);
+    }
+
 }

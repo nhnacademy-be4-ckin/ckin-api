@@ -58,10 +58,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void postReview(ReviewCreateRequestDto createRequestDto, List<MultipartFile> imageList) {
         Member member = memberRepository.findById(createRequestDto.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException(createRequestDto.getMemberId()));
+                .orElseThrow(MemberNotFoundException::new);
 
         Book book = bookRepository.findByBookId(createRequestDto.getBookId())
-                .orElseThrow(() -> new BookNotFoundException(createRequestDto.getBookId()));
+                .orElseThrow(BookNotFoundException::new);
 
         book.updateBookReviewRate(createRequestDto.getReviewRate());
 
@@ -98,7 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Page<ReviewResponseDto> getReviewPageList(Pageable pageable, Long bookId) {
 
         if (!bookRepository.existsById(bookId)) {
-            throw new BookNotFoundException(bookId);
+            throw new BookNotFoundException();
         }
 
         Page<ReviewResponseDto> reviewPage = reviewRepository.getReviewPageList(pageable, bookId);
@@ -113,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public Page<MyPageReviewResponseDto> findReviewsByMemberWithPagination(Long memberId, Pageable pageable) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException(memberId);
+            throw new MemberNotFoundException();
         }
         Page<MyPageReviewResponseDto> reviewPage =
                 reviewRepository.findReviewsByMemberWithPagination(memberId, pageable);
@@ -126,12 +126,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void updateReview(ReviewUpdateRequestDto updateRequestDto, Long memberId) {
         Review existingReview = reviewRepository.findById(updateRequestDto.getReviewId())
-                .orElseThrow(() -> new ReviewNotFoundException(updateRequestDto.getReviewId()));
+                .orElseThrow(ReviewNotFoundException::new);
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
+
         if (!existingReview.getMember().equals(member)) {
-            throw new UnauthorizedReviewAccessException(memberId);
+            throw new UnauthorizedReviewAccessException();
         }
+
         existingReview.updateReviewComment(updateRequestDto.getReviewComment(), updateRequestDto.getReviewRate());
     }
 }

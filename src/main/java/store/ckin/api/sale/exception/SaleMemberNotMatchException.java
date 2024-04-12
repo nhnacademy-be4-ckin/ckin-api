@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralForbiddenException;
  */
 public class SaleMemberNotMatchException extends GeneralForbiddenException {
 
-    public SaleMemberNotMatchException(String saleNumber) {
-        super(String.format("주문 번호의 주문자 ID와 요청한 회원 ID가 일치하지 않습니다. [saleNumber = %s]", saleNumber));
+    public SaleMemberNotMatchException() {
+        super("주문 번호의 주문자 ID와 요청한 회원 ID가 일치하지 않습니다.");
     }
 }

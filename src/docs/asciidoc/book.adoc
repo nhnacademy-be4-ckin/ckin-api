@@ -78,3 +78,146 @@ include::{snippets}/book/findByCategoryId/http-response.adoc[]
 
 include::{snippets}/book/findByCategoryId/response-fields.adoc[]
 
+{empty} +
+
+
+== 모든 책 조회
+
+=== Request
+
+include::{snippets}/book/getAllBooks/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getAllBooks/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getAllBooks/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getAllBooks/success/response-fields.adoc[]
+
+{empty} +
+
+== 도서 아이디 목록에 해당하는 도서 정보 반환
+
+=== Request
+
+include::{snippets}/book/getExtractBookListByBookIds/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getExtractBookListByBookIds/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getExtractBookListByBookIds/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getExtractBookListByBookIds/success/response-fields.adoc[]
+
+{empty} +
+
+== 도서 아이디에 해당하는 부모 카테고리 조회
+
+=== Request
+
+include::{snippets}/book/getBookCategoryIdsByBookIds/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getBookCategoryIdsByBookIds/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getBookCategoryIdsByBookIds/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getBookCategoryIdsByBookIds/success/response-fields.adoc[]
+
+{empty} +
+
+== 해당 태그를 가진 도서 목록 조회 (카테고리별)
+
+=== Request
+
+include::{snippets}/book/getMainPageBooksByCategoryId/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getMainPageBooksByCategoryId/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getMainPageBooksByCategoryId/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getMainPageBooksByCategoryId/success/response-fields.adoc[]
+
+{empty} +
+
+
+== 해당 태그를 가진 도서 목록 조회 (출판 날짜순)
+
+=== Request
+
+include::{snippets}/book/getMainPageBooksOrderByBookPublicationDate/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getMainPageBooksOrderByBookPublicationDate/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getMainPageBooksOrderByBookPublicationDate/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getMainPageBooksOrderByBookPublicationDate/success/response-fields.adoc[]
+
+
+{empty} +
+
+== 신간도서 목록 조회
+
+=== Request
+
+include::{snippets}/book/getRecentPublishedBook/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getRecentPublishedBook/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getRecentPublishedBook/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getRecentPublishedBook/success/response-fields.adoc[]
+
+
+{empty} +
+
+== 태그이름에 해당하는 도서 목록 조회
+
+=== Request
+
+include::{snippets}/book/getBookPageByTagName/success/http-request.adoc[]
+
+=== Request Parameters
+
+include::{snippets}/book/getBookPageByTagName/success/request-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/book/getBookPageByTagName/success/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/book/getBookPageByTagName/success/response-fields.adoc[]

@@ -35,7 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void createPayment(Long saleId, PaymentRequestDto requestDto) {
 
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         Payment payment =
                 Payment.builder()
@@ -43,7 +43,8 @@ public class PaymentServiceImpl implements PaymentService {
                         .paymentKey(requestDto.getPaymentKey())
                         .paymentStatus(requestDto.getPaymentStatus())
                         .requestedAt(requestDto.getRequestedAt().plusHours(9))
-                        .approvedAt(Objects.nonNull(requestDto.getApprovedAt()) ? requestDto.getApprovedAt().plusHours(9) : null)
+                        .approvedAt(Objects.nonNull(requestDto.getApprovedAt())
+                                ? requestDto.getApprovedAt().plusHours(9) :  null)
                         .receipt(requestDto.getReceiptUrl())
                         .build();
 
@@ -55,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponseDto getPayment(Long saleId) {
 
         if (!saleRepository.existsById(saleId)) {
-            throw new SaleNotFoundException(saleId);
+            throw new SaleNotFoundException();
         }
 
         return paymentRepository.getPaymentBySaleId(saleId);

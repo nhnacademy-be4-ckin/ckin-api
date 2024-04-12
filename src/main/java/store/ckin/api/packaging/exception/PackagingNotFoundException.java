@@ -10,7 +10,7 @@ import store.ckin.api.advice.exception.GeneralNotFoundException;
  */
 public class PackagingNotFoundException extends GeneralNotFoundException {
 
-    public PackagingNotFoundException(Long id) {
-        super(String.format("포장 정책이 존재하지 않습니다. [id = %d]", id));
+    public PackagingNotFoundException() {
+        super("포장 정책이 존재하지 않습니다.");
     }
 }

@@ -8,7 +8,7 @@ package store.ckin.api.file.exception;
  */
 public class FileNotFoundException extends RuntimeException {
 
-    public FileNotFoundException(String fileUrl) {
-        super(String.format("파일을 찾을 수 없습니다. [fileUrl = %s]", fileUrl));
+    public FileNotFoundException() {
+        super("파일을 찾을 수 없습니다.");
     }
 }

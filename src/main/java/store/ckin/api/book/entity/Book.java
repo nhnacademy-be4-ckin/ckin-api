@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import store.ckin.api.book.relationship.bookauthor.entity.BookAuthor;
@@ -34,7 +33,6 @@ import store.ckin.api.file.entity.File;
  * @version 2024. 02. 26.
  */
 
-@ToString
 @Entity
 @Getter
 @NoArgsConstructor

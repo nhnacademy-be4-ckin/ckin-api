@@ -37,7 +37,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public PointPolicyResponseDto getPointPolicy(Long id) {
         return pointPolicyRepository.getPointPolicyById(id)
-                .orElseThrow(() -> new PointPolicyNotFoundException(id));
+                .orElseThrow(PointPolicyNotFoundException::new);
     }
 
     /**
@@ -61,7 +61,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     public void createPointPolicy(PointPolicyCreateRequestDto request) {
 
         if (pointPolicyRepository.existsPointPolicy(request.getPointPolicyId(), request.getPointPolicyName())) {
-            throw new PointPolicyAlreadyExistsException(request.getPointPolicyId(), request.getPointPolicyName());
+            throw new PointPolicyAlreadyExistsException();
         }
 
         PointPolicy pointPolicy = PointPolicy.builder()
@@ -82,7 +82,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public void updatePointPolicy(Long id, PointPolicyUpdateRequestDto updatePointPolicy) {
         PointPolicy pointPolicy = pointPolicyRepository.findById(id)
-                .orElseThrow(() -> new PointPolicyNotFoundException(id));
+                .orElseThrow(PointPolicyNotFoundException::new);
 
         pointPolicy.update(updatePointPolicy.getPointPolicyName(),
                 updatePointPolicy.getPointPolicyReserve());
@@ -97,7 +97,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public void deletePointPolicy(Long id) {
         if (!pointPolicyRepository.existsById(id)) {
-            throw new PointPolicyNotFoundException(id);
+            throw new PointPolicyNotFoundException();
         }
 
         pointPolicyRepository.deleteById(id);

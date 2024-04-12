@@ -1,0 +1,160 @@
+== 카테고리
+
+=== 카테고리 생성
+
+==== Request
+
+include::{snippets}/category/create/success/http-request.adoc[]
+
+==== 응답 201 (생성됨)
+include::{snippets}/category/create/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/category/create/success/request-fields.adoc[]
+
+{empty} +
+
+=== 최상위 카테고리 조회
+
+==== Request
+
+include::{snippets}/category/getTopCategories/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/getTopCategories/success/http-response.adoc[]
+
+{empty} +
+
+=== 하위 카테고리 조회
+
+
+==== Request
+
+include::{snippets}/category/getSubCategories/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/getSubCategories/success/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/category/getSubCategories/success/path-parameters.adoc[]
+
+{empty} +
+
+
+=== 카테고리 업데이트
+
+==== Request
+
+include::{snippets}/category/updateCategory/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/updateCategory/success/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/category/updateCategory/success/request-fields.adoc[]
+
+{empty} +
+
+=== 카테고리 삭제 [DELETE]
+
+특정 카테고리를 삭제합니다.
+
+==== Request
+
+include::{snippets}/category/deleteCategory/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/deleteCategory/success/http-response.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/category/deleteCategory/success/path-parameters.adoc[]
+
+{empty} +
+
+=== 잘못된 입력값으로 카테고리 생성 요청
+
+==== Request
+
+include::{snippets}/category/createCategory/validation-failed/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/createCategory/validation-failed/http-response.adoc[]
+
+{empty} +
+
+=== 잘못된 입력값으로 카테고리 업데이트 요청
+
+==== Request
+
+include::{snippets}/category/updateCategory/validation-failed/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/updateCategory/validation-failed/http-response.adoc[]
+
+{empty} +
+
+=== 모든 카테고리 조회
+
+==== Request
+
+include::{snippets}/category/getAllCategories/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/getAllCategories/success/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/category/getAllCategories/success/response-fields.adoc[]
+
+
+
+{empty} +
+
+=== 주어진 카테고리 ID에 대한 이름 조회
+
+특정 카테고리의 이름을 조회하는 요청입니다.
+
+==== Request
+
+include::{snippets}/category/getCategoryNames/success/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/getCategoryNames/success/http-response.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/category/getCategoryNames/success/path-parameters.adoc[]
+
+{empty} +
+
+=== 부모 카테고리 ID 조회
+
+주어진 책 ID 목록에 대한 부모 카테고리 ID를 조회하는 요청입니다.
+
+==== Request
+
+include::{snippets}/category/getParentIds/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/category/getParentIds/http-response.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/category/getParentIds/request-parameters.adoc[]
+
+==== Response Field
+
+include::{snippets}/category/getParentIds/response-fields.adoc[]

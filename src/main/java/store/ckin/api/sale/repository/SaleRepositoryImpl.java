@@ -9,11 +9,13 @@ import store.ckin.api.booksale.entity.QBookSale;
 import store.ckin.api.common.domain.PageInfo;
 import store.ckin.api.common.dto.PagedResponse;
 import store.ckin.api.member.entity.QMember;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
 import store.ckin.api.sale.entity.QSale;
 import store.ckin.api.sale.entity.Sale;
+import store.ckin.api.sale.entity.SalePaymentStatus;
 
 /**
  * 주문 Repository Querydsl 구현 클래스입니다.
@@ -206,6 +208,23 @@ public class SaleRepositoryImpl extends QuerydslRepositorySupport implements Sal
                         .totalElements((int) totalElements)
                         .totalPages((int) Math.ceil((double) totalElements / pageable.getPageSize()))
                         .build());
+    }
+
+    @Override
+    public SaleCheckResponseDto checkSaleByMemberIdAndBookId(Long memberId, Long bookId) {
+
+        QSale sale = QSale.sale;
+        QBookSale bookSale = QBookSale.bookSale;
+
+        boolean isExist = from(sale)
+                .join(sale.bookSales, bookSale)
+                .where(sale.member.id.eq(memberId)
+                        .and(bookSale.book.bookId.eq(bookId))
+                        .and(sale.salePaymentStatus.eq(SalePaymentStatus.PAID)))
+                .fetchCount() > 0;
+
+
+        return new SaleCheckResponseDto(isExist);
     }
 
 }

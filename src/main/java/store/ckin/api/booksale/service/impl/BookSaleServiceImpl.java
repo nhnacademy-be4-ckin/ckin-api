@@ -43,12 +43,12 @@ public class BookSaleServiceImpl implements BookSaleService {
     public void createBookSale(Long saleId, List<BookSaleCreateRequestDto> bookSaleList) {
 
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         for (BookSaleCreateRequestDto bookSaleDto : bookSaleList) {
 
             Book book = bookRepository.findById(bookSaleDto.getBookId())
-                    .orElseThrow(() -> new BookNotFoundException(bookSaleDto.getBookId()));
+                    .orElseThrow(BookNotFoundException::new);
 
             PackagingResponseDto packagingPolicy;
             if (bookSaleDto.getPackagingId() > 0) {

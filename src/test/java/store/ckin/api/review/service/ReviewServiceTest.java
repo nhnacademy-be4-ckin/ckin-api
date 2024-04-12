@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.book.exception.BookNotFoundException;
 import store.ckin.api.book.repository.BookRepository;
@@ -33,6 +34,7 @@ import store.ckin.api.review.dto.request.ReviewUpdateRequestDto;
 import store.ckin.api.review.dto.response.MyPageReviewResponseDto;
 import store.ckin.api.review.dto.response.ReviewResponseDto;
 import store.ckin.api.review.entity.Review;
+import store.ckin.api.review.exception.UnauthorizedReviewAccessException;
 import store.ckin.api.review.repository.ReviewRepository;
 import store.ckin.api.review.service.impl.ReviewServiceImpl;
 
@@ -46,6 +48,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -78,6 +81,7 @@ class ReviewServiceTest {
     private MockMultipartFile multipartFile;
     private ReviewCreateRequestDto reviewCreateRequestDto;
     private ReviewResponseDto reviewResponseDto;
+    private MyPageReviewResponseDto myPageReviewResponseDto;
 
     @BeforeEach
     void setUp() {
@@ -88,6 +92,7 @@ class ReviewServiceTest {
         ReflectionTestUtils.setField(reviewCreateRequestDto, "reviewComment", "인상 깊게 읽었습니다.");
 
         member = Member.builder()
+                .id(1L)
                 .grade(grade)
                 .birth(LocalDate.of(2023, 9, 1))
                 .email("ckin1234@naver.com")
@@ -126,6 +131,17 @@ class ReviewServiceTest {
                 .review(review)
                 .fileUrl("http://url/fileida")
                 .build();
+
+        myPageReviewResponseDto = MyPageReviewResponseDto.builder()
+                .reviewId(1L)
+                .author("Author")
+                .message("Review Message")
+                .reviewRate(5)
+                .reviewDate("2024-03-14")
+                .thumbnailPath("path/to/thumbnail")
+                .bookId(1L)
+                .bookTitle("Book Title")
+                .build();
     }
 
     @Test
@@ -157,10 +173,11 @@ class ReviewServiceTest {
     void testPostReview_memberX() {
         String json = "{\"reviewId\":1,\"author\":\"***un0000@email.com\",\"message\":\"good\",\"reviewRate\":5,\"reviewDate\":\"2023-03-12\"}";
         multipartFile = new MockMultipartFile("createRequestDto", "createRequestDto", "application/json", json.getBytes(StandardCharsets.UTF_8));
+        List<MultipartFile> multipartFileList = List.of(multipartFile);
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(MemberNotFoundException.class, () -> reviewService.postReview(reviewCreateRequestDto, List.of(multipartFile)));
+        Assertions.assertThrows(MemberNotFoundException.class, () -> reviewService.postReview(reviewCreateRequestDto, multipartFileList));
     }
 
     @Test
@@ -168,12 +185,13 @@ class ReviewServiceTest {
     void testPostReview_bookX() throws IOException {
         String json = "{\"reviewId\":1,\"author\":\"***un0000@email.com\",\"message\":\"good\",\"reviewRate\":5,\"reviewDate\":\"2023-03-12\"}";
         multipartFile = new MockMultipartFile("createRequestDto", "createRequestDto", "application/json", json.getBytes(StandardCharsets.UTF_8));
+        List<MultipartFile> multipartFileList = List.of(multipartFile);
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(bookRepository.findByBookId(anyLong())).thenReturn(Optional.empty());
 
 
-        Assertions.assertThrows(BookNotFoundException.class, () -> reviewService.postReview(reviewCreateRequestDto, List.of(multipartFile)));
+        Assertions.assertThrows(BookNotFoundException.class, () -> reviewService.postReview(reviewCreateRequestDto, multipartFileList));
     }
 
     @Test
@@ -181,12 +199,13 @@ class ReviewServiceTest {
     void testPostReview_fileX() throws IOException {
         String json = "{\"reviewId\":1,\"author\":\"***un0000@email.com\",\"message\":\"good\",\"reviewRate\":5,\"reviewDate\":\"2023-03-12\"}";
         multipartFile = new MockMultipartFile("createRequestDto", "createRequestDto", "application/json", json.getBytes(StandardCharsets.UTF_8));
+        List<MultipartFile> multipartFileList = List.of(multipartFile);
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(bookRepository.findByBookId(anyLong())).thenReturn(Optional.of(book));
         when(objectStorageService.saveFile(any(), anyString())).thenThrow(FileNotFoundException.class);
 
-        Assertions.assertThrows(Exception.class, () -> reviewService.postReview(reviewCreateRequestDto, List.of(multipartFile)));
+        Assertions.assertThrows(Exception.class, () -> reviewService.postReview(reviewCreateRequestDto, multipartFileList));
     }
 
     @Test
@@ -211,35 +230,28 @@ class ReviewServiceTest {
     void testGetReviewPageList_X() {
         reviewResponseDto = new ReviewResponseDto(1L, "***un0000@email.com", "good", 5, "2023-03-12");
         Page<ReviewResponseDto> page = new PageImpl<>(List.of(reviewResponseDto));
+        Pageable pageable = PageRequest.of(0, 5);
 
         when(bookRepository.existsById(anyLong())).thenReturn(false);
 
-        Assertions.assertThrows(BookNotFoundException.class, () -> reviewService.getReviewPageList(Pageable.ofSize(5), 1L));
+        Assertions.assertThrows(BookNotFoundException.class, () -> reviewService.getReviewPageList(pageable, 1L));
 
     }
 
     @Test
+    @DisplayName("회원이 작성한 리뷰 목록 조회 테스트")
     void findReviewsByMemberWithPaginationTest() {
         // Given
         Long memberId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
-        MyPageReviewResponseDto dto = MyPageReviewResponseDto.builder()
-                .reviewId(1L)
-                .author("Author")
-                .message("Review Message")
-                .reviewRate(5)
-                .reviewDate("2024-03-14")
-                .thumbnailPath("path/to/thumbnail")
-                .bookId(1L)
-                .bookTitle("Book Title")
-                .build();
-        List<MyPageReviewResponseDto> content = Collections.singletonList(dto);
+
+        List<MyPageReviewResponseDto> content = Collections.singletonList(myPageReviewResponseDto);
         Page<MyPageReviewResponseDto> page = new PageImpl<>(content, pageable, content.size());
         List<String> filePaths = Arrays.asList("path/to/file1", "path/to/file2");
 
         when(memberRepository.existsById(memberId)).thenReturn(true);
         when(reviewRepository.findReviewsByMemberWithPagination(memberId, pageable)).thenReturn(page);
-        when(fileRepository.findFilePathByReviewId(dto.getReviewId())).thenReturn(filePaths);
+        when(fileRepository.findFilePathByReviewId(myPageReviewResponseDto.getReviewId())).thenReturn(filePaths);
 
         // When
         Page<MyPageReviewResponseDto> result = reviewService.findReviewsByMemberWithPagination(memberId, pageable);
@@ -254,8 +266,20 @@ class ReviewServiceTest {
         assertEquals(filePaths, result.getContent().get(0).getFilePath());
     }
 
+    @Test
+    @DisplayName("회원이 작성한 리뷰 목록 조회 테스트: 실패")
+    void findReviewsByMemberWithPaginationTest_X() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(memberRepository.existsById(anyLong())).thenReturn(false);
+
+        Assertions.assertThrows(MemberNotFoundException.class,
+                () -> reviewService.findReviewsByMemberWithPagination(1L, pageable));
+    }
+
 
     @Test
+    @DisplayName("리뷰 수정 테스트")
     void updateReviewTest() {
         // Given
         Long reviewId = 1L;
@@ -276,6 +300,38 @@ class ReviewServiceTest {
         verify(memberRepository).findById(memberId);
         assertEquals("Updated comment", review.getReviewComment());
         assertEquals(5, review.getReviewRate());
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 테스트: 실패")
+    void updateReviewTest_X() {
+
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewUpdateRequestDto updateRequestDto = new ReviewUpdateRequestDto();
+        ReflectionTestUtils.setField(updateRequestDto, "reviewId", reviewId);
+        ReflectionTestUtils.setField(updateRequestDto, "reviewRate", 5);
+        ReflectionTestUtils.setField(updateRequestDto, "reviewComment", "Updated comment");
+
+        Member anotherMember = Member.builder()
+                .id(2L)
+                .grade(null)
+                .birth(LocalDate.of(2023, 9, 1))
+                .email("ckin1234@naver.com")
+                .password("ckin1234")
+                .name("ckin")
+                .contact("010-1234-5678")
+                .point(500)
+                .state(Member.State.ACTIVE)
+                .accumulateAmount(30000)
+                .role(Member.Role.MEMBER)
+                .build();
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(anotherMember));
+
+        Assertions.assertThrows(UnauthorizedReviewAccessException.class,
+                () -> reviewService.updateReview(updateRequestDto, memberId));
     }
 
 }

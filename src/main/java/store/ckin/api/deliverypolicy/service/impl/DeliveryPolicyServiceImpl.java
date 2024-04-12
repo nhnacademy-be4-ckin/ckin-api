@@ -48,7 +48,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     public DeliveryPolicyResponseDto getDeliveryPolicy(Long id) {
 
         return deliveryPolicyRepository.getDeliveryPolicyById(id)
-                .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
+                .orElseThrow(DeliveryPolicyNotFoundException::new);
     }
 
     /**
@@ -61,7 +61,7 @@ public class DeliveryPolicyServiceImpl implements DeliveryPolicyService {
     @Transactional
     public void updateDeliveryPolicy(Long id, DeliveryPolicyUpdateRequestDto updateDeliveryPolicy) {
         DeliveryPolicy deliveryPolicy = deliveryPolicyRepository.findById(id)
-                .orElseThrow(() -> new DeliveryPolicyNotFoundException(id));
+                .orElseThrow(DeliveryPolicyNotFoundException::new);
 
         deliveryPolicy.update(updateDeliveryPolicy.getDeliveryPolicyFee(),
                 updateDeliveryPolicy.getDeliveryPolicyCondition(),

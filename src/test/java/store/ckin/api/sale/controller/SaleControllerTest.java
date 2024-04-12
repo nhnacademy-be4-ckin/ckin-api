@@ -47,6 +47,7 @@ import store.ckin.api.payment.dto.response.PaymentResponseDto;
 import store.ckin.api.payment.entity.PaymentStatus;
 import store.ckin.api.sale.dto.request.SaleCreateRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleDetailResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
@@ -809,5 +810,31 @@ class SaleControllerTest {
                 ));
 
         verify(saleFacade, times(1)).cancelSale(anyLong());
+    }
+
+    @Test
+    @DisplayName("회원 ID와 도서 ID를 통해 주문이 진행되었는지 확인하는 테스트")
+    void testCheckSaleByMemberIdAndBookId() throws Exception {
+
+        SaleCheckResponseDto responseDto = new SaleCheckResponseDto(true);
+
+        given(saleFacade.checkSaleByMemberIdAndBookId(anyLong(), anyLong()))
+                .willReturn(responseDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/sales/check/{memberId}/{bookId}", 1L, 1L))
+                .andExpect(status().isOk())
+                .andDo(document("sale/checkSaleByMemberIdAndBookId/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 ID"),
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("isExist").description("주문 여부")
+                        )
+                ));
+
+        verify(saleFacade, times(1)).checkSaleByMemberIdAndBookId(anyLong(), anyLong());
     }
 }

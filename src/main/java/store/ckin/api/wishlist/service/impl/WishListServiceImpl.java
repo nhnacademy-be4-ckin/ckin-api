@@ -33,15 +33,15 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public void createWishList(Long memberId, Long bookId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         Book book = bookRepository.findByBookId(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
 
         WishList.Pk pk = new WishList.Pk(bookId, memberId);
 
         if (wishListRepository.existsByPk(pk)) {
-            throw new WishListAlreadyExistsException(pk.getMemberId(), pk.getBookId());
+            throw new WishListAlreadyExistsException();
         }
 
         WishList wishList = WishList.builder()
@@ -57,11 +57,11 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public void deleteWishList(Long memberId, Long bookId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException(memberId);
+            throw new MemberNotFoundException();
         }
 
         if (!bookRepository.existsById(bookId)) {
-            throw new BookNotFoundException(bookId);
+            throw new BookNotFoundException();
         }
 
         wishListRepository.deleteByPk(new WishList.Pk(bookId, memberId));

@@ -10,8 +10,7 @@ import store.ckin.api.advice.exception.GeneralBadRequestException;
  */
 public class PaymentAmountNotCorrectException extends GeneralBadRequestException {
 
-    public PaymentAmountNotCorrectException(Integer saleTotalPrice, Integer requestTotalPrice) {
-        super(String.format("결제 금액이 올바르지 않습니다. [saleTotalPrice = %d, requestTotalPrice = %d]",
-                saleTotalPrice, requestTotalPrice));
+    public PaymentAmountNotCorrectException() {
+        super("결제 금액이 올바르지 않습니다.");
     }
 }

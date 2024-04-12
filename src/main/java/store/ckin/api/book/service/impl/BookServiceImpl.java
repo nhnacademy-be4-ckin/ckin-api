@@ -120,7 +120,7 @@ public class BookServiceImpl implements BookService {
         // 각 작가에 대해 BookAuthor 연결 엔티티 생성 및 추가
         for (Long authorId : requestDto.getAuthorIds()) {
             Author author = authorRepository.findById(authorId)
-                    .orElseThrow(() -> new AuthorNotFoundException(authorId));
+                    .orElseThrow(AuthorNotFoundException::new);
 
             BookAuthor bookAuthor =
                     new BookAuthor(new BookAuthor.PK(book.getBookId(), author.getAuthorId()), book, author);
@@ -130,7 +130,7 @@ public class BookServiceImpl implements BookService {
         // 카테고리 정보 연결
         for (Long categoryId : requestDto.getCategoryIds()) {
             Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+                    .orElseThrow(CategoryNotFoundException::new);
             BookCategory bookCategory =
                     new BookCategory(new BookCategory.PK(book.getBookId(), category.getCategoryId()), book, category);
             book.getCategories().add(bookCategory);
@@ -139,7 +139,7 @@ public class BookServiceImpl implements BookService {
         // 태그 정보 연결
         for (Long tagId : requestDto.getTagIds()) {
             Tag tag = tagRepository.findById(tagId)
-                    .orElseThrow(() -> new TagNotFoundException(tagId));
+                    .orElseThrow(TagNotFoundException::new);
             BookTag bookTag = new BookTag(new BookTag.PK(book.getBookId(), tag.getTagId()), book, tag);
             book.getTags().add(bookTag);
         }
@@ -161,7 +161,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void updateBook(Long bookId, BookModifyRequestDto requestDto) {
         Book existingBook = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
 
         Book updatedBook = existingBook.toBuilder()
                 .bookIsbn(requestDto.getBookIsbn())
@@ -194,7 +194,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void updateBookThumbnail(Long bookId, MultipartFile file) throws IOException {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
 
         File thumbnailFile = book.getThumbnail();
         File uploadFile = objectStorageService.saveFile(file, FILE_CATEGORY);
@@ -213,7 +213,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto findBookById(Long bookId) {
         Book book = bookRepository.findByBookId(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
         return convertToBookResponseDto(book);
     }
 
@@ -229,26 +229,32 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getExtractBookListByBookIds(bookIds);
     }
 
+
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBookListByCategoryId(Long categoryId, Integer limit) {
         return bookRepository.getMainPageResponseDtoByCategoryId(categoryId, limit);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBookListOrderByBookPublicationDate(Integer limit) {
         return bookRepository.getMainPageResponseDtoOrderByBookPublicationDate(limit);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<BookMainPageResponseDto> getMainPageBooksByTagName(Integer limit, String tagName) {
         return bookRepository.getMainPageBooksByTagName(limit, tagName);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<BookResponseDto> getRecentPublished(Pageable pageable) {
         return bookRepository.getRecentPublished(pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<BookResponseDto> getBookPageByTagName(Pageable pageable, String tagName) {
         return bookRepository.getBookPageByTagName(pageable, tagName);
@@ -263,7 +269,7 @@ public class BookServiceImpl implements BookService {
     public List<Long> getBookCategoryIdsByBookIds(List<Long> bookIds) {
         return bookIds.stream()
                 .map(bookId -> bookRepository.findByBookId(bookId)
-                        .orElseThrow(() -> new BookNotFoundException(bookId)))
+                        .orElseThrow(BookNotFoundException::new))
                 .flatMap(book -> book.getCategories().stream())
                 .map(bookCategory -> bookCategory.getCategory().getCategoryId())
                 .distinct()
@@ -276,7 +282,7 @@ public class BookServiceImpl implements BookService {
         book.getAuthors().clear();
         for (Long authorId : authorIds) {
             Author author = authorRepository.findById(authorId)
-                    .orElseThrow(() -> new AuthorNotFoundException(authorId));
+                    .orElseThrow(AuthorNotFoundException::new);
             book.getAuthors()
                     .add(new BookAuthor(new BookAuthor.PK(book.getBookId(), author.getAuthorId()), book, author));
         }
@@ -286,7 +292,7 @@ public class BookServiceImpl implements BookService {
         book.getCategories().clear();
         for (Long categoryId : categoryIds) {
             Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+                    .orElseThrow(CategoryNotFoundException::new);
             book.getCategories()
                     .add(new BookCategory(new BookCategory.PK(book.getBookId(), category.getCategoryId()), book,
                             category));
@@ -297,15 +303,17 @@ public class BookServiceImpl implements BookService {
         book.getTags().clear();
         for (Long tagId : tagIds) {
             Tag tag = tagRepository.findById(tagId)
-                    .orElseThrow(() -> new TagNotFoundException(tagId));
+                    .orElseThrow(TagNotFoundException::new);
             book.getTags().add(new BookTag(new BookTag.PK(book.getBookId(), tag.getTagId()), book, tag));
         }
     }
 
 
     private Integer calculateSalePrice(Integer regularPrice, Integer discountRate) {
-        // 할인된 가격 계산 로직
-        return regularPrice - (regularPrice * discountRate / 100);
+        double discountedPrice = ((double) regularPrice) - (((double) regularPrice * (double) discountRate) / 100.0);
+        discountedPrice = Math.round(discountedPrice);
+        return (int) discountedPrice;
+
     }
 
     private BookResponseDto convertToBookResponseDto(Book book) {

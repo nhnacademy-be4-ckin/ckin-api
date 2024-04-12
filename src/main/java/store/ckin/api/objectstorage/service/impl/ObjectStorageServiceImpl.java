@@ -153,7 +153,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         this.restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
 
         File file = fileRepository.findByFileUrl(url)
-                .orElseThrow(() -> new FileNotFoundException(url));
+                .orElseThrow(FileNotFoundException::new);
 
         fileRepository.delete(file);
     }

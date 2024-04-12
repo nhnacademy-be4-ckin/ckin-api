@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -25,17 +27,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import store.ckin.api.common.domain.PageInfo;
@@ -82,7 +79,7 @@ class TagControllerTest {
         PagedResponse<List<TagResponseDto>> expected = new PagedResponse<>(allElements, pageInfo);
         given(tagService.readTagList(PageRequest.of(0, 5))).willReturn(expected);
 
-        // when
+        // when then
         mockMvc.perform(get("/api/tags")
                         .queryParam("page", "0")
                         .queryParam("size", "5")
@@ -109,6 +106,8 @@ class TagControllerTest {
                         )
 
                 ));
+
+        verify(tagService, times(1)).readTagList(any());
     }
 
     @Test
@@ -134,8 +133,9 @@ class TagControllerTest {
         // given
         TagCreateRequestDto tagCreateRequestDto = new TagCreateRequestDto();
         ReflectionTestUtils.setField(tagCreateRequestDto, "tagName", "태그1");
-        TagNameAlreadyExistException expectedException =
-                new TagNameAlreadyExistException(tagCreateRequestDto.getTagName());
+
+        TagNameAlreadyExistException expectedException = new TagNameAlreadyExistException();
+
         willThrow(expectedException).given(tagService).createTag(any());
 
         // when
@@ -149,6 +149,7 @@ class TagControllerTest {
                 ).andDo(document("tag/saveTag/already-exist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+        verify(tagService, times(1)).createTag(any());
     }
 
 
@@ -170,6 +171,7 @@ class TagControllerTest {
                         requestFields(
                                 fieldWithPath("tagName").description("저장할 태그 이름")
                         )));
+        verify(tagService, times(1)).createTag(any());
     }
 
     @Test
@@ -210,6 +212,7 @@ class TagControllerTest {
                                 fieldWithPath("tagId").description("태그 수정을 위한 태그 아이디"),
                                 fieldWithPath("tagName").description("태그 수정을 위한 태그 이름")
                         )));
+        verify(tagService, times(1)).updateTag(any());
     }
 
     @Test
@@ -235,7 +238,7 @@ class TagControllerTest {
         // given
         TagDeleteRequestDto tagDeleteRequestDto = new TagDeleteRequestDto();
         ReflectionTestUtils.setField(tagDeleteRequestDto, "tagId", 1L);
-        TagNotFoundException expectedException = new TagNotFoundException(tagDeleteRequestDto.getTagId());
+        TagNotFoundException expectedException = new TagNotFoundException();
         willThrow(expectedException).given(tagService).deleteTag(any());
 
         // when
@@ -249,6 +252,7 @@ class TagControllerTest {
                 .andDo(document("tag/deleteTag/not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+        verify(tagService, times(1)).deleteTag(any());
     }
 
     @Test
@@ -269,5 +273,6 @@ class TagControllerTest {
                         requestFields(
                                 fieldWithPath("tagId").description("삭제를 위한 태그 아이디")
                         )));
+        verify(tagService, times(1)).deleteTag(any());
     }
 }

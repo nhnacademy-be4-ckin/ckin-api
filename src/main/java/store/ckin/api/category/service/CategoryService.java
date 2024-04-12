@@ -3,6 +3,7 @@ package store.ckin.api.category.service;
 import java.util.List;
 import store.ckin.api.category.dto.request.CategoryCreateRequestDto;
 import store.ckin.api.category.dto.request.CategoryUpdateRequestDto;
+import store.ckin.api.category.dto.response.CategoryCacheResponseDto;
 import store.ckin.api.category.dto.response.CategoryResponseDto;
 
 /**
@@ -69,4 +70,6 @@ public interface CategoryService {
      * @return 부모 카테고리 아이디 목록
      */
     List<Long> getParentIds(List<Long> categoryIds);
+
+    List<CategoryCacheResponseDto> getAllCategories();
 }

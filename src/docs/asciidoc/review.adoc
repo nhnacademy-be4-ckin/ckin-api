@@ -1,0 +1,57 @@
+== 리뷰
+
+{empty} +
+
+=== 리뷰 업로드
+
+==== Request
+
+include::{snippets}/review/postReview/success/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/review/postReview/success/request-parts.adoc[]
+
+{empty} +
+=== 도서 아이디에 해당되는 리뷰 목록을 반환
+
+==== Request
+
+include::{snippets}/review/getReviewPageList/success/http-request.adoc[]
+
+==== Parameters
+
+include::{snippets}/review/getReviewPageList/success/request-parameters.adoc[]
+include::{snippets}/review/getReviewPageList/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/review/getReviewPageList/success/response-body.adoc[]
+
+{empty} +
+=== 리뷰 목록 반환: 마이페이지
+
+==== Request
+
+include::{snippets}/review/getReviewPageListByMemberId/success/http-request.adoc[]
+
+==== Parameters
+
+include::{snippets}/review/getReviewPageListByMemberId/success/request-parameters.adoc[]
+include::{snippets}/review/getReviewPageListByMemberId/success/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/review/getReviewPageListByMemberId/success/response-body.adoc[]
+
+{empty} +
+=== 리뷰 수정
+
+==== Request
+
+include::{snippets}/review/updateReview/success/http-request.adoc[]
+
+==== Parameters
+
+include::{snippets}/review/updateReview/success/path-parameters.adoc[]
+include::{snippets}/review/updateReview/success/request-fields.adoc[]

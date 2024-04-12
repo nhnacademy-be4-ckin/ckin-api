@@ -20,6 +20,7 @@ import store.ckin.api.payment.entity.Payment;
 import store.ckin.api.payment.repository.PaymentRepository;
 import store.ckin.api.sale.dto.request.SaleCreateNoBookRequestDto;
 import store.ckin.api.sale.dto.request.SaleDeliveryUpdateRequestDto;
+import store.ckin.api.sale.dto.response.SaleCheckResponseDto;
 import store.ckin.api.sale.dto.response.SaleInfoResponseDto;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.dto.response.SaleWithBookResponseDto;
@@ -129,7 +130,7 @@ public class SaleServiceImpl implements SaleService {
     public SaleResponseDto getSaleDetail(Long saleId) {
 
         if (!saleRepository.existsById(saleId)) {
-            throw new SaleNotFoundException(saleId);
+            throw new SaleNotFoundException();
         }
 
         return saleRepository.findBySaleId(saleId);
@@ -144,7 +145,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     public void updateSalePaymentPaidStatus(Long saleId) {
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         sale.updatePaymentStatus(SalePaymentStatus.PAID);
     }
@@ -161,7 +162,7 @@ public class SaleServiceImpl implements SaleService {
     public SaleWithBookResponseDto getSaleWithBook(String saleNumber) {
 
         if (!saleRepository.existsBySaleNumber(saleNumber)) {
-            throw new SaleNotFoundExceptionBySaleNumber(saleNumber);
+            throw new SaleNotFoundExceptionBySaleNumber();
         }
 
         return saleRepository.getSaleWithBook(saleNumber);
@@ -178,7 +179,7 @@ public class SaleServiceImpl implements SaleService {
     public SaleInfoResponseDto getSalePaymentInfo(String saleNumber) {
 
         if (!saleRepository.existsBySaleNumber(saleNumber)) {
-            throw new SaleNumberNotFoundException(saleNumber);
+            throw new SaleNumberNotFoundException();
         }
 
 
@@ -196,7 +197,7 @@ public class SaleServiceImpl implements SaleService {
     public SaleResponseDto getSaleBySaleNumber(String saleNumber) {
 
         if (!saleRepository.existsBySaleNumber(saleNumber)) {
-            throw new SaleNumberNotFoundException(saleNumber);
+            throw new SaleNumberNotFoundException();
         }
 
         SaleResponseDto responseDto = saleRepository.findBySaleNumber(saleNumber);
@@ -229,7 +230,7 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     public void updateSaleDeliveryStatus(Long saleId, SaleDeliveryUpdateRequestDto deliveryStatus) {
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         sale.updateSaleDeliveryStatus(deliveryStatus.getDeliveryStatus());
     }
@@ -243,12 +244,19 @@ public class SaleServiceImpl implements SaleService {
     @Transactional
     public void cancelSale(Long saleId) {
         Sale sale = saleRepository.findById(saleId)
-                .orElseThrow(() -> new SaleNotFoundException(saleId));
+                .orElseThrow(SaleNotFoundException::new);
 
         sale.updatePaymentStatus(SalePaymentStatus.CANCEL);
 
         paymentRepository.findBySale_SaleId(saleId)
                 .ifPresent(Payment::cancelPayment);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SaleCheckResponseDto checkSaleByMemberIdAndBookId(Long memberId, Long bookId) {
+
+        return saleRepository.checkSaleByMemberIdAndBookId(memberId, bookId);
     }
 }

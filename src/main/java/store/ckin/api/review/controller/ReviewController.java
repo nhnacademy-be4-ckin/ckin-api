@@ -1,6 +1,7 @@
 package store.ckin.api.review.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class ReviewController {
      * @param imageList        리뷰의 이미지 리스트를 담고 있는 MultipartFile 리스트 입니다.
      */
     @PostMapping("/review")
-    public ResponseEntity<Void> postReview(@RequestPart ReviewCreateRequestDto createRequestDto,
+    public ResponseEntity<Void> postReview(@RequestPart @Valid ReviewCreateRequestDto createRequestDto,
                                            @RequestPart(value = "imageList", required = false)
                                            List<MultipartFile> imageList) {
 
@@ -71,7 +72,7 @@ public class ReviewController {
     }
 
     /**
-     * 도서 아이디로 해당되는 리뷰 목록을 반환하는 메소드 입니다.
+     * 회원 아이디로 해당되는 리뷰 목록을 반환하는 메소드 입니다.
      *
      * @param pageable 리뷰 페이지
      * @param memberId 회원 아이디
@@ -86,8 +87,14 @@ public class ReviewController {
         return ResponseEntity.ok().body(content);
     }
 
+    /**
+     * 마이페이지에서 리뷰를 수정하기 위한 메소드 입니다.
+     *
+     * @param updateRequestDto 수정을 위한 DTO
+     * @param memberId         회원 아이디
+     */
     @PutMapping("/members/review/{memberId}")
-    public ResponseEntity<Void> updateReview(@RequestBody ReviewUpdateRequestDto updateRequestDto,
+    public ResponseEntity<Void> updateReview(@RequestBody @Valid ReviewUpdateRequestDto updateRequestDto,
                                              @PathVariable Long memberId) {
 
         reviewFacade.updateReview(updateRequestDto, memberId);

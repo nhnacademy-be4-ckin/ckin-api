@@ -9,7 +9,7 @@ import store.ckin.api.advice.exception.GeneralAlreadyExistsException;
  * @version 2024. 02. 17
  */
 public class TagNameAlreadyExistException extends GeneralAlreadyExistsException {
-    public TagNameAlreadyExistException(String tagName) {
-        super(String.format("이미 존재하는 태그 이름입니다. [tag Name = %s]", tagName));
+    public TagNameAlreadyExistException() {
+        super("이미 존재하는 태그 이름입니다.");
     }
 }

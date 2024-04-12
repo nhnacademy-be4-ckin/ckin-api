@@ -62,7 +62,6 @@ class ReviewFacadeTest {
     @BeforeEach
     void setUp() {
 
-
         reviewCreateRequestDto = new ReviewCreateRequestDto();
         ReflectionTestUtils.setField(reviewCreateRequestDto, "memberId", 1L);
         ReflectionTestUtils.setField(reviewCreateRequestDto, "bookId", 1L);
@@ -112,5 +111,4 @@ class ReviewFacadeTest {
 
         verify(reviewService, times(1)).getReviewPageList(any(), anyLong());
     }
-
 }

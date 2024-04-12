@@ -1,12 +1,7 @@
 package store.ckin.api.member.service;
 
-import store.ckin.api.member.domain.request.MemberAuthRequestDto;
-import store.ckin.api.member.domain.request.MemberCreateRequestDto;
-import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.request.*;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 
 /**
@@ -69,4 +64,12 @@ public interface MemberService {
     void updateLatestLoginAt(Long memberId);
 
     void changeState(Long memberId, Member.State state);
+
+    MemberPasswordResponseDto getPassword(Long memberId);
+
+    void changePassword(Long memberId, MemberPasswordRequestDto memberPasswordRequestDto);
+
+    void updateMemberInfo(Long memberId, MemberUpdateRequestDto memberUpdateRequestDto);
+
+    MemberDetailInfoResponseDto getMemberDetailInfo(Long memberId);
 }

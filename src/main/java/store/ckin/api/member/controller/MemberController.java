@@ -13,17 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import store.ckin.api.member.domain.request.MemberAuthRequestDto;
-import store.ckin.api.member.domain.request.MemberCreateRequestDto;
-import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
+import store.ckin.api.member.domain.request.*;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
 import store.ckin.api.member.exception.MemberAlreadyExistsException;
 import store.ckin.api.member.exception.MemberCannotChangeStateException;
 import store.ckin.api.member.exception.MemberNotFoundException;
+import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
 import store.ckin.api.member.service.MemberService;
 
 /**
@@ -47,6 +43,12 @@ public class MemberController {
             @Valid @RequestBody MemberEmailOnlyRequestDto memberEmailOnlyRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberService.alreadyExistsEmail(memberEmailOnlyRequestDto));
+    }
+
+    @GetMapping("/members/{memberId}/checkPassword")
+    public ResponseEntity<MemberPasswordResponseDto> checkPassword(@PathVariable("memberId") Long memberId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(memberService.getPassword(memberId));
     }
 
     /**
@@ -107,7 +109,7 @@ public class MemberController {
     /**
      * 서비스를 이용할 때마다 최근 로그인 날짜를 갱신해주는 메서드 입니다.
      */
-    @PutMapping("/members/{memberId}/update")
+    @PutMapping("/members/{memberId}/update-log")
     public ResponseEntity<Void> memberUpdateLoginLog(@PathVariable("memberId") Long memberId) {
         memberService.updateLatestLoginAt(memberId);
 
@@ -135,9 +137,44 @@ public class MemberController {
     }
 
     /**
+     * 비밀번호를 변경하는 API 메서드 입니다.
+     */
+    @PutMapping("/members/{memberId}/password")
+    public ResponseEntity<Void> changePassword(@PathVariable("memberId") Long memberId,
+                                               @Valid @RequestBody MemberPasswordRequestDto memberPasswordRequestDto) {
+        memberService.changePassword(memberId, memberPasswordRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 회원정보를를 수정하는 API 메서드 입니다.
+     */
+    @PutMapping("/members/{memberId}/update-info")
+    public ResponseEntity<Void> updateMemberInfo(@PathVariable("memberId") Long memberId,
+                                               @Valid @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
+        memberService.updateMemberInfo(memberId, memberUpdateRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 멤버 관련 정보를 가져오는 API 메서드 입니다.
+     */
+    @GetMapping("/members/{memberId}/info")
+    public ResponseEntity<MemberDetailInfoResponseDto> getMemberDetailInfo(@PathVariable("memberId") Long memberId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(memberService.getMemberDetailInfo(memberId));
+    }
+
+    /**
      * 409 Code 로 응답을 보내는 ExceptionHandler 입니다.
      */
-    @ExceptionHandler({MemberAlreadyExistsException.class, MemberCannotChangeStateException.class})
+    @ExceptionHandler({
+            MemberAlreadyExistsException.class,
+            MemberCannotChangeStateException.class,
+            MemberPasswordCannotChangeException.class
+    })
     public ResponseEntity<Void> conflictExceptionHandler(Exception exception) {
         log.debug("{} : {}", exception.getClass().getName(), exception.getMessage());
 
@@ -153,5 +190,4 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
 }

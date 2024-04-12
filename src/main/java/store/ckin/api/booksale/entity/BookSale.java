@@ -18,7 +18,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import store.ckin.api.book.entity.Book;
 import store.ckin.api.sale.entity.Sale;
 
@@ -29,7 +28,6 @@ import store.ckin.api.sale.entity.Sale;
  * @version 2024. 02. 27.
  */
 
-@ToString
 @Getter
 @Entity
 @Table(name = "BookSale")
@@ -76,7 +74,6 @@ public class BookSale {
     private BookSaleState bookSaleState;
 
     @Embeddable
-    @ToString
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor

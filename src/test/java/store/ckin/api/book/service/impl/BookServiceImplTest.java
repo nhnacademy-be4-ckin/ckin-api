@@ -1,13 +1,17 @@
 package store.ckin.api.book.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -507,9 +511,145 @@ class BookServiceImplTest {
     @Test
     void whenBookNotFound_thenThrowException() {
         when(bookRepository.findByBookId(3L)).thenReturn(Optional.empty());
+        List<Long> bookIds = List.of(3L);
 
-        assertThrows(BookNotFoundException.class, () -> bookService.getBookCategoryIdsByBookIds(Arrays.asList(3L)));
+        assertThrows(BookNotFoundException.class,
+                () -> bookService.getBookCategoryIdsByBookIds(bookIds));
     }
 
+    @Test
+    @DisplayName("태그 이름으로 메인페이지 도서 리스트 가져오기")
+    void testGetMainPageBooksByTagName() {
+
+        BookMainPageResponseDto bookDto = BookMainPageResponseDto.builder()
+                .bookId(1L)
+                .bookTitle("Mock Book")
+                .bookRegularPrice(20000)
+                .bookDiscountRate(10)
+                .bookSalePrice(18000)
+                .thumbnail("http://example.com/thumbnail.jpg")
+                .productCategories(List.of("Category 1", "Category 2"))
+                .productAuthorNames(List.of("Author 1", "Author 2"))
+                .productTags(List.of("Tag 1", "Tag 2"))
+                .build();
+
+        given(bookRepository.getMainPageBooksByTagName(anyInt(), anyString()))
+                .willReturn(List.of(bookDto));
+
+        List<BookMainPageResponseDto> actualList = bookService.getMainPageBooksByTagName(10, "BEST");
+
+        assertFalse(actualList.isEmpty());
+
+        BookMainPageResponseDto actual = actualList.get(0);
+
+        assertAll(
+                () -> assertEquals(bookDto.getBookId(), actual.getBookId()),
+                () -> assertEquals(bookDto.getBookTitle(), actual.getBookTitle()),
+                () -> assertEquals(bookDto.getBookRegularPrice(), actual.getBookRegularPrice()),
+                () -> assertEquals(bookDto.getBookDiscountRate(), actual.getBookDiscountRate()),
+                () -> assertEquals(bookDto.getBookSalePrice(), actual.getBookSalePrice()),
+                () -> assertEquals(bookDto.getThumbnail(), actual.getThumbnail()),
+                () -> assertEquals(bookDto.getProductCategories(), actual.getProductCategories()),
+                () -> assertEquals(bookDto.getProductAuthorNames(), actual.getProductAuthorNames()),
+                () -> assertEquals(bookDto.getProductTags(), actual.getProductTags())
+        );
+
+        verify(bookRepository, times(1)).getMainPageBooksByTagName(anyInt(), any());
+    }
+
+    @Test
+    @DisplayName("최신 도서 목록 리스트 조회")
+    void testGetRecentPublished() {
+
+        BookResponseDto bookResponseDto = BookResponseDto.builder()
+                .bookId(1L)
+                .bookIsbn("1234567890123")
+                .bookTitle("테스트 책 제목")
+                .bookDescription("테스트 책 설명")
+                .bookPublisher("테스트 출판사")
+                .bookPublicationDate(LocalDate.now())
+                .bookIndex("테스트 목차")
+                .bookPackaging(true)
+                .bookStock(10)
+                .bookRegularPrice(20000)
+                .bookDiscountRate(10)
+                .bookState("판매중")
+                .bookSalePrice(18000)
+                .bookReviewRate("4.5")
+                .thumbnail("thumbnail/url.jpg")
+                .authorNames(Arrays.asList("작가1", "작가2"))
+                .categoryNames(Arrays.asList("카테고리1", "카테고리2"))
+                .tagNames(Arrays.asList("태그1", "태그2"))
+                .build();
+
+        PageImpl<BookResponseDto> bookPage = new PageImpl<>(List.of(bookResponseDto), pageable, 1);
+
+
+        given(bookRepository.getRecentPublished(any()))
+                .willReturn(bookPage);
+
+        Page<BookResponseDto> result = bookService.getRecentPublished(pageable);
+        assertFalse(result.isEmpty());
+
+        BookResponseDto actual = result.getContent().get(0);
+
+        assertAll(
+                () -> assertEquals(bookResponseDto.getBookId(), actual.getBookId()),
+                () -> assertEquals(bookResponseDto.getBookIsbn(), actual.getBookIsbn()),
+                () -> assertEquals(bookResponseDto.getBookTitle(), actual.getBookTitle()),
+                () -> assertEquals(bookResponseDto.getBookDescription(), actual.getBookDescription()),
+                () -> assertEquals(bookResponseDto.getBookPublisher(), actual.getBookPublisher()),
+                () -> assertEquals(bookResponseDto.getBookPublicationDate(), actual.getBookPublicationDate()),
+                () -> assertEquals(bookResponseDto.getBookIndex(), actual.getBookIndex()),
+                () -> assertEquals(bookResponseDto.getBookPackaging(), actual.getBookPackaging()),
+                () -> assertEquals(bookResponseDto.getBookStock(), actual.getBookStock()),
+                () -> assertEquals(bookResponseDto.getBookRegularPrice(), actual.getBookRegularPrice()),
+                () -> assertEquals(bookResponseDto.getBookDiscountRate(), actual.getBookDiscountRate()),
+                () -> assertEquals(bookResponseDto.getBookState(), actual.getBookState()),
+                () -> assertEquals(bookResponseDto.getBookSalePrice(), actual.getBookSalePrice()),
+                () -> assertEquals(bookResponseDto.getBookReviewRate(), actual.getBookReviewRate()),
+                () -> assertEquals(bookResponseDto.getThumbnail(), actual.getThumbnail()),
+                () -> assertEquals(bookResponseDto.getAuthorNames(), actual.getAuthorNames()),
+                () -> assertEquals(bookResponseDto.getCategoryNames(), actual.getCategoryNames()),
+                () -> assertEquals(bookResponseDto.getTagNames(), actual.getTagNames())
+        );
+    }
+
+    @Test
+    @DisplayName("태그 이름으로 도서 페이지 조회")
+    void testGetBookPageByTagName() {
+        BookResponseDto bookResponseDto = BookResponseDto.builder()
+                .bookId(1L)
+                .bookIsbn("1234567890123")
+                .bookTitle("테스트 책 제목")
+                .bookDescription("테스트 책 설명")
+                .bookPublisher("테스트 출판사")
+                .bookPublicationDate(LocalDate.now())
+                .bookIndex("테스트 목차")
+                .bookPackaging(true)
+                .bookStock(10)
+                .bookRegularPrice(20000)
+                .bookDiscountRate(10)
+                .bookState("판매중")
+                .bookSalePrice(18000)
+                .bookReviewRate("4.5")
+                .thumbnail("thumbnail/url.jpg")
+                .authorNames(Arrays.asList("작가1", "작가2"))
+                .categoryNames(Arrays.asList("카테고리1", "카테고리2"))
+                .tagNames(Arrays.asList("태그1", "태그2"))
+                .build();
+
+        PageImpl<BookResponseDto> bookPage = new PageImpl<>(List.of(bookResponseDto), pageable, 1);
+
+
+        given(bookRepository.getBookPageByTagName(any(), anyString()))
+                .willReturn(bookPage);
+
+        Page<BookResponseDto> result = bookService.getBookPageByTagName(pageable, "BEST");
+
+        assertFalse(result.isEmpty());
+
+        verify(bookRepository, times(1)).getBookPageByTagName(any(), anyString());
+    }
 
 }

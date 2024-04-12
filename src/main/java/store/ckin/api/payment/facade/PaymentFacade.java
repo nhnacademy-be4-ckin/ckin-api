@@ -47,7 +47,7 @@ public class PaymentFacade {
         SaleResponseDto sale = saleService.getSaleBySaleNumber(requestDto.getSaleNumber());
 
         if (!Objects.equals(sale.getSaleTotalPrice(), requestDto.getAmount())) {
-            throw new PaymentAmountNotCorrectException(sale.getSaleTotalPrice(), requestDto.getAmount());
+            throw new PaymentAmountNotCorrectException();
         }
 
         paymentService.createPayment(sale.getSaleId(), requestDto);
