@@ -44,10 +44,10 @@ public class Sale {
     private Long saleId;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "sale", fetch = FetchType.LAZY)
     private Set<BookSale> bookSales;
 
     @Column(name = "sale_title")
