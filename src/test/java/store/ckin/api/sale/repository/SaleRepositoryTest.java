@@ -48,13 +48,9 @@ class SaleRepositoryTest {
     TestEntityManager entityManager;
 
     Grade grade;
-
     Member member;
-
     String saleNumber;
-
     BookSale bookSale;
-
     Book book;
 
     @BeforeEach
