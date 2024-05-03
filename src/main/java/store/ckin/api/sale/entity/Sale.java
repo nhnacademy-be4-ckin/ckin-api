@@ -107,4 +107,5 @@ public class Sale {
     public void updateSaleDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.saleDeliveryStatus = deliveryStatus;
     }
+
 }
