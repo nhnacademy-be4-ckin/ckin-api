@@ -1,9 +1,7 @@
 package store.ckin.api.payment.service.impl;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.payment.dto.request.PaymentRequestDto;
 import store.ckin.api.payment.dto.response.PaymentResponseDto;
@@ -13,6 +11,8 @@ import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
+
+import java.util.Objects;
 
 /**
  * 결제 서비스 구현 클래스입니다.
@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .paymentStatus(requestDto.getPaymentStatus())
                         .requestedAt(requestDto.getRequestedAt().plusHours(9))
                         .approvedAt(Objects.nonNull(requestDto.getApprovedAt())
-                                ? requestDto.getApprovedAt().plusHours(9) :  null)
+                                ? requestDto.getApprovedAt().plusHours(9) : null)
                         .receipt(requestDto.getReceiptUrl())
                         .build();
 
