@@ -31,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void createPayment(Long saleId, PaymentRequestDto requestDto) {
 
         Sale sale = saleRepository.findById(saleId)

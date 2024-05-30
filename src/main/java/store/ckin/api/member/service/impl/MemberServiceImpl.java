@@ -1,7 +1,5 @@
 package store.ckin.api.member.service.impl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -9,24 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.grade.entity.Grade;
 import store.ckin.api.grade.exception.GradeNotFoundException;
 import store.ckin.api.grade.repository.GradeRepository;
-import store.ckin.api.member.domain.request.MemberAuthRequestDto;
-import store.ckin.api.member.domain.request.MemberCreateRequestDto;
-import store.ckin.api.member.domain.request.MemberEmailOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberOauthIdOnlyRequestDto;
-import store.ckin.api.member.domain.request.MemberPasswordRequestDto;
-import store.ckin.api.member.domain.request.MemberUpdateRequestDto;
-import store.ckin.api.member.domain.response.MemberAuthResponseDto;
-import store.ckin.api.member.domain.response.MemberDetailInfoResponseDto;
-import store.ckin.api.member.domain.response.MemberMyPageResponseDto;
-import store.ckin.api.member.domain.response.MemberOauthLoginResponseDto;
-import store.ckin.api.member.domain.response.MemberPasswordResponseDto;
+import store.ckin.api.member.domain.request.*;
+import store.ckin.api.member.domain.response.*;
 import store.ckin.api.member.entity.Member;
-import store.ckin.api.member.exception.MemberAlreadyExistsException;
-import store.ckin.api.member.exception.MemberCannotChangeStateException;
-import store.ckin.api.member.exception.MemberNotFoundException;
-import store.ckin.api.member.exception.MemberOauthNotFoundException;
-import store.ckin.api.member.exception.MemberPasswordCannotChangeException;
-import store.ckin.api.member.exception.MemberPointNotEnoughException;
+import store.ckin.api.member.exception.*;
 import store.ckin.api.member.repository.MemberRepository;
 import store.ckin.api.member.service.MemberService;
 import store.ckin.api.pointhistory.entity.PointHistory;
@@ -38,6 +22,11 @@ import store.ckin.api.sale.entity.Sale;
 import store.ckin.api.sale.entity.SalePaymentStatus;
 import store.ckin.api.sale.exception.SaleNotFoundException;
 import store.ckin.api.sale.repository.SaleRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 /**
  * MemberService interface 의 구현체 입니다.
@@ -175,7 +164,7 @@ public class MemberServiceImpl implements MemberService {
      * @param totalPrice 총 가격
      */
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void updateRewardPoint(Long saleId, String email, Integer totalPrice) {
 
 

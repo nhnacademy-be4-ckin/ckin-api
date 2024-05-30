@@ -1,7 +1,7 @@
 package store.ckin.api.payment.facade;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.ckin.api.member.service.MemberService;
@@ -14,6 +14,8 @@ import store.ckin.api.payment.service.PaymentService;
 import store.ckin.api.sale.dto.response.SaleResponseDto;
 import store.ckin.api.sale.service.SaleService;
 
+import java.util.Objects;
+
 /**
  * 결제 퍼사드 클래스입니다.
  *
@@ -21,6 +23,7 @@ import store.ckin.api.sale.service.SaleService;
  * @version 2024. 03. 09.
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentFacade {
@@ -55,7 +58,12 @@ public class PaymentFacade {
 
 
         if (Objects.nonNull(sale.getMemberEmail())) {
-            memberService.updateRewardPoint(sale.getSaleId(), sale.getMemberEmail(), sale.getSaleTotalPrice());
+            try {
+                memberService.updateRewardPoint(sale.getSaleId(), sale.getMemberEmail(), sale.getSaleTotalPrice());
+            } catch (Exception e) {
+                // TODO : 회원 포인트 적립 실패시 처리 필요!
+                log.warn("Member point update error = {}", e.getMessage());
+            }
         }
 
         return PaymentSuccessResponseDto.builder()
